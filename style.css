@@ -1,0 +1,68 @@
+@media (orientation:landscape) {
+    .hide-on-landscape {
+        display: none;
+    }
+
+    body {
+        background:url(images/wood-1.jpg);
+    }
+
+    #div1 {
+        width:90%;
+        margin:25px auto;
+        background:white;
+        border-radius:10px;
+    }
+
+    footer {
+        margin:10px;
+    }
+
+    #main_content {
+        min-height:500px;
+    }
+
+    #menu {
+        height: 60px;
+        background: #222;
+    }
+
+    #logo img {
+        width:80px;
+    }
+
+    header {
+        height:120px;
+    }
+
+    header > div {
+        display:inline-block;
+        height:90px;
+        padding-top:30px;
+        width:45%;
+    }
+
+        header > div:last-child {
+            text-align:right;
+        }
+            #search_query {
+    }
+
+@media (orientation:portrait) {
+    .hide-on-portrait {
+        display: none;
+    }
+}
+
+footer {
+    border-top: 1px #CCC solid;
+}
+
+#search_query {
+    border:1px solid #CCC;
+    border-radius:5px;
+}
+
+#menu {
+    color:white;
+}
