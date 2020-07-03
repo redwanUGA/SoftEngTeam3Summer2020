@@ -1,64 +1,116 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>Add Promo Code</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-		<link rel="stylesheet" href="style.css" type="text/css" />
-		<script type="text/javascript">
-			//var search_query=document.getElementById('search_query');
-			
-		</script>
-	</head>
-	<body>
-		<div id="div1">
-			<header class="container-fluid">
-				
-                <div>
-                    <a href="#" id="logo"><img src="images/icons/books-icon.png" alt="team3" /> Team#3 BookStore</a>
+<head>
+	<meta charset="utf-8">
+	<title>Team3 Bookstore</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+	<link rel="stylesheet" href="style.css" type="text/css" />
+	<script type="text/javascript">
+		window.onload = initiate;
+		function initiate() {
+		//var search_query=document.getElementById('search_query');
+		var menu_closed=true;
+		var menu_content=document.getElementById('menu_content');
+		var mobile_button=document.getElementById('mobile_button');
+		mobile_button.onclick=function(){
+		if(menu_closed) {
+		menu_closed=false;
+		menu_content.style.display='block';
+		menu_content.style.height='70%';
+		} else {
+		menu_content.style.display='none';
+		menu_content.style.height='0%';
+		menu_closed=true;
+		}
+		};
+		};
+	</script>
+</head>
+<body>
+	<div id="div1">
+		<header class="container-fluid">
+
+			<div>
+				<a href="#" id="logo"><img src="images/icons/books-icon.png" alt="team3" /> Team#3 BookStore</a>
+			</div>
+			<div>
+				<form><input type="search" name="search_query" id="search_query" value="Search ..." onclick="this.value='';" /></form>
+			</div>
+
+		</header><!-- container -->
+		<div id="menu">
+			<ul id="menu_content">
+				<li><a href="#">Home</a></li>
+				<li>
+					<a href="#">Categories</a><ul>
+						<li><a href="#">Classic</a></li>
+						<li><a href="#">Romance</a></li>
+						<li><a href="#">Technology</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#">Browse</a>
+				</li>
+				<li>
+					<a href="#">Help</a><ul>
+						<li><a href="#">Support Request</a></li>
+						<li><a href="#">FAQs</a></li>
+						<li><a href="#">Advanced Search</a></li>
+					</ul>
+				</li>
+				<li>
+					<a href="#">About</a>
+				</li>
+			</ul>
+
+			<div id="mobile_button">
+				<img src="images/menu.png" />
+			</div>
+			<div id="user_controls">
+				<ul>
+					<li><a href="#"><img src="images/cart.png" />MY CART</a></li>
+					<li><a href="#"><img src="images/signin.png" />SING IN</a></li>
+					<li><a href="#"><img src="images/signup.png" />SIGN UP</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="main_content">
+			<form>
+				<div class="form-group row">
+					<label for="promocode" class="col-sm-2 col-form-label">Promo Code</label>
+					<div class="col-sm-6">
+						<input type="text" class="form-control-plaintext" id="promocode" placeholder="Enter Promo Code">
+					</div>
 				</div>
-                <div>
-                    <form><input type="search" name="search_query" id="search_query" value="Search ..."  onclick="this.value='';" /></form>
+				<div class="form-group row">
+					<label for="redrate" class="col-sm-2 col-form-label">Reduction Rate</label>
+					<div class="col-sm-6">
+						<input type="text" class="form-control-plaintext" id="redrate" placeholder="Enter Price Reduction Rate">
+					</div>
 				</div>
-				
-			</header><!-- container -->
-			<div id="main_content">
-				<form>
-					<div class="form-group row">
-						<label for="promocode" class="col-sm-2 col-form-label">Promo Code</label>
-						<div class="col-sm-6">
-							<input type="text" class="form-control-plaintext" id="promocode" placeholder="Enter Promo Code">
-						</div>
+				<div class="form-group row">
+					<label for="startdate" class="col-sm-2 col-form-label">Start Date</label>
+					<div class="col-sm-6">
+						<input type="date" class="form-control-plaintext" id="startdate">
 					</div>
-					<div class="form-group row">
-						<label for="redrate" class="col-sm-2 col-form-label">Reduction Rate</label>
-						<div class="col-sm-6">
-							<input type="text" class="form-control-plaintext" id="redrate" placeholder="Enter Price Reduction Rate">
-						</div>
+				</div>
+				<div class="form-group row">
+					<label for="enddate" class="col-sm-2 col-form-label">End Date</label>
+					<div class="col-sm-6">
+						<input type="date" class="form-control-plaintext" id="=" col-sm-">
 					</div>
-					<div class="form-group row">
-						<label for="startdate" class="col-sm-2 col-form-label">Start Date</label>
-						<div class="col-sm-6">
-							<input type="date" class="form-control-plaintext" id="startdate">
-						</div>
-					</div>
-					<div class="form-group row">
-						<label for="enddate" class="col-sm-2 col-form-label">End Date</label>
-						<div class="col-sm-6">
-							<input type="date" class="form-control-plaintext" id="="col-sm-">
-						</div>
-					</div>
-					<button type="submit" class="btn btn-primary">Submit</button>
-				</form>
-			</div><!-- main_content -->
-			<footer>
-				team 3 book store
-			</footer>
-		</div><!-- div1 -->
-		
-		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-	</body>
+				</div>
+				<button type="submit" class="btn btn-primary">Submit</button>
+			</form>
+		</div><!-- main_content -->
+		<footer>
+			team 3 book store
+		</footer>
+	</div><!-- div1 -->
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
 </html>

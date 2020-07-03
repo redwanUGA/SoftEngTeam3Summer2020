@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -7,57 +7,25 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css" type="text/css" />
     <script type="text/javascript">
+        window.onload = initiate;
+        function initiate() {
         //var search_query=document.getElementById('search_query');
-
+        var menu_closed=true;
+        var menu_content=document.getElementById('menu_content');
+        var mobile_button=document.getElementById('mobile_button');
+        mobile_button.onclick=function(){
+        if(menu_closed) {
+        menu_closed=false;
+        menu_content.style.display='block';
+        menu_content.style.height='70%';
+        } else {
+        menu_content.style.display='none';
+        menu_content.style.height='0%';
+        menu_closed=true;
+        }
+        };
+        };
     </script>
-
-    <style>
-      /*LOGIN form*/
-      .login{
-	  width: 30%;
-      }
-      #log {
-	  border: 3px solid #f1f1f1;
-	  position: relative;
-	  margin:auto;
-	  width: 30em;
-	  margin-top: 2em;
-	  border-radius: 10px;
-      }
-      input[type=text], input[type=password] {
-	  width: 100%;
-	  padding: 12px 20px;
-	  margin: 8px 0;
-	  display: inline-block;
-	  border: 1px solid #ccc;
-	  box-sizing: border-box;
-      }
-      .bttn {
-	  background-color: #cc0000;
-	  color: white;
-	  padding: 14px 20px;
-	  margin: 8px 0;
-	  border: none;
-	  cursor: pointer;
-	  width: 100%;
-	  border-radius: 7px;
-      }
-      .bttn:hover {
-	  opacity: 0.8;
-      }
-      .cancelbtn {
-	  width: auto;
-	  padding: 10px 10px;
-	  background-color: #ff3300;
-      }
-      .container {
-	  padding: 16px;
-      }
-      span.psw {
-	  float: right;
-	  padding-top: 16px;
-      }
-    </style>
 </head>
 <body>
     <div id="div1">
@@ -72,46 +40,119 @@
 
         </header><!-- container -->
         <div id="menu">
-            <ul>
+            <ul id="menu_content">
                 <li><a href="#">Home</a></li>
-                <li><a href="#">Browse</a></li>
                 <li>
-                    <a href="#">About</a><ul>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">About</a></li>
+                    <a href="#">Categories</a><ul>
+                        <li><a href="#">Classic</a></li>
+                        <li><a href="#">Romance</a></li>
+                        <li><a href="#">Technology</a></li>
                     </ul>
                 </li>
+                <li>
+                    <a href="#">Browse</a>
+                </li>
+                <li>
+                    <a href="#">Help</a><ul>
+                        <li><a href="#">Support Request</a></li>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Advanced Search</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">About</a>
+                </li>
             </ul>
-	    <!--
+
             <div id="mobile_button">
                 <img src="images/menu.png" />
-            </div>-->
+            </div>
+            <div id="user_controls">
+                <ul>
+                    <li><a href="#"><img src="images/cart.png" />MY CART</a></li>
+                    <li><a href="#"><img src="images/signin.png" />SING IN</a></li>
+                    <li><a href="#"><img src="images/signup.png" />SIGN UP</a></li>
+                </ul>
+            </div>
         </div>
         <div id="main_content">
+            <style>
+                /*LOGIN form*/
+                .login {
+                    width: 30%;
+                }
 
-	  <div id="login">
-	     <form action="action_page.php" method="post" id="log">
-	       <div class="container">
-		 <label for="uname"><b>Username</b></label>
-		 <input type="text" placeholder="Enter Username" name="uname" required>
-		 
-		 <label for="psw"><b>Password</b></label>
-		 <input type="password" placeholder="Enter Password" name="psw" required>
+                #log {
+                    border: 3px solid #f1f1f1;
+                    position: relative;
+                    margin: auto;
+                    width: 30em;
+                    margin-top: 2em;
+                    border-radius: 10px;
+                }
 
-		 <button class="bttn" type="submit">Login</button>
-		 <label>
-		   <input type="checkbox" checked="checked" name="remember"> Remember me
-		 </label>
-	       </div>
+                input[type=text], input[type=password] {
+                    width: 100%;
+                    padding: 12px 20px;
+                    margin: 8px 0;
+                    display: inline-block;
+                    border: 1px solid #ccc;
+                    box-sizing: border-box;
+                }
 
-	       <div class="container" style="background-color:#f1f1f1">
-		 <button type="button" class="cancelbtn bttn">Cancel</button>
-		 <span class="psw"><a href="#">Forgot password?</a></span>
-	       </div>
-	     </form> 
-	  </div>
-	  
+                .bttn {
+                    background-color: #cc0000;
+                    color: white;
+                    padding: 14px 20px;
+                    margin: 8px 0;
+                    border: none;
+                    cursor: pointer;
+                    width: 100%;
+                    border-radius: 7px;
+                }
+
+                    .bttn:hover {
+                        opacity: 0.8;
+                    }
+
+                .cancelbtn {
+                    width: auto;
+                    padding: 10px 10px;
+                    background-color: #ff3300;
+                }
+
+                .container {
+                    padding: 16px;
+                }
+
+                span.psw {
+                    float: right;
+                    padding-top: 16px;
+                }
+            </style>
+
+            <div id="login">
+                <form action="action_page.php" method="post" id="log">
+                    <div class="container">
+                        <label for="uname"><b>Username</b></label>
+                        <input type="text" placeholder="Enter Username" name="uname" required>
+
+                        <label for="psw"><b>Password</b></label>
+                        <input type="password" placeholder="Enter Password" name="psw" required>
+
+                        <button class="bttn" type="submit">Login</button>
+                        <label>
+                            <input type="checkbox" checked="checked" name="remember"> Remember me
+                        </label>
+                    </div>
+
+                    <div class="container" style="background-color:#f1f1f1">
+                        <button type="button" class="cancelbtn bttn">Cancel</button>
+                        <span class="psw"><a href="#">Forgot password?</a></span>
+                    </div>
+                </form>
+            </div>
+
         </div><!-- main_content -->
         <footer>
             team 3 book store
