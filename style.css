@@ -479,3 +479,21 @@ h1 img {
     margin: .2em;
     color: rgba(10,10,10,0.5);
 }
+
+/*////////////////////////Redwan Pages////////////////////////////////////*/
+/* addpromo.html, promomanagement.html, cart.html, usermanagement.html */
+
+.adpromoform{
+    margin-left:50px;
+	margin-top:50px;
+}
+
+.usermanagetable{
+    margin-left:50px;
+	margin-top:50px;
+}
+
+.promomanager{
+	margin-left:50px;
+	margin-top:50px;
+}
