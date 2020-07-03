@@ -455,6 +455,20 @@ h1 img {
     width:98%;
 }
 
+.btn {
+    margin:10px auto;
+    text-align:center;
+    color:#EEE;
+    padding:3px;
+    background:#333;
+
+}
+
+.btn img {
+    width:22px !important;
+    vertical-align:middle;
+}
+
 /*////////////////////////Andres Pages////////////////////////////////////*/
 /*Profile pages (viewProfile and editProfile)*/
 .viewProf {

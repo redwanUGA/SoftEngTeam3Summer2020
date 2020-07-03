@@ -29,6 +29,9 @@
         /// image work
         var book_img=document.getElementById('book_img');
         document.getElementById('book_img').src=getParameterByName('img');
+        document.getElementById('book_title').innerText=getParameterByName('title');
+        document.getElementById('book_author').innerText=getParameterByName('author');
+        document.getElementById('book_price').innerText=getParameterByName('price');
 
         };
 
@@ -98,13 +101,14 @@
                 <img src="#" id="book_img" style="transition-duration:0.5s;" />
             </div>
             <div class="section section_2thirds">
-                <span>Software Engineering</span>
-                <span>Author: SommerVille</span>
-                <span>Publisher: SommerVille</span>
+                <span id="book_title">Software Engineering</span>
+                <span id="book_author">Author: SommerVille</span>
+                <span>Publisher: CS books</span>
                 <span>2015</span>
                 <span>Category: Technology</span>
                 <span>Rateing: 4.5/ 5 </span>
-                <span>$15</span>
+                <span id="book_price">$15</span>
+                <a href="#" class="btn"><img src="images/cart.png" />Add to cart</a>
             </div>
 
         </div><!-- main_content -->
