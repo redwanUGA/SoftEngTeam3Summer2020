@@ -24,7 +24,23 @@
         menu_closed=true;
         }
         };
+
+
+        /// image work
+        var book_img=document.getElementById('book_img');
+        document.getElementById('book_img').src=getParameterByName('img');
+
         };
+
+        function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
     </script>
 </head>
 <body>
@@ -79,7 +95,7 @@
 
             <h1>Software Engineering</h1>
             <div class="section section_third">
-                <img src="images/books/01.jpg" />
+                <img src="#" id="book_img" style="transition-duration:0.5s;" />
             </div>
             <div class="section section_2thirds">
                 <span>Software Engineering</span>
