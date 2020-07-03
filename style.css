@@ -413,11 +413,69 @@ h1 img {
     margin: 3px;
 }
 
-    .field input {
-    }
+.field input {
+}
 
-    .field span {
-        color: #999;
-        font-size: small;
-        display: block;
-    }
+.field span {
+    color: #999;
+    font-size: small;
+    display: block;
+}
+
+    
+/*////////////////////////Andres Pages////////////////////////////////////*/
+/*Profile pages (viewProfile and editProfile)*/
+.viewProf{
+    margin:auto;
+    position:relative;
+    width: 35em;
+    padding: 15px;
+}
+#profileImg{
+    display:block;
+}
+.item{
+    display:inline-block;
+    padding: 20px;
+}
+.item a{
+    text-align:center;
+}
+.headText{
+    vertical-align: bottom;
+    display: inline-block;
+    padding-bottom: 20px;
+    margin: 0;
+    margin-left: 2em;
+    margin-bottom: 2em;
+}
+.headText p {
+    padding-left: .2em;
+    margin: .1em;
+}
+.edit{
+    padding-right: 2em;
+}
+
+/*Center Format*/
+.centerFormat{
+    margin: 20px;
+ }
+.centerFormat p{
+    margin:0;
+}
+.centerFormat a{
+    float: right;
+}
+.centerFormat hr{
+    margin-top: .2em;
+    margin-bottom: .5em;
+}
+.centerFormat input{
+    width:70%;
+    display: inline-block;
+    text-align: left;
+    padding: 0;
+    margin: .2em;
+    color: rgba(10,10,10,0.5);
+}
