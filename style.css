@@ -422,12 +422,44 @@ h1 img {
     display: block;
 }
 
-    
+.section {
+    display:inline-block;
+    vertical-align:top;
+    margin:10px;
+    padding:10px;
+    border:1px dashed #999;
+    border-radius:10px;
+}
+
+.section_third {
+    width: 30%;
+}
+
+
+.section_2thirds {
+    width:65%;
+}
+
+.section span:nth-child(2n+1) {
+    background:#CCC;
+    border-radius:5px;
+}
+
+.section span {
+    display:block;
+    padding:3px;
+    margin:3px;
+}
+
+.section img:first-child {
+    width:98%;
+}
+
 /*////////////////////////Andres Pages////////////////////////////////////*/
 /*Profile pages (viewProfile and editProfile)*/
-.viewProf{
-    margin:auto;
-    position:relative;
+.viewProf {
+    margin: auto;
+    position: relative;
     width: 35em;
     padding: 15px;
 }
