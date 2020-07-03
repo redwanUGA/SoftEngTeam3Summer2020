@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Team3 Bookstore</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <script type="text/javascript">
+        //var search_query=document.getElementById('search_query');
+
+    </script>
+
+    <style>
+      /*CHECKOUT style*/
+      #orderSum{
+	  margin-bottom: 3em;
+      }
+      .content{
+	  margin-left: 10px;
+	  display:inline-block;
+      }
+      .content p{
+	  margin: .2em;
+      }
+      #foot{
+	  text-align: left;
+      }
+      #foot p{
+	  padding: 0;
+	  padding-left: 1em;
+	  margin: .2em;
+      }
+      #total{
+	  text-align: right;
+	  padding: .2em;
+	  padding-right: 1em;
+      }
+      #total h4{
+	  text-align: right;
+      }
+      #checkout{
+	  display: block;
+	  margin: 1em;
+	  margin-left: auto;
+      }
+      .container hr{
+	  margin: .2em;
+	  padding: 0;
+      }
+      .container h4{
+	  text-align:left;
+	  padding: 0;
+      }
+    </style>
+
+</head>
+<body>
+    <div id="div1">
+        <header class="container-fluid">
+
+            <div>
+                <a href="#" id="logo"><img src="images/icons/books-icon.png" alt="team3" /> Team#3 BookStore</a>
+            </div>
+            <div>
+                <form><input type="search" name="search_query" id="search_query" value="Search ..." onclick="this.value='';" /></form>
+            </div>
+
+        </header><!-- container -->
+        <div id="menu">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Browse</a></li>
+                <li>
+                    <a href="#">About</a><ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!--<div id="mobile_button">
+                <img src="images/menu.png" />
+            </div>-->
+        </div>
+        <div id="main_content">
+
+	  	  <form>
+	    <div id="orderSum" class="container">
+	      <hr class="centerFormat">
+	      <h2 class="centerFormat">Order Summary</h2>
+	      <hr class="centerFormat">
+	      <div class="container">
+		<img src="images/icons/books-icon.png" width="100px" length="100px">
+		<div class="content">
+		  <p>Item Description.</p>
+		  <p>$0.00</p>
+		</div>
+	      </div>
+	      <div class="container">
+		<img src="images/icons/books-icon.png" width="100px" length="100px">
+		<div class="content">
+		  <p>Item Description.</p>
+		  <p>$0.00</p>
+		</div>
+	      </div>
+	    </div>
+	    
+	    <div id="foot">
+	      <div class="container">
+		<hr class="centerFormat">
+		<h4 class="centerFormat">Shipping Information</h4>
+		<hr class="centerFormat">
+		<p>Name</p>
+		<p>Address Line 1</p>
+		<p>Address Line 2</p>
+		<p>City, State 00000</p>
+		<p>Country</p>
+	      </div>
+	      <div class="container">
+		<hr class="centerFormat">
+		<h4 class="centerFormat">Payment Information</h4>
+		<hr class="centerFormat">
+		<p>Name</p>
+		<p>Visa ending in 0000</p>
+		<p>expires in 00/0000</p>
+	      </div>
+	      <div id="total" class="container">
+		<h5>Subtotal: $0.00</h5>	
+		<h5>Shipping: $0.00</h5>
+		<h4>Total: $0.00</h4>
+		<input type="button" value="Place Order" id="checkout">
+	      </div>
+	    </div>
+	  </form>
+
+
+        </div><!-- main_content -->
+        <footer>
+            team 3 book store
+        </footer>
+    </div><!-- div1 -->
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>
