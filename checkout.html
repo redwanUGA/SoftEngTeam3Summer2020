@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Team3 Bookstore</title>
+    <title>Checkout</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css" type="text/css" />
@@ -96,6 +96,10 @@
 		<div class="content">
 		  <p>Item Description.</p>
 		  <p>$0.00</p>
+		  <p>
+		  	<button type="button" style=" height: 35px; width:125px" class="btn btn-success">Update Book</button>
+		  	<button type="button" style=" height: 35px; width:125px" class="btn btn-danger">Delete Book</button>
+		  </p>
 		</div>
 	      </div>
 	      <div class="container">
@@ -103,6 +107,10 @@
 		<div class="content">
 		  <p>Item Description.</p>
 		  <p>$0.00</p>
+		  <p>
+		  	<button type="button" style=" height: 35px; width:125px" class="btn btn-success">Update Book</button>
+		  	<button type="button" style=" height: 35px; width:125px" class="btn btn-danger">Delete Book</button>
+		  </p>
 		</div>
 	      </div>
 	    </div>
@@ -117,6 +125,11 @@
 		<p>Address Line 2</p>
 		<p>City, State 00000</p>
 		<p>Country</p>
+		<br>
+		<p>
+		  	<button type="button" style=" height: 30px; width:200px" class="btn btn-success">Enter New address</button>
+		  </p>
+		  <br>
 	      </div>
 	      <div class="container">
 		<hr class="centerFormat">
@@ -125,12 +138,17 @@
 		<p>Name</p>
 		<p>Visa ending in 0000</p>
 		<p>expires in 00/0000</p>
+		  <br>
+			<p>
+		  	<button type="button" style=" height: 30px; width:300px" class="btn btn-success">Enter New Payment details</button>
+		  	</p>
+		  <br>
 	      </div>
 	      <div id="total" class="container">
 		<h5>Subtotal: $0.00</h5>	
 		<h5>Shipping: $0.00</h5>
 		<h4>Total: $0.00</h4>
-		<input type="button" value="Place Order" id="checkout">
+		<input type="button" value="Confirm Order" id="checkout">
 	      </div>
 	    </div>
 	  </form>
