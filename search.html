@@ -14,15 +14,15 @@
         var menu_content=document.getElementById('menu_content');
         var mobile_button=document.getElementById('mobile_button');
         mobile_button.onclick=function(){
-        if(menu_closed) {
-        menu_closed=false;
+            if(menu_closed) {
+                menu_closed=false;
         menu_content.style.display='block';
         menu_content.style.height='70%';
-        } else {
+            } else {
         menu_content.style.display='none';
         menu_content.style.height='0%';
-        menu_closed=true;
-        }
+                menu_closed=true;
+            }
         };
         };
     </script>
@@ -42,25 +42,13 @@
         <div id="menu">
             <ul id="menu_content">
                 <li><a href="#">Home</a></li>
+                <li><a href="#">Browse</a></li>
                 <li>
-                    <a href="#">Categories</a><ul>
-                        <li><a href="#">Classic</a></li>
-                        <li><a href="#">Romance</a></li>
-                        <li><a href="#">Technology</a></li>
+                    <a href="#">About</a><ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About</a></li>
                     </ul>
-                </li>
-                <li>
-                    <a href="#">Browse</a>
-                </li>
-                <li>
-                    <a href="#">Help</a><ul>
-                        <li><a href="#">Support Request</a></li>
-                        <li><a href="#">FAQs</a></li>
-                        <li><a href="#">Advanced Search</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">About</a>
                 </li>
             </ul>
 
@@ -76,61 +64,58 @@
             </div>
         </div>
         <div id="main_content">
+            <h1>Search</h1>
+        <div>
+            <div class="field_label">Title</div>
+            <div class="field"><input type="text" /><span>Enter part of book title</span></div>
+            <div class="field_label">Author</div>
+            <div class="field"><input type="text" /><span>Enter part of author name</span></div>
+            <div class="field_label">Category</div>
+            <div class="field"><select><option>Classic</option><option>Technology</option></select></div>
+            <div class="field_label">ISBN</div>
+            <div class="field"><input type="text" /></div>
+            <div class="field_label">Publisher</div>
+            <div class="field"><input type="text" /><span>Enter part of publisher name</span></div>
+            <div class="field_label">Year</div>
+            <div class="field"><input type="text" size="6" /></div>
+            <div class="field_label">Max. Price</div>
+            <div class="field"><input type="text" size="6" /></div>
+            <div class="field_label"></div>
+            <div class="field"><input type="submit" /></div>
+            </div>
 
-            <h1>Welcome</h1>
 
-            <h2>Featured Books</h2>
-
-            <a class="book" href="#">
+        <div>
+            <h2>Results: 4</h2>
+            <a class="book smaller_books" href="#">
                 <img src="images/books/05.jpg" />
                 <span>Software Engineering</span>
                 <span>SommerVille</span>
                 <span>$15</span>
                 <span>ISBN: 123456987</span>
             </a>
-
-            <a class="book" href="#">
-                <img src="images/books/06.jpg" />
-                <span>Software Engineering</span>
-                <span>SommerVille</span>
-                <span>$15</span>
-                <span>ISBN: 123456987</span>
-            </a>
-
-            <a class="book" href="#">
+            <a class="book smaller_books" href="#">
                 <img src="images/books/03.jpg" />
                 <span>Software Engineering</span>
                 <span>SommerVille</span>
                 <span>$15</span>
                 <span>ISBN: 123456987</span>
             </a>
-
-            <h2>Top Sellers</h2>
-
-            <a class="book" href="#">
+            <a class="book smaller_books" href="#">
                 <img src="images/books/02.jpg" />
                 <span>Software Engineering</span>
                 <span>SommerVille</span>
                 <span>$15</span>
                 <span>ISBN: 123456987</span>
             </a>
-
-            <a class="book" href="#">
-                <img src="images/books/04.jpg" />
-                <span>Software Engineering</span>
-                <span>SommerVille</span>
-                <span>$15</span>
-                <span>ISBN: 123456987</span>
-            </a>
-
-            <a class="book" href="#">
+            <a class="book smaller_books" href="#">
                 <img src="images/books/01.jpg" />
                 <span>Software Engineering</span>
                 <span>SommerVille</span>
                 <span>$15</span>
                 <span>ISBN: 123456987</span>
             </a>
-
+        </div>
         </div><!-- main_content -->
         <footer>
             team 3 book store
