@@ -5,7 +5,7 @@
     <title>Team3 Bookstore</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css" type="text/css" />
+    <link rel="stylesheet" href="../static/style.css" type="text/css" />
     <script type="text/javascript">
         window.onload = initiate;
         function initiate() {
@@ -32,7 +32,7 @@
         <header class="container-fluid">
 
             <div>
-                <a href="#" id="logo"><img src="images/icons/books-icon.png" alt="team3" /> Team#3 BookStore</a>
+                <a href="#" id="logo"><img src="../static/images/icons/books-icon.png" alt="team3" /> Team#3 BookStore</a>
             </div>
             <div>
                 <form><input type="search" name="search_query" id="search_query" value="Search ..." onclick="this.value='';" /></form>
@@ -41,7 +41,7 @@
         </header><!-- container -->
         <div id="menu">
             <ul id="menu_content">
-                <li><a href="index.html">Home</a></li>
+                <li><a href="/">Home</a></li>
                 <li>
                     <a href="#">Categories</a><ul>
                         <li><a href="#">Classic</a></li>
@@ -65,13 +65,13 @@
             </ul>
 
             <div id="mobile_button">
-                <img src="images/menu.png" />
+                <img src="../static/images/menu.png" />
             </div>
             <div id="user_controls">
                 <ul>
-                    <li><a href="cart.html"><img src="images/cart.png" />MY CART</a></li>
-                    <li><a href="login.html"><img src="images/signin.png" />SING IN</a></li>
-                    <li><a href="register.html"><img src="images/signup.png" />SIGN UP</a></li>
+                    <li><a href="/cart"><img src="../static/images/cart.png" />MY CART</a></li>
+                    <li><a href="/login"><img src="../static/images/signin.png" />SING IN</a></li>
+                    <li><a href="/register"><img src="../static/images/signup.png" />SIGN UP</a></li>
                 </ul>
             </div>
         </div>
