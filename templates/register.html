@@ -1,12 +1,12 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>Team3 Bookstore</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-		<link rel="stylesheet" href="/static/style.css" type="text/css" />
-		<script type="text/javascript">
+<head>
+	<meta charset="utf-8">
+	<title>Team3 Bookstore</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+	<link rel="stylesheet" href="/static/style.css" type="text/css" />
+	<script type="text/javascript">
 			window.onload = initiate;
 			function initiate() {
 				//var search_query=document.getElementById('search_query');
@@ -26,174 +26,177 @@
 				};
 			};
 		</script>
-	</head>
-	<body>
-		<div id="div1">
-			<header class="container-fluid">
-				
-				<div>
-					<a href="#" id="logo"><img src="../static/images/icons/books-icon.png" alt="team3" /> Team#3 BookStore</a>
+</head>
+<body>
+<div id="div1">
+	<header class="container-fluid">
+
+		<div>
+			<a href="#" id="logo"><img src="../static/images/icons/books-icon.png" alt="team3" /> Team#3 BookStore</a>
+		</div>
+		<div>
+			<form><input type="search" name="search_query" id="search_query" value="Search ..." onclick="this.value='';" /></form>
+		</div>
+
+	</header><!-- container -->
+	<div id="menu">
+		<ul id="menu_content">
+			<li><a href="/">Home</a></li>
+			<li>
+				<a href="#">Categories</a><ul>
+				<li><a href="#">Classic</a></li>
+				<li><a href="#">Romance</a></li>
+				<li><a href="#">Technology</a></li>
+			</ul>
+			</li>
+			<li>
+				<a href="#">Browse</a>
+			</li>
+			<li>
+				<a href="#">Help</a><ul>
+				<li><a href="#">Support Request</a></li>
+				<li><a href="#">FAQs</a></li>
+				<li><a href="#">Advanced Search</a></li>
+			</ul>
+			</li>
+			<li>
+				<a href="#">About</a>
+			</li>
+		</ul>
+
+		<div id="mobile_button">
+			<img src="../static/images/menu.png" />
+		</div>
+		<div id="user_controls">
+			<ul>
+				<li><a href="/cart"><img src="../static/images/cart.png" />MY CART</a></li>
+				<li><a href="/login"><img src="../static/images/signin.png" />SING IN</a></li>
+				<li><a href="/register"><img src="../static/images/signup.png" />SIGN UP</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="main_content">
+		<div class="viewProf">
+			<div class="head">
+				<div class="item">
+					<img src="../static/images/icons/portrait_icon.png" id="profileImg" alt="profile image" width="150px" length="150px">
+					<a href="#">Add Picture</a>
 				</div>
-				<div>
-					<form><input type="search" name="search_query" id="search_query" value="Search ..." onclick="this.value='';" /></form>
-				</div>
-				
-			</header><!-- container -->
-			<div id="menu">
-				<ul id="menu_content">
-					<li><a href="/">Home</a></li>
-					<li>
-						<a href="#">Categories</a><ul>
-							<li><a href="#">Classic</a></li>
-							<li><a href="#">Romance</a></li>
-							<li><a href="#">Technology</a></li>
-						</ul>
-					</li>
-					<li>
-						<a href="#">Browse</a>
-					</li>
-					<li>
-						<a href="#">Help</a><ul>
-							<li><a href="#">Support Request</a></li>
-							<li><a href="#">FAQs</a></li>
-							<li><a href="#">Advanced Search</a></li>
-						</ul>
-					</li>
-					<li>
-						<a href="#">About</a>
-					</li>
-				</ul>
-				
-				<div id="mobile_button">
-					<img src="../static/images/menu.png" />
-				</div>
-				<div id="user_controls">
-                <ul>
-                    <li><a href="/cart"><img src="../static/images/cart.png" />MY CART</a></li>
-                    <li><a href="/login"><img src="../static/images/signin.png" />SING IN</a></li>
-                    <li><a href="/register"><img src="../static/images/signup.png" />SIGN UP</a></li>
-                </ul>
-            </div>
 			</div>
-			<div id="main_content">
-				<div class="viewProf">
-					<div class="head">
-						<div class="item">
-							<img src="../static/images/icons/portrait_icon.png" id="profileImg" alt="profile image" width="150px" length="150px">
-							<a href="#">Add Picture</a>
+			<h2> Register User </h2>
+			<form action="{{ url_for('register_data') }}" method="post">
+				<div class="centerFormat">
+					<div class="form-group">
+						<label>First Name*</label>
+						<input type="text" name="firstname" value="First Name" required />
+
+						<label>Last Name*</label>
+						<input type="text" name="lastname" value="Last Name" required />
+					</div>
+					<div class="form-check">
+						<h5 class="form-check-label">Gender*</h5>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="genderoptions" value="Male">
+							<label class="form-check-label">
+								Male
+							</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="genderoptions" value="Female">
+							<label class="form-check-label">
+								Female
+							</label>
 						</div>
 					</div>
-					<h2> Register User </h2>
-					<form>
-						<div class="centerFormat">
-							<div class="form-group">
-								<label>First Name*</label>
-								<input type="text" value="First Name" required />
-								
-								<label>Last Name*</label>
-								<input type="text" value="Last Name" required />
-							</div>
-							<div class="form-check">
-								<h5 class="form-check-label">Gender*</h5>
-								<div class="form-check">
-									<input class="form-check-input" type="radio">
-									<label class="form-check-label">
-										Male
-									</label>
-								</div>
-								<div class="form-check">
-									<input class="form-check-input" type="radio">
-									<label class="form-check-label">
-										Female
-									</label>
-								</div>
-							</div>
-							
-							<div class="form-group">
-								<label>Email ID*</label>
-								<input type="email" value="Enter your email ID" required />
-							</div>
-							<div class="form-group form-group-inline">
-								<label>Phone Number*</label>
-								<select>
-									<option>+1</option>
-									<option>+91</option>
-									<option>+67</option>
-									<option>+4</option>
-								</select>
-								<input type="text" name="" required />
-							</div>
-							
-							<div class="form-group">
-								<h5> Address Info (Optional) </h5>
-								<label for="inputAddress">Street Address</label>
-								<input type="text" class="form-control" id="inputAddress" placeholder="100 Rogers Road">
-							</div>
-							<div class="form-group">
-								<label for="inputAddress2">Apt</label>
-								<input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
-							</div>
-							<div class="form-group">
-								<div class="form-group col-md-6">
-									<label for="inputCity">City</label>
-									<input type="text" class="form-control" id="inputCity">
-								</div>
-								<div class="form-group col-md-6">
-									<label for="inputState">State</label>
-									<select id="inputState" class="form-control">
-										<option selected>Choose...</option>
-										<option>GA</option>
-										<option>...</option>
-									</select>
-								</div>
-								<div class="form-group col-md-6">
-									<label for="inputZip">Zip</label>
-									<input type="text" class="form-control" id="inputZip">
-								</div>
-							</div>
-							
-							<div class="form-group">
-								<h5> Payment Info  (Optional)</h5>
-								<label for="inputAddress">Name on Card</label>
-								<input type="text" class="form-control" id="inputAddress" placeholder="Name on Card">
-							</div>
-							<div class="form-group">
-								<label for="inputAddress2">Card Number</label>
-								<input type="text" class="form-control" id="inputAddress2" placeholder="XXXX-XXXX-XXXX-XXXX">
-							</div>
-							<div class="form-group">
-								<div class="form-group col-md-6">
-									<label for="inputCity">CVV</label>
-									<input type="text" class="form-control" id="inputCity">
-								</div>
-								<div class="form-group col-md-6">
-									<label for="inputZip">Exp Date</label>
-									<input type="date" class="form-control" id="inputZip">
-								</div>
-								<div class="form-group col-md-6">
-									<label for="inputZip">Zip</label>
-									<input type="text" class="form-control" id="inputZip">
-								</div>
-							</div>
-							
-							
-							</div>
-							<br>
-						* required fields.
-						<br />
-							<br>
-							<input type="button" value="Submit">
+
+					<div class="form-group">
+						<label>Email ID*</label>
+						<input type="email" name="emailid" value="Enter your email ID" required />
 					</div>
-				</form>
-				
-			</div><!-- main_content -->
-			<footer>
-				team 3 book store
-			</footer>
-		</div><!-- div1 -->
-		
-		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-	</body>
+					<div class="form-group">
+						<label>Password*</label>
+						<input type="password" name="password" value="Enter your password" required />
+					</div>
+					<div class="form-group form-group-inline">
+						<label>Phone Number*</label>
+						<select name="phonenumbercountry">
+							<option value="+1">+1</option>
+							<option value="+91">+91</option>
+							<option value="+67">+67</option>
+							<option value="+4">+4</option>
+						</select>
+						<input type="text" name="mainphonenumber" required />
+					</div>
+
+					<div class="form-group">
+						<h5> Address Info (Optional) </h5>
+						<label for="streetaddress">Street Address</label>
+						<input type="text" class="form-control" name="streetaddress", id="streetaddress" placeholder="Enter Street Address">
+					</div>
+					<div class="form-group">
+						<label for="aptno">Apt</label>
+						<input type="text" class="form-control" name="aptno" id="aptno" placeholder="Apartment, studio, or floor">
+					</div>
+					<div class="form-group">
+						<div class="form-group col-md-6">
+							<label for="inputCity">City</label>
+							<input type="text" class="form-control" name="inputCity" id="inputCity">
+						</div>
+						<div class="form-group col-md-6">
+							<label for="inputState">State</label>
+							<select name="inputState" class="form-control" id="inputState">
+								<option value="Choose..." selected>Choose...</option>
+								<option value="GA">GA</option>
+								<option value="Others">Others</option>
+							</select>
+						</div>
+						<div class="form-group col-md-6">
+							<label for="inputZip">Zip</label>
+							<input type="text" class="form-control" name="inputZip">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<h5> Payment Info  (Optional)</h5>
+						<label for="nameoncard">Name on Card</label>
+						<input type="text" class="form-control" id="nameoncard" name="nameoncard" placeholder="Name on Card">
+					</div>
+					<div class="form-group">
+						<label for="cardno">Card Number</label>
+						<input type="text" class="form-control" id="cardno" name="cardno" placeholder="XXXX-XXXX-XXXX-XXXX">
+					</div>
+					<div class="form-group">
+						<div class="form-group col-md-6">
+							<label for="CVV">CVV</label>
+							<input type="text" class="form-control" id="CVV" name="CVV">
+						</div>
+						<div class="form-group col-md-6">
+							<label for="expdate">Exp Date</label>
+							<input type="date" class="form-control" id="expdate" name="expdate">
+						</div>
+						<div class="form-group col-md-6">
+							<label for="cardzip">Zip</label>
+							<input type="text" class="form-control" id="cardzip" name="cardzip">
+						</div>
+					</div>
+
+
+				</div>
+				<br>
+				* required fields.
+				<br />
+				<br>
+				<input type="submit" value="Submit">
+		</form>
+
+	</div><!-- main_content -->
+	<footer>
+		team 3 book store
+	</footer>
+</div><!-- div1 -->
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
 </html>
