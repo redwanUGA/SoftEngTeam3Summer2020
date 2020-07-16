@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, escape
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_mysqldb import MySQL
 from random import randint
@@ -10,7 +10,7 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '12341234'
 app.config['MYSQL_DB'] = 'bookstore'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-
+app.config['SECRET_KEY'] = 'thisissecret'
 mysql = MySQL(app)
 
 
@@ -91,13 +91,13 @@ def login_action():
     results = cur.fetchall()
 
     if len(results) == 0:
-        #do something for invalid email password
-        pass
+        flash('Invalid Email or Password')
+        return redirect(url_for('login'))
     else:
-        #do something for valid email password
+        flash('You are Logged in as %s' % val_email)
+        return redirect(url_for('index'))
         pass
 
-    return redirect(url_for('index'))
 
 
 

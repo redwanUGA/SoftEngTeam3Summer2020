@@ -21,6 +21,16 @@
 		<div id="main_content">
 
             <h1>Welcome</h1>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul class='text-success'>
+                {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+             </ul>
+            {% endif %}
+            {% endwith %}
+
 
             <h2>Featured Books</h2>
 

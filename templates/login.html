@@ -74,6 +74,16 @@
                 }
             </style>
 
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul class='text-danger'>
+                {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+             </ul>
+            {% endif %}
+            {% endwith %}
+
             <div id="login">
                 <form action="{{ url_for('login_action') }}" method="post">
                     <div class="container">
