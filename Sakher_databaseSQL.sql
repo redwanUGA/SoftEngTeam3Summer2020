@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`Users` (
   `Subscription` TINYINT NULL,
   `active` TINYINT NOT NULL,
   `activationKey` INT NOT NULL,
+  `suspended` INT NOT NULL,
   PRIMARY KEY (`userID`));
 
 
