@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Team3 Bookstore</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <script type="text/javascript">
+        window.onload = initiate;
+        function initiate() {
+        //var search_query=document.getElementById('search_query');
+        var menu_closed=true;
+        var menu_content=document.getElementById('menu_content');
+        var mobile_button=document.getElementById('mobile_button');
+        mobile_button.onclick=function(){
+        if(menu_closed) {
+        menu_closed=false;
+        menu_content.style.display='block';
+        menu_content.style.height='70%';
+        } else {
+        menu_content.style.display='none';
+        menu_content.style.height='0%';
+        menu_closed=true;
+        }
+        };
+        };
+    </script>
+</head>
+<body>
+    <div id="div1">
+        <header class="container-fluid">
+
+            <div>
+                <a href="#" id="logo"><img src="images/icons/books-icon.png" alt="team3" /> Team#3 BookStore</a>
+            </div>
+            <div>
+                <form><input type="search" name="search_query" id="search_query" value="Search ..." onclick="this.value='';" /></form>
+            </div>
+
+        </header><!-- container -->
+        <div id="menu">
+            <ul id="menu_content">
+                <li><a href="index.html">Home</a></li>
+                <li>
+                    <a href="#">Categories</a><ul>
+                        <li><a href="#">Classic</a></li>
+                        <li><a href="#">Romance</a></li>
+                        <li><a href="#">Technology</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">Browse</a>
+                </li>
+                <li>
+                    <a href="#">Help</a><ul>
+                        <li><a href="#">Support Request</a></li>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="search.html">Advanced Search</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">About</a>
+                </li>
+            </ul>
+
+            <div id="mobile_button">
+                <img src="images/menu.png" />
+            </div>
+            <div id="user_controls">
+                <ul>
+                    <li><a href="cart.html"><img src="images/cart.png" />MY CART</a></li>
+                    <li><a href="login.html"><img src="images/signin.png" />SING IN</a></li>
+                    <li><a href="register.html"><img src="images/signup.png" />SIGN UP</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="main_content">
+
+            <h1><img src="images/books_icon.png" />Manage Books</h1>
+
+
+            <div style="border-radius:5px;border:1px dashed #999;margin:5px;padding:5px;transition-duration:2s;display:none;" id="add_book">
+                <h1>Add Book</h1>
+                <table>
+                    <tr><td>Title</td><td><input type="text" /></td>        <td>Author</td><td><input type="text" /></td></tr>
+                    <tr><td>Category</td><td><input type="text" /></td>     <td>ISBN</td><td><input type="text" /></td></tr>
+                    <tr><td>Edition</td><td><input type="text" /></td>      <td>Publisher</td><td><input type="text" /></td></tr>
+                    <tr><td>Year</td><td><input type="text" /></td>             <td>Buying Price</td><td><input type="text" /></td></tr>
+                    <tr><td>Selling Price</td><td><input type="text" /></td>             <td>Upload Cover</td><td><input type="file" /></td></tr>
+                    <tr><td></td><td><input type="submit" /></td>             <td></td><td></td></tr>
+                </table>
+            </div>
+            <div id="admin">
+                Quick Search <input type="text" value="Title, Author or ISBN" /> | <a href="#" onclick="document.getElementById('add_book').style.display='block';">[ Add Book ]</a>
+                <table>
+                    <tr>
+                        <td>Cover</td>
+                        <td>Title</td>
+                        <td>Author</td>
+                        <td>Category</td>
+                        <td>ISBN</td>
+                        <td>Edition</td>
+                        <td>Publisher</td>
+                        <td>Year</td>
+                        <td>In Stock</td>
+                        <td>Threshold</td>
+                        <td>Buying Price</td>
+                        <td>Selling Price</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><img src="images/books/05.jpg" /></td>
+                        <td>Software Engineering</td>
+                        <td>SommerVille</td>
+                        <td>Computer Science</td>
+                        <td>123456987</td>
+                        <td>10</td>
+                        <td>SommerVille</td>
+                        <td>2015</td>
+                        <td>5</td>
+                        <td>3</td>
+                        <td>$12</td>
+                        <td>$15</td>
+                        <td>
+                            <a href="#"><img src="images/update_icon.png" />Update</a>
+                            <a href="#"><img src="images/delete_icon.png" />Delete</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="images/books/03.jpg" /></td>
+                        <td>Software Engineering</td>
+                        <td>SommerVille</td>
+                        <td>Computer Science</td>
+                        <td>123456987</td>
+                        <td>10</td>
+                        <td>SommerVille</td>
+                        <td>2015</td>
+                        <td>5</td>
+                        <td>3</td>
+                        <td>$12</td>
+                        <td>$15</td>
+                        <td>
+                            <a href="#"><img src="images/update_icon.png" />Update</a>
+                            <a href="#"><img src="images/delete_icon.png" />Delete</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="images/books/04.jpg" /></td>
+                        <td>Software Engineering</td>
+                        <td>SommerVille</td>
+                        <td>Computer Science</td>
+                        <td>123456987</td>
+                        <td>10</td>
+                        <td>SommerVille</td>
+                        <td>2015</td>
+                        <td>5</td>
+                        <td>3</td>
+                        <td>$12</td>
+                        <td>$15</td>
+                        <td>
+                            <a href="#"><img src="images/update_icon.png" />Update</a>
+                            <a href="#"><img src="images/delete_icon.png" />Delete</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="images/books/06.jpg" /></td>
+                        <td>Software Engineering</td>
+                        <td>SommerVille</td>
+                        <td>Computer Science</td>
+                        <td>123456987</td>
+                        <td>10</td>
+                        <td>SommerVille</td>
+                        <td>2015</td>
+                        <td>5</td>
+                        <td>3</td>
+                        <td>$12</td>
+                        <td>$15</td>
+                        <td>
+                            <a href="#"><img src="images/update_icon.png" />Update</a>
+                            <a href="#"><img src="images/delete_icon.png" />Delete</a>
+                        </td>
+                    </tr>
+                </table>
+                <a href="#">Next page > </a>
+            </div>
+        </div><!-- main_content -->
+        <footer>
+            team 3 book store
+        </footer>
+    </div><!-- div1 -->
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>
