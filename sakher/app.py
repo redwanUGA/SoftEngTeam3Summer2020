@@ -10,6 +10,8 @@ from flask_mysqldb import MySQL
 
 from flask_mail import Mail, Message
 
+import re
+
 app = Flask(__name__, static_url_path='/static')
 
 app.config['MYSQL_HOST'] = 'localhost'
@@ -131,7 +133,7 @@ template_footer = '''  </div><!-- main_content -->
 @app.route('/register', methods=('GET', 'POST'))
 def register():
 
-    email = 'sakher.x@gmail.com'
+    email = 'sakher.x@gmail'
     password =  ''
     fname =  'sakher'
     lname =  'qaaidi'
@@ -152,6 +154,8 @@ def register():
     yr='2030'
     visa=''
     mastercard=''
+    csv=''
+    cctype=''
 
 
 
@@ -170,59 +174,137 @@ def register():
         cc = request.form['cc']
         mnth = request.form['mnth']
         yr = request.form['yr']
+        csv = request.form['csv']
+        if len(csv)<1 :
+            csv=None
+        visa=''
+        mastercard=request.form['cctype']
         if request.form['cctype'] == 'visa':
             visa='Selected'
+            cctype='visa'
         else:
             mastercard='Selected'
+            cctype='mastercard'
 
         if not request.form['subscribe']:
             subscribe = 0
         else:
             subscribe = 1
-        if len(password)<0: ######################### change it to 8
-            msg='Password should be 8 digits at least'
+        if len(password)<8: ######################### change it to 8
+            msg+='Password should be 8 digits at least'
+        if len(fname)<1:
+            msg+='You should provide a first name'
+        if len(lname)<1:
+            msg+='You should provide a last name'
+        if bool(re.search(r"^[\w\.\+\-]+\@[\w]+\.[a-z]{2,3}$", email)) == False:
+            msg+='You should provide a valid email'
 
-        ######################################### encrypt the Password here
         ####################### activationKey
-        try:
-            cur = mysql.connection.cursor()
-            #cur.execute("INSERT INTO MyUsers(firstName, lastName) VALUES (%s, %s)", (firstName, lastName))
-            cur.execute('''INSERT INTO `users`
-            (`firstName`,
-`lastName`,
-`password`,
-`email`,
-`phone`,
-`userTypeID`,
-`Subscription`,
-`active`,
-`activationKey`
-) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)''',(
-fname,
-lname,
-password,
-email,
-phone,
-2,
-subscribe,
-0,
-activationKey));
 
-            mysql.connection.commit()
-            userid=cur.lastrowid
-            cur.close()
-        except Exception as e:
-            msg='Error, please try again later<br />'+str(e)
-        finally:
-            cur.close()
+        if len(msg)<1:
+            try:
+                cur = mysql.connection.cursor()
+                #cur.execute("INSERT INTO MyUsers(firstName, lastName) VALUES (%s, %s)", (firstName, lastName))
+                cur.execute('''INSERT INTO `users`
+                (`firstName`,
+    `lastName`,
+    `password`,
+    `email`,
+    `phone`,
+    `userTypeID`,
+    `Subscription`,
+    `active`,
+    `activationKey`,
+    `suspended`
+    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)''',(
+    fname,
+    lname,
+    generate_password_hash(password),
+    email,
+    phone,
+    2,
+    subscribe,
+    0,
+    activationKey,0));
+
+                mysql.connection.commit()
+                userid=cur.lastrowid
+                cur.close()
+            except Exception as e:
+                msg+='Error, please try again later<br />'+str(e)
+            finally:
+                cur.close()
+
+            if len(address) > 0:
+                try:
+                    cur = mysql.connection.cursor()
+                    cur.execute('''INSERT INTO `Address`
+                
+    (
+    `name`,
+    `street`,
+    `street2`,
+    `zipCode`,
+    `city`,
+    `state`,
+    `country`,
+    `AddressType`,
+    `userID`)
+
+     VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)''',(
+        address,
+        address,
+        address,
+        zip_code,
+        city,
+        state,
+        country,
+        'Ship',
+        userid));
+
+                    mysql.connection.commit()
+                    cur.close()
+                except Exception as e:
+                    msg+='Error in address, please try again later<br />'+str(e)
+                finally:
+                    cur.close()
+
+            if len(cc)>0:
+                try:
+                    cur = mysql.connection.cursor()
+                    #cur.execute("INSERT INTO MyUsers(firstName, lastName) VALUES (%s, %s)", (firstName, lastName))
+                    cur.execute('''INSERT INTO `payment`
+            
+        (`cardNumber`,
+        `expiryYear`,
+        `expiryMonth`,
+        `securityCode`,
+        `paymentType`,
+        `UserID`
+
+        ) VALUES (%s,%s,%s,%s,%s,%s)''',(
+        generate_password_hash(cc),
+        mnth,
+        yr,
+        csv,
+        cctype,
+        userid));
+
+                    mysql.connection.commit()
+                    cur.close()
+                except Exception as e:
+                    msg+='Error payment, please try again later<br />'+str(e)
+                finally:
+                    cur.close()
+        
 
         if len(msg)>0:
             msg='<div class="msg">'+msg+'</div>'
         else:
             try:
                 msgg = Message("Team3 Book Store",sender="t3@myw.urq.mybluehost.me",recipients=[email])
-                msgg.body ="Thank you for registering, please activate your account by visiting this url http://127.0.0.1:5000/activate/?id="+str(userid)+"&key="+str(activationKey)
-                mail.send(msgg)
+                msgg.body ="Thank you for registering, to activate your account you have to enter the following code when logging in : "+activationKey
+                #mail.send(msgg)
             except Exception as e:
                 msg = str(e) ################### change to nothing
             return redirect('/confirmation')
@@ -266,10 +348,12 @@ activationKey));
     <div class="field_label">City</div>
     <div class="field"><input type="text" name="city" value="'''+city+'''" /></div>
     <div class="field_label">State</div>
-    <div class="field"><input type="text" name="state" value="'''+state+'''" /></div>
+    <div class="field"><input type="text" name="state" size="4" value="'''+state+'''" />
+    <span>Enter 2 characters state, ex: GA</span>
+    </div>
     
     <div class="field_label">Zip code</div>
-    <div class="field"><input type="text" name="zip" value="'''+zip_code+'''" /></div>
+    <div class="field"><input type="text" name="zip_code" value="'''+zip_code+'''" /></div>
 
     <div class="field_label">Country</div>
     <div class="field"><input type="text" name="country" value="'''+country+'''" />
@@ -280,12 +364,21 @@ activationKey));
     <div class="field_label">Credit Card Number</div>
     <div class="field"><input type="text" name="cc" value="'''+cc+'''" /></div>
     <div class="field_label">Expiry month</div>
-    <div class="field"><input type="text" name="mnth" size="4" value="'''+mnth+'''" /></div>
+    <div class="field"><input type="text" name="mnth" size="4" value="'''+mnth+'''" />
+    <span>Enter 2 digits month, ex: 12</span>
+    </div>
     <div class="field_label">Expiry year</div>
-    <div class="field"><input type="text" name="yr" size="6" value="'''+yr+'''" /></div>
+    <div class="field"><input type="text" name="yr" size="4" value="'''+yr+'''" />
+    <span>Enter 4 digits year, ex: 2030</span>
+    </div>
+    <div class="field_label">CSV code</div>
+    <div class="field"><input type="text" name="csv" size="4" value="'''+csv+'''" />
+    <span>On the back of the card</span>
+    </div>
+    
     <div class="field_label">Card Type</div>
     <div class="field"><select name="cctype"><option value="visa" '''+visa+'''>Visa</option><option value="mastercard" '''+mastercard+'''>Mastercard</option></select></div>
-
+    
     <div class="field_label"></div>
     <div class="field">* Required fields <br /><input type="submit" text="Register" onclick=" if( document.getElementById(\'password1\').value != document.getElementById(\'password2\').value ) { alert(\'Passwords do not match!\'); return false; }" /></div>
 
