@@ -98,6 +98,13 @@ def login_action():
         return redirect(url_for('index'))
         pass
 
+
+#---------------------------------------|
+#     Start of Edit and View Profile    |
+#---------------------------------------|
+# -additonally the pages, viewprofile   |
+#  and editprofile html were modified   |
+#---------------------------------------|
 @app.route('/view_profile', methods = ['GET', 'POST'])
 def view_profile():
     cur = mysql.connection.cursor()
@@ -185,7 +192,10 @@ def editProfileData():
         cur.execute(check)
         res = cur.fetchall()
         if(len(res) == 0):
-            query = "INSERT INTO Bookstore.Address (idAddress, name, street, street2, zipCode, city, state, country, userID) VALUES (%s, \'%s\', \'%s\', \'%s\', %s, \'%s\', \'%s\', \'%s\', %s)" % (randint(0,999999),address[0], address[1], address[2], address[5], address[3], address[4], address[6], userID)
+            query = "INSERT INTO Bookstore.Address (idAddress, name, street, street2, zipCode, city,"\
+                " state, country, userID) VALUES (%s, \'%s\', \'%s\', \'%s\', %s, \'%s\', \'%s\', \'%s\', %s)"\
+                % (randint(0,999999),address[0], address[1], address[2], address[5], address[3], address[4], address[6], userID)
+
             cur.execute(query)
             mysql.connection.commit()
         else:
@@ -222,6 +232,10 @@ def editProfileData():
             cur.execute(query)
             mysql.connection.commit()
     return redirect(url_for('view_profile'))
+
+#---------------------------------------|
+#     END of Edit and View Profile      |
+#---------------------------------------|
 
 if __name__ == '__main__':
     app.run(debug=True)
