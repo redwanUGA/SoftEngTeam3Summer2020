@@ -304,7 +304,7 @@ def register():
             try:
                 msgg = Message("Team3 Book Store",sender="t3@myw.urq.mybluehost.me",recipients=[email])
                 msgg.body ="Thank you for registering, to activate your account you have to enter the following code when logging in : "+activationKey
-                #mail.send(msgg)
+                mail.send(msgg)
             except Exception as e:
                 msg = str(e) ################### change to nothing
             return redirect('/confirmation')
