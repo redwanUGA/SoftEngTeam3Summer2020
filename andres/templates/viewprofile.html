@@ -1,0 +1,66 @@
+﻿{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% block head_header %}
+		{{ super() }}
+	{% endblock %}
+	<title> Add Promo </title>
+</head>
+<body>
+	<div id="div1">
+		{% block body_header %}
+			{{ super() }}
+		{% endblock %}<!-- container -->
+
+		{% block menu_content %}
+			{{ super() }}
+		{% endblock %}<!-- container -->
+
+		{% block main_content %}
+		<div id="main_content">
+			<div class="viewProf">
+				<div class="head">
+					<div class="item">
+						<img src="../static/images/icons/portrait_icon.png" id="profileImg" alt="profile image" width="225px" length="225px">
+					</div>
+					<div class="headText">
+						<h1>{{user.firstName}} {{user.lastName}}</h1>
+						<p>{{user.email}}</p>
+						<p>{{user.phone}}</p>
+					</div>
+				</div>
+				<div class="centerFormat">
+					<div class="centerFormat">
+						<hr>
+						<h2>Shipping Address</h2>
+						<hr>
+						<p>{{addy.name}}</p>
+						<p>{{addy.street}}</p>
+						<p>{{addy.street2}}</p>
+						<p>{{addy.city}} {{addy.state}} {{addy.zipCode}}</p>
+						<p>{{addy.country}}</p>
+					</div>
+					<div class="centerFormat">
+						<hr>
+						<h2>Payment Information</h2>
+						<hr>
+						<p>{{pay.name}}</p>
+						<p>{{pay.cardNumber}}</p>
+						<p>{{pay.expirationDate}}</p>
+					</div>
+					<a href="edit_profile" class="edit">Edit Profile</a>
+				</div>
+			</div>
+		</div>
+		{% endblock %}<!-- main_content -->
+		{% block footer %}
+			{{ super() }}
+		{% endblock %}
+	</div><!-- div1 -->
+		{% block scripts %}
+			{{ super() }}
+		{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+﻿{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% block head_header %}
+		{{ super() }}
+	{% endblock %}
+	<title> Add Promo </title>
+</head>
+<body>
+	<div id="div1">
+		{% block body_header %}
+			{{ super() }}
+		{% endblock %}<!-- container -->
+
+		{% block menu_content %}
+			{{ super() }}
+		{% endblock %}<!-- container -->
+
+		{% block main_content %}
+		<div id="main_content">
+
+            <h1>Welcome</h1>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul class='text-success'>
+                {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+             </ul>
+            {% endif %}
+            {% endwith %}
+
+
+            <h2>Featured Books</h2>
+
+            <a class="book" href="/book/1">
+                <img src="{{ url_for('static', filename='images/books/05.jpg') }}" />
+                <span>Software Engineering</span>
+                <span>SommerVille</span>
+                <span>$15</span>
+                <span>ISBN: 123456987</span>
+            </a>
+
+            <a class="book" href="/book/2">
+                <img src="../static/images/books/06.jpg" />
+                <span>Computer Networks</span>
+                <span>Andrew S. Tanenbaum</span>
+                <span>$25</span>
+                <span>ISBN: 123456987</span>
+            </a>
+
+            <a class="book" href="/book/3">
+                <img src="../static/images/books/03.jpg" />
+                <span>C How to program</span>
+                <span>Dietel</span>
+                <span>$40</span>
+                <span>ISBN: 123456987</span>
+            </a>
+
+            <h2>Top Sellers</h2>
+
+            <a class="book" href="/book/4">
+                <img src="../static/images/books/02.jpg" />
+                <span>Data Mining</span>
+                <span>Vipin Kumar</span>
+                <span>$50</span>
+                <span>ISBN: 123456987</span>
+            </a>
+
+            <a class="book" href="/book/5">
+                <img src="../static/images/books/04.jpg" />
+                <span>Operating Systems</span>
+                <span>Greg Gagne</span>
+                <span>$18</span>
+                <span>ISBN: 123456987</span>
+            </a>
+
+            <a class="book" href="/book/6">
+                <img src="../static/images/books/01.jpg" />
+                <span>Rome History</span>
+                <span>John Smith</span>
+                <span>$15</span>
+                <span>ISBN: 123456987</span>
+            </a>
+
+        </div>
+		{% endblock %}<!-- main_content -->
+		{% block footer %}
+			{{ super() }}
+		{% endblock %}
+	</div><!-- div1 -->
+		{% block scripts %}
+			{{ super() }}
+		{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,141 @@
+﻿{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% block head_header %}
+		{{ super() }}
+	{% endblock %}
+	<title> Add Promo </title>
+</head>
+<body>
+	<div id="div1">
+		{% block body_header %}
+			{{ super() }}
+		{% endblock %}<!-- container -->
+
+		{% block menu_content %}
+			{{ super() }}
+		{% endblock %}<!-- container -->
+
+		{% block main_content %}
+		<div id="main_content">
+
+            <h1><img src="../static/images/books_icon.png" />Manage Books</h1>
+
+
+            <div style="border-radius:5px;border:1px dashed #999;margin:5px;padding:5px;transition-duration:2s;display:none;" id="add_book">
+                <h1>Add Book</h1>
+                <table>
+                    <tr><td>Title</td><td><input type="text" /></td>        <td>Author</td><td><input type="text" /></td></tr>
+                    <tr><td>Category</td><td><input type="text" /></td>     <td>ISBN</td><td><input type="text" /></td></tr>
+                    <tr><td>Edition</td><td><input type="text" /></td>      <td>Publisher</td><td><input type="text" /></td></tr>
+                    <tr><td>Year</td><td><input type="text" /></td>             <td>Buying Price</td><td><input type="text" /></td></tr>
+                    <tr><td>Selling Price</td><td><input type="text" /></td>             <td>Upload Cover</td><td><input type="file" /></td></tr>
+                    <tr><td></td><td><input type="submit" /></td>             <td></td><td></td></tr>
+                </table>
+            </div>
+            <div id="admin">
+                Quick Search <input type="text" value="Title, Author or ISBN" /> | <a href="#" onclick="document.getElementById('add_book').style.display='block';">[ Add Book ]</a>
+                <table>
+                    <tr>
+                        <td>Cover</td>
+                        <td>Title</td>
+                        <td>Author</td>
+                        <td>Category</td>
+                        <td>ISBN</td>
+                        <td>Edition</td>
+                        <td>Publisher</td>
+                        <td>Year</td>
+                        <td>In Stock</td>
+                        <td>Threshold</td>
+                        <td>Buying Price</td>
+                        <td>Selling Price</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><img src="images/books/05.jpg" /></td>
+                        <td>Software Engineering</td>
+                        <td>SommerVille</td>
+                        <td>Computer Science</td>
+                        <td>123456987</td>
+                        <td>10</td>
+                        <td>SommerVille</td>
+                        <td>2015</td>
+                        <td>5</td>
+                        <td>3</td>
+                        <td>$12</td>
+                        <td>$15</td>
+                        <td>
+                            <a href="#"><img src="../static/images/update_icon.png" />Update</a>
+                            <a href="#"><img src="../static/images/delete_icon.png" />Delete</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="../static/images/books/03.jpg" /></td>
+                        <td>Software Engineering</td>
+                        <td>SommerVille</td>
+                        <td>Computer Science</td>
+                        <td>123456987</td>
+                        <td>10</td>
+                        <td>SommerVille</td>
+                        <td>2015</td>
+                        <td>5</td>
+                        <td>3</td>
+                        <td>$12</td>
+                        <td>$15</td>
+                        <td>
+                            <a href="#"><img src="../static/images/update_icon.png" />Update</a>
+                            <a href="#"><img src="../static/images/delete_icon.png" />Delete</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="images/books/04.jpg" /></td>
+                        <td>Software Engineering</td>
+                        <td>SommerVille</td>
+                        <td>Computer Science</td>
+                        <td>123456987</td>
+                        <td>10</td>
+                        <td>SommerVille</td>
+                        <td>2015</td>
+                        <td>5</td>
+                        <td>3</td>
+                        <td>$12</td>
+                        <td>$15</td>
+                        <td>
+                            <a href="#"><img src="../static/images/update_icon.png" />Update</a>
+                            <a href="#"><img src="../static/images/delete_icon.png" />Delete</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="../static/images/books/06.jpg" /></td>
+                        <td>Software Engineering</td>
+                        <td>SommerVille</td>
+                        <td>Computer Science</td>
+                        <td>123456987</td>
+                        <td>10</td>
+                        <td>SommerVille</td>
+                        <td>2015</td>
+                        <td>5</td>
+                        <td>3</td>
+                        <td>$12</td>
+                        <td>$15</td>
+                        <td>
+                            <a href="#"><img src="../static/images/update_icon.png" />Update</a>
+                            <a href="#"><img src="../static/images/delete_icon.png" />Delete</a>
+                        </td>
+                    </tr>
+                </table>
+                <a href="#">Next page > </a>
+            </div>
+        </div>
+		{% endblock %}<!-- main_content -->
+		{% block footer %}
+			{{ super() }}
+		{% endblock %}
+	</div><!-- div1 -->
+		{% block scripts %}
+			{{ super() }}
+		{% endblock %}
+
+</body>
+</html>
