@@ -199,6 +199,7 @@ def register():
         if bool(re.search(r"^[\w\.\+\-]+\@[\w]+\.[a-z]{2,3}$", email)) == False:
             msg+='You should provide a valid email'
 
+        email = email.lower()
         ####################### activationKey
 
         if len(msg)<1:
@@ -448,7 +449,7 @@ def index():
 def confirmation():
     page_content = '''
 
-            <div class="msg">Account has been created, please activate it using the link from the email that was sent to you.</div>
+            <div class="msg">Account has been created, please activate it using the code that was sent to your email.</div>
             ''' #page_content
 
     return template_head+'Confirmation'+template_body+page_content+template_footer
