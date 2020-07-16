@@ -453,3 +453,6 @@ def confirmation():
             ''' #page_content
 
     return template_head+'Confirmation'+template_body+page_content+template_footer
+    
+if __name__=='__main__':
+    app.run()
