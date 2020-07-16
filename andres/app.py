@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '12341234'
-app.config['MYSQL_DB'] = 'bookstore'
+app.config['MYSQL_DB'] = 'Bookstore'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 app.config['SECRET_KEY'] = 'thisissecret'
 mysql = MySQL(app)
@@ -71,7 +71,7 @@ def register_data():
     val_password = request.form['password']
     val_email = request.form['emailid']
     val_phone = 470394
-    sqlstatement = "INSERT INTO `bookstore`.`users` " \
+    sqlstatement = "INSERT INTO `Bookstore`.`Users` " \
                    "(`userID`, `firstName`, `lastName`, `password`, `email`, `phone`, `userTypeID`, `Subscription`)" \
                    'VALUES ( %d, \'%s\', \'%s\', \'%s\', \'%s\', %d, 1, 1 ) ;' \
                    % (val_userID, val_firstName, val_lastName, val_password, val_email, val_phone)
@@ -84,7 +84,7 @@ def login_action():
     cur = mysql.connection.cursor()
     val_email = request.form['email']
     val_password = request.form['psw']
-    querystatement = "SELECT email, password FROM `bookstore`.`users`" \
+    querystatement = "SELECT email, password FROM `Bookstore`.`Users`" \
                      "where email=\'%s\' AND password=\'%s\'" \
                      % (val_email, val_password)
     cur.execute(querystatement)
@@ -106,7 +106,7 @@ def view_profile():
     #assuming we are logged in as email@email.com
     val_email = "email@email.com"
 
-    query = "SELECT userID, firstName, lastName, email, phone, Subscription FROM `bookstore`.`users`" \
+    query = "SELECT userID, firstName, lastName, email, phone, Subscription FROM `Bookstore`.`Users`" \
                      "where email=\'%s\'" \
                      % (val_email)
     cur.execute(query)
@@ -114,11 +114,11 @@ def view_profile():
     
     userID = results[0]['userID']
 
-    addyQuery = "SELECT * FROM bookstore.address WHERE userID=%s" % (userID)
+    addyQuery = "SELECT * FROM Bookstore.Address WHERE userID=%s" % (userID)
     cur.execute(addyQuery)
     addy = cur.fetchall()
 
-    payQuery = "SELECT * FROM bookstore.payment WHERE userID=\'%s\'" % (userID)
+    payQuery = "SELECT * FROM Bookstore.Payment WHERE userID=\'%s\'" % (userID)
     cur.execute(payQuery)
     pay = cur.fetchall()
 
@@ -150,7 +150,7 @@ def editProfileData():
     query =""
     firstName = request.form['firstname']
     if(firstName!=""):
-        query += "UPDATE bookstore.users SET firstName=\'%s\'" % (firstName)    
+        query += "UPDATE Bookstore.Users SET firstName=\'%s\'" % (firstName)    
     lastName = request.form['lastname']
     if(lastName!=""):
         query += ", lastName=\'%s\'" % (lastName)
@@ -165,7 +165,7 @@ def editProfileData():
         mysql.connection.commit()
 
     
-    #updated address information
+    #updated Address information
     address = []
     address.append(str(request.form['addyname']))
     address.append(str(request.form['street1']))
@@ -181,15 +181,15 @@ def editProfileData():
             valid=False
         
     if(valid):
-        check = "SELECT * FROM bookstore.address WHERE userID=%s" % (userID)
+        check = "SELECT * FROM Bookstore.Address WHERE userID=%s" % (userID)
         cur.execute(check)
         res = cur.fetchall()
         if(len(res) == 0):
-            query = "INSERT INTO bookstore.address (idAddress, name, street, street2, zipCode, city, state, country, userID) VALUES (%s, \'%s\', \'%s\', \'%s\', %s, \'%s\', \'%s\', \'%s\', %s)" % (randint(0,999999),address[0], address[1], address[2], address[5], address[3], address[4], address[6], userID)
+            query = "INSERT INTO Bookstore.Address (idAddress, name, street, street2, zipCode, city, state, country, userID) VALUES (%s, \'%s\', \'%s\', \'%s\', %s, \'%s\', \'%s\', \'%s\', %s)" % (randint(0,999999),address[0], address[1], address[2], address[5], address[3], address[4], address[6], userID)
             cur.execute(query)
             mysql.connection.commit()
         else:
-            query = "UPDATE bookstore.address SET name=\'%s\', street=\'%s\', street2=\'%s\'," \
+            query = "UPDATE Bookstore.address SET name=\'%s\', street=\'%s\', street2=\'%s\'," \
                 " zipCode=%s, city=\'%s\', state=\'%s\', country=\'%s\' WHERE userID=\'%s\'" \
                 % (address[0], address[1], address[2], address[5], address[3], address[4], address[6], userID)
             cur.execute(query)
@@ -198,25 +198,27 @@ def editProfileData():
     
     #updated payment info
     payment=[]
-    payment.append(request.form['payname'])
     payment.append(request.form['cardNum'])
-    payment.append(request.form['expDate'])
+    payment.append(request.form['expYear'])
+    payment.append(request.form['expMonth'])
     valid = True
     for x in range(len(payment)):
         if(payment[x] == ''):
             valid = False
     if(valid):
-        check = "SELECT * FROM bookstore.payment WHERE userID=%s" % (userID)
+        check = "SELECT * FROM Bookstore.Payment WHERE userID=%s" % (userID)
         cur.execute(check)
         res = cur.fetchall()
         if(len(res) == 0):
-            query = "INSERT INTO bookstore.payment (cardNumber, name, expirationDate,securityCode,"\
-                " userID) VALUES (%s, \'%s\', \'%s\', %s, %s)" % (payment[1], payment[0], payment[2], 000, userID)
+            query = "INSERT INTO Bookstore.Payment (cardNumber, expiryYear,"\
+                " expiryMonth,securityCode, UserID, paymentType) VALUES (%s, %s, %s, %s, %s, \'%s\')" \
+                % (payment[0], payment[1], payment[2], 000, userID, "type")
             cur.execute(query)
             mysql.connection.commit()
         else:
-            query = "UPDATE bookstore.payment SET name=\'%s\', cardNumber=%s, expirationDate=\'%s\' WHERE userID=%s"\
-                % (payment[0], payment[1], payment[2], userID)
+            query = "UPDATE Bookstore.Payment SET cardNumber=%s, expiryYear=%s,"\
+                " expiryMonth=%s, paymentType=\'%s\' WHERE UserID=%s"\
+                % (payment[0], payment[1], payment[2], "type", userID)
             cur.execute(query)
             mysql.connection.commit()
     return redirect(url_for('view_profile'))
