@@ -1,26 +1,18 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, escape
 from flask_sqlalchemy import SQLAlchemy
+from flask_mysqldb import MySQL
 from random import randint
 
-
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root@localhost/bookstore'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
 
-class users(db.Model):
-    userID = db.Column(db.Integer, primary_key = True)
-    password = db.Column(db.String(32))
-    emailId = db.Column(db.String(255))
-    firstName = db.Column(db.String(45))
-    lastName = db.Column(db.String(45))
-    phone = db.Column(db.Integer)
-    userStatus = db.Column(db.String(32))
-    SubscriptionID = db.Column(db.Integer)
-    userType = db.Column(db.String(45))
-    Addres_userID = db.Column(db.Integer)
-    PromotionID = db.Column(db.Integer)
-    Cart_userID = db.Column(db.Integer)
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = '12341234'
+app.config['MYSQL_DB'] = 'bookstore'
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+
+mysql = MySQL(app)
+
 
 ##### Menu Options ######
 
@@ -72,34 +64,40 @@ def bookshow(book_num):
 
 @app.route('/register_data', methods = ['GET', 'POST'])
 def register_data():
-    val_userID = randint(0,9999999)
-    val_password = request.form['password']
-    val_emailid = request.form['emailid']
+    cur = mysql.connection.cursor()
+    val_userID = randint(0,999999)
     val_firstName = request.form['firstname']
-    val_lastName = request.form['lastname']
-    val_phone = request.form['phonenumbercountry'] + request.form['mainphonenumber']
-    val_userStatus = 'Inactive'
-    val_SubscriptionID = '1'
-    val_userType = 'Registered'
-    val_Addres_userID = val_userID
-    val_PromotionId = '0'
-    val_Cart_userID = '0'
-    passdat = users(userID = val_userID,
-                    password = val_password,
-                    emailId = val_emailid,
-                    firstName = val_firstName,
-                    lastName = val_lastName,
-                    phone = val_phone ,
-                    userStatus = val_userStatus,
-                    SubscriptionID = val_SubscriptionID,
-                    userType = val_userType,
-                    Addres_userID = val_Addres_userID,
-                    PromotionID = val_PromotionId,
-                    Cart_userID = val_Cart_userID)
+    val_lastName = request.form['firstname']
+    val_password = request.form['password']
+    val_email = request.form['emailid']
+    val_phone = 470394
+    sqlstatement = "INSERT INTO `bookstore`.`users` " \
+                   "(`userID`, `firstName`, `lastName`, `password`, `email`, `phone`, `userTypeID`, `Subscription`)" \
+                   'VALUES ( %d, \'%s\', \'%s\', \'%s\', \'%s\', %d, 1, 1 ) ;' \
+                   % (val_userID, val_firstName, val_lastName, val_password, val_email, val_phone)
+    cur.execute(sqlstatement)
+    mysql.connection.commit()
+    return redirect(url_for('index'))
 
-    db.session.add(passdat)
-    db.session.commit()
-    return render_template('dummyshowval.html', data = passdat)
+@app.route('/login_action', methods = ['GET', 'POST'])
+def login_action():
+    cur = mysql.connection.cursor()
+    val_email = request.form['email']
+    val_password = request.form['psw']
+    querystatement = "SELECT email, password FROM `bookstore`.`users`" \
+                     "where email=\'%s\' AND password=\'%s\'" \
+                     % (val_email, val_password)
+    cur.execute(querystatement)
+    results = cur.fetchall()
+
+    if len(results) == 0:
+        #do something for invalid email password
+        pass
+    else:
+        #do something for valid email password
+        pass
+
+    return redirect(url_for('index'))
 
 
 
