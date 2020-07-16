@@ -44,8 +44,8 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`Users` (
   `userID` INT NOT NULL AUTO_INCREMENT,
   `firstName` VARCHAR(45) NOT NULL,
   `lastName` VARCHAR(45) NOT NULL,
-  `password` VARCHAR(50) NOT NULL,
-  `email` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(100) NOT NULL,
+  `email` VARCHAR(45) UNIQUE NOT NULL,
   `phone` VARCHAR(20) NULL,
   `userTypeID` INT NOT NULL,
   `Subscription` TINYINT NULL,
@@ -77,10 +77,10 @@ ENGINE = InnoDB;
 -- Table `Bookstore`.`Payment`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Bookstore`.`Payment` (
-  `cardNumber` VARCHAR(20) NOT NULL,
+  `cardNumber` VARCHAR(100) NOT NULL,
   `expiryYear` INT NOT NULL,
   `expiryMonth` INT NOT NULL,
-  `securityCode` INT(3) NOT NULL,
+  `securityCode` INT(3) NULL,
   `paymentType` VARCHAR(15) NOT NULL,
   `UserID` INT NOT NULL,
   PRIMARY KEY (`UserID`))
