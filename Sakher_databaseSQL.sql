@@ -82,6 +82,7 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`Payment` (
   `expiryYear` INT NOT NULL,
   `expiryMonth` INT NOT NULL,
   `securityCode` INT(3) NULL,
+  `nameoncard` VARCHAR(50) NULL,
   `paymentType` VARCHAR(15) NOT NULL,
   `UserID` INT NOT NULL,
   PRIMARY KEY (`UserID`))
