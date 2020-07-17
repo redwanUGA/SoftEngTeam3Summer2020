@@ -6,7 +6,7 @@ USE `Bookstore` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Bookstore`.`Category` (
   `idCategory` INT NOT NULL AUTO_INCREMENT,
-  `category` VARCHAR(15) NOT NULL,
+  `category` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`idCategory`))
 ENGINE = InnoDB;
 
@@ -16,11 +16,11 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Bookstore`.`Books` (
   `ISBN` INT NOT NULL,
-  `author` VARCHAR(30) NOT NULL,
+  `author` VARCHAR(50) NOT NULL,
   `title` VARCHAR(50) NOT NULL,
-  `cover` VARCHAR(30) NOT NULL,
+  `cover` VARCHAR(50) NOT NULL,
   `edition` VARCHAR(5) NOT NULL,
-  `publisher` VARCHAR(30) NOT NULL,
+  `publisher` VARCHAR(50) NOT NULL,
   `pubYear` INT(5) NOT NULL,
   `category` INT NOT NULL,
   PRIMARY KEY (`ISBN`))
@@ -61,13 +61,13 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`Users` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Bookstore`.`Address` (
   `idAddress` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(15) NOT NULL,
-  `street` VARCHAR(30) NOT NULL,
-  `street2` VARCHAR(30) NULL,
+  `name` VARCHAR(50) NOT NULL,
+  `street` VARCHAR(100) NOT NULL,
+  `street2` VARCHAR(100) NULL,
   `zipCode` INT(5) NOT NULL,
-  `city` VARCHAR(15) NOT NULL,
+  `city` VARCHAR(50) NOT NULL,
   `state` VARCHAR(30) NOT NULL,
-  `AddressType` VARCHAR(5) NULL,
+  `AddressType` VARCHAR(10) NULL,
   `userID` INT NOT NULL,
   PRIMARY KEY (`idAddress`))
 ENGINE = InnoDB;
@@ -154,3 +154,4 @@ ENGINE = InnoDB;
 
 INSERT INTO `usertype` (`idUserType`, `userStatus`) VALUES ('1', 'Admin');
 INSERT INTO `usertype` (`idUserType`, `userStatus`) VALUES ('2', 'Registered User');
+INSERT INTO `users` VALUES (1,'team3','admin','pbkdf2:sha256:150000$1EGsALIX$da3cd4923a0591df667460428594bb64da58a64f806c5febc9aa49032ca6d376','sakher.x@gmail.com',NULL,'',1,1,1,1234,0);

@@ -12,6 +12,8 @@ from flask_mail import Mail, Message
 
 import re
 
+import random
+
 app = Flask(__name__, static_url_path='/static')
 
 app.config['MYSQL_HOST'] = 'localhost'
@@ -141,13 +143,12 @@ def register():
     subscribe =  1
     msg=''
     userid=0
-    activationKey=1234
+    activationKey=random.randrange(1000, 9999, 2)
 
     address='101 hardsman'
     city='Athens'
     state='GA'
     zip_code='30605'
-    country='USA'
 
     cc='1234789565471230'
     mnth='08'
@@ -156,6 +157,8 @@ def register():
     mastercard=''
     csv=''
     cctype=''
+
+    nothing='' #used in else statements when I dont want to add error msgs to msg
 
 
 
@@ -170,7 +173,6 @@ def register():
         city = request.form['city']
         state = request.form['state']
         zip_code = request.form['zip_code']
-        country = request.form['country']
         cc = request.form['cc']
         mnth = request.form['mnth']
         yr = request.form['yr']
@@ -248,7 +250,6 @@ def register():
     `zipCode`,
     `city`,
     `state`,
-    `country`,
     `AddressType`,
     `userID`)
 
@@ -259,14 +260,13 @@ def register():
         zip_code,
         city,
         state,
-        country,
         'Ship',
         userid));
 
                     mysql.connection.commit()
                     cur.close()
                 except Exception as e:
-                    msg+='Error in address, please try again later<br />'+str(e)
+                    nothing+='Error in address, please try again later<br />'+str(e)
                 finally:
                     cur.close()
 
@@ -294,7 +294,7 @@ def register():
                     mysql.connection.commit()
                     cur.close()
                 except Exception as e:
-                    msg+='Error payment, please try again later<br />'+str(e)
+                    nothing+='Error payment, please try again later<br />'+str(e)
                 finally:
                     cur.close()
         
@@ -355,10 +355,6 @@ def register():
     
     <div class="field_label">Zip code</div>
     <div class="field"><input type="text" name="zip_code" value="'''+zip_code+'''" /></div>
-
-    <div class="field_label">Country</div>
-    <div class="field"><input type="text" name="country" value="'''+country+'''" />
-    </div>
 
     <div>Payment info</div>
     
