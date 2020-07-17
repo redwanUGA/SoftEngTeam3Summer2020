@@ -67,7 +67,6 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`Address` (
   `zipCode` INT(5) NOT NULL,
   `city` VARCHAR(15) NOT NULL,
   `state` VARCHAR(30) NOT NULL,
-  `country` VARCHAR(30) NOT NULL,
   `AddressType` VARCHAR(5) NULL,
   `userID` INT NOT NULL,
   PRIMARY KEY (`idAddress`))
