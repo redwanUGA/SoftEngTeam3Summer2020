@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`Users` (
   `lastName` VARCHAR(45) NOT NULL,
   `password` VARCHAR(100) NOT NULL,
   `email` VARCHAR(45) UNIQUE NOT NULL,
+  `gender` VARCHAR(6) NULL,
   `phone` VARCHAR(20) NULL,
   `userTypeID` INT NOT NULL,
   `Subscription` TINYINT NULL,
