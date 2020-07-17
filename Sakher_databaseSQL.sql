@@ -151,3 +151,6 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`bookInventory` (
   `quantity` INT(5) NULL,
   PRIMARY KEY (`idbookInventory`))
 ENGINE = InnoDB;
+
+INSERT INTO `usertype` (`idUserType`, `userStatus`) VALUES ('1', 'Admin');
+INSERT INTO `usertype` (`idUserType`, `userStatus`) VALUES ('2', 'Registered User');
