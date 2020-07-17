@@ -10,7 +10,6 @@ from cryptography.fernet import Fernet
 
 
 app = Flask(__name__)
-
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '12341234'
@@ -27,7 +26,6 @@ mysql = MySQL(app)
 
 key = b'fRmBje4ZejoeBPmxESfU2ElslhIcjiose6rHt4qaV4c='
 fenc = Fernet(key=key)
-
 
 def conv_int(a):
     try:
@@ -48,19 +46,26 @@ def index():
 # Login Page
 @app.route('/login')
 def login():
-        if session.get('email'):
-            session['logged_in'] = True
-            flash('You are Logged in as %s' % session['email'])
-            return redirect(url_for('index'))
-        else:
-            return render_template('login.html')
+    if session['logged_in'] and session['uid']:
+        flash('You are already logged in')
+        return redirect(url_for('index'))
+    else:
+        session['logged_in'] = False
+        user_logged_in_id = None
+        user_logged_in_pdata = None
+        user_logged_in_sadata = None
+        return render_template('login.html')
 
 
 
 # Register Page
 @app.route('/register')
 def register():
-    return render_template('register.html')
+    if session['logged_in'] and session['uid']:
+        flash('Logout first')
+        return redirect(url_for('index'))
+    else:
+        return render_template('register.html')
 
 # Cart Page
 @app.route('/cart')
@@ -182,6 +187,13 @@ def register_data():
         cur.execute(insert_billaddress)
         mysql.connection.commit()
 
+    msgg = Message("Team3 Book Store", sender="t3@myw.urq.mybluehost.me", recipients=[val_email])
+    msgg.body = '''Thank you for registering, ... 
+                to activate your account ... 
+                sign in with your password and ...
+                you have to enter the following code when logging in : %s ''' % str(val_activationKey)
+
+    mail.send(msgg)
     return redirect(url_for('index'))
 
 @app.route('/login_action', methods = ['GET', 'POST'])
@@ -221,8 +233,12 @@ def login_action():
         flash('You are Logged in as %s' % val_email)
 
         if results[0]['userTypeID'] == 1:
+            session['usertype'] = 1
+            uid = results[0]['userID']
+            session['uid'] = uid
             return render_template('admin.html')
         else:
+            session['usertype'] = 2
             uid = results[0]['userID']
             session['uid'] = uid
             personalinfoquery = "SELECT * FROM `bookstore`.`users` WHERE `userID` = %d" % uid
@@ -239,6 +255,7 @@ def login_action():
             cur.execute(paymentinfoquery)
             paymentinfo = cur.fetchall()
 
+
             return render_template('viewprofile.html', pdata = personaldata,
                                sadata = shippingaddressdata,
                                badata = billingaddressdata,
@@ -249,6 +266,7 @@ def login_action():
 def logout():
     if session['logged_in'] == True:
         session['logged_in'] = False
+        session['uid'] = None
         flash('You are successfully logged out')
         return redirect(url_for('index'))
     else:
@@ -278,6 +296,12 @@ def send_otp():
                                 % (new_activation_key, update_id)
         cur.execute(update_activation_key)
         mysql.connection.commit()
+
+        msgg = Message("Team3 Book Store", sender="t3@myw.urq.mybluehost.me", recipients=[val_email])
+        msgg.body = ''' We have sent you a one time password to recover your password %s ''' % str(new_activation_key)
+
+        mail.send(msgg)
+
         return render_template('password_recover_2.html')
     else:
         flash('Email not found in system')
@@ -302,6 +326,11 @@ def password_recovery_finished():
             cur.execute(password_change)
             mysql.connection.commit()
             flash('Password Successfully Changed')
+
+            msgg = Message("Team3 Book Store", sender="t3@myw.urq.mybluehost.me", recipients=[val_email])
+            msgg.body = ''' You have successfully changed your password '''
+            mail.send(msgg)
+
             return redirect(url_for('login'))
         else:
             flash('Retyeped Password Did Not Match')
@@ -343,6 +372,12 @@ def activate_user_action():
 
         cur.execute(activation_change)
         mysql.connection.commit()
+
+        msgg = Message("Team3 Book Store", sender="t3@myw.urq.mybluehost.me", recipients=[val_email])
+        msgg.body = "You have been activated. Use your password to login"
+
+        mail.send(msgg)
+
         flash('User Successfully activated')
         return redirect(url_for('login'))
 
