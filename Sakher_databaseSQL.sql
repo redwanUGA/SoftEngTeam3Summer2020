@@ -154,4 +154,4 @@ ENGINE = InnoDB;
 
 INSERT INTO `usertype` (`idUserType`, `userStatus`) VALUES ('1', 'Admin');
 INSERT INTO `usertype` (`idUserType`, `userStatus`) VALUES ('2', 'Registered User');
-INSERT INTO `users` VALUES (1,'team3','admin','pbkdf2:sha256:150000$1EGsALIX$da3cd4923a0591df667460428594bb64da58a64f806c5febc9aa49032ca6d376','sakher.x@gmail.com',NULL,'',1,1,1,1234,0);
+INSERT INTO `users` VALUES (1,'team3','admin','pbkdf2:sha256:150000$1EGsALIX$da3cd4923a0591df667460428594bb64da58a64f806c5febc9aa49032ca6d376','MdRedwan.Islam@uga.edu',NULL,'',1,1,1,1234,0);
