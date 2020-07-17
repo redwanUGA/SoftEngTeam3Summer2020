@@ -6,7 +6,7 @@ USE `Bookstore` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Bookstore`.`Category` (
   `idCategory` INT NOT NULL AUTO_INCREMENT,
-  `category` VARCHAR(15) NOT NULL,
+  `category` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`idCategory`))
 ENGINE = InnoDB;
 
@@ -16,11 +16,11 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Bookstore`.`Books` (
   `ISBN` INT NOT NULL,
-  `author` VARCHAR(30) NOT NULL,
+  `author` VARCHAR(50) NOT NULL,
   `title` VARCHAR(50) NOT NULL,
-  `cover` VARCHAR(30) NOT NULL,
+  `cover` VARCHAR(50) NOT NULL,
   `edition` VARCHAR(5) NOT NULL,
-  `publisher` VARCHAR(30) NOT NULL,
+  `publisher` VARCHAR(50) NOT NULL,
   `pubYear` INT(5) NOT NULL,
   `category` INT NOT NULL,
   PRIMARY KEY (`ISBN`))
@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`Users` (
   `lastName` VARCHAR(45) NOT NULL,
   `password` VARCHAR(100) NOT NULL,
   `email` VARCHAR(45) UNIQUE NOT NULL,
+  `gender` VARCHAR(6) NULL,
   `phone` VARCHAR(20) NULL,
   `userTypeID` INT NOT NULL,
   `Subscription` TINYINT NULL,
@@ -60,14 +61,13 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`Users` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Bookstore`.`Address` (
   `idAddress` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(15) NOT NULL,
-  `street` VARCHAR(30) NOT NULL,
-  `street2` VARCHAR(30) NULL,
+  `name` VARCHAR(50) NOT NULL,
+  `street` VARCHAR(100) NOT NULL,
+  `street2` VARCHAR(100) NULL,
   `zipCode` INT(5) NOT NULL,
-  `city` VARCHAR(15) NOT NULL,
+  `city` VARCHAR(50) NOT NULL,
   `state` VARCHAR(30) NOT NULL,
-  `country` VARCHAR(30) NOT NULL,
-  `AddressType` VARCHAR(5) NULL,
+  `AddressType` VARCHAR(10) NULL,
   `userID` INT NOT NULL,
   PRIMARY KEY (`idAddress`))
 ENGINE = InnoDB;
@@ -81,6 +81,7 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`Payment` (
   `expiryYear` INT NOT NULL,
   `expiryMonth` INT NOT NULL,
   `securityCode` INT(3) NULL,
+  `nameoncard` VARCHAR(50) NULL,
   `paymentType` VARCHAR(15) NOT NULL,
   `UserID` INT NOT NULL,
   PRIMARY KEY (`UserID`))
@@ -150,3 +151,7 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`bookInventory` (
   `quantity` INT(5) NULL,
   PRIMARY KEY (`idbookInventory`))
 ENGINE = InnoDB;
+
+INSERT INTO `userType` (`idUserType`, `userStatus`) VALUES ('1', 'Admin');
+INSERT INTO `userType` (`idUserType`, `userStatus`) VALUES ('2', 'Registered User');
+INSERT INTO `Users` VALUES ('team3','admin','password','email@email.com',NULL,'',1,1,1,1234,0);
