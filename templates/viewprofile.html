@@ -18,38 +18,94 @@
 		{% endblock %}<!-- container -->
 
 		{% block main_content %}
+
+
 		<div id="main_content">
 			<div class="viewProf">
 				<div class="head">
+					{% with messages = get_flashed_messages() %}
+            	{% if messages %}
+            	<ul class='text-success'>
+                	{% for message in messages %}
+            	<li>{{ message }}</li>
+            	{% endfor %}
+             	</ul>
+            	{% endif %}
+            	{% endwith %}
 					<div class="item">
 						<img src="../static/images/icons/portrait_icon.png" id="profileImg" alt="profile image" width="225px" length="225px">
 					</div>
 					<div class="headText">
-						<h1>Name</h1>
-						<p>email@address.com</p>
-						<p>(000)-000-0000</p>
+						<h1>Name : {{ pdata[0]['firstName'] }} {{ pdata[0]['firstName'] }} </h1>
+						<p>Email Address: {{ pdata[0]['firstName'] }}</p>
+						<p>Phone Number: {{ pdata[0]['firstName'] }}</p>
 					</div>
 				</div>
 				<div class="centerFormat">
 					<div class="centerFormat">
 						<hr>
 						<h2>Shipping Address</h2>
+						{% if sadata|length == 0 %}
 						<hr>
 						<p>Name</p>
-						<p>Address Line 1</p>
-						<p>Address Line 2</p>
-						<p>City, State 00000</p>
-						<p>Country</p>
+						<p>Street Address</p>
+						<p>Apt No</p>
+						<p>City</p>
+						<p>State </p>
+						<p>Zip Code </p>
+						{% else %}
+						<hr>
+						<p>Name : {{ pdata[0]['firstName'] }} {{ pdata[0]['firstName'] }} </p>
+						<p>Street Address : {{ sadata[0]['street'] }}</p>
+						<p>Apt No : {{ sadata[0]['street2'] }}</p>
+						<p>City : {{ sadata[0]['city'] }} </p>
+						<p>State: {{ sadata[0]['state'] }} </p>
+						<p>Zip Code : {{ sadata[0]['zipCode'] }} </p>
+						{% endif %}
 					</div>
+
+					<div class="centerFormat">
+					<div class="centerFormat">
+						<hr>
+						<h2>Billing Address</h2>
+						{% if badata|length == 0 %}
+						<hr>
+						<p>Name</p>
+						<p>Street Address</p>
+						<p>Apt No</p>
+						<p>City</p>
+						<p>State </p>
+						<p>Zip Code </p>
+						{% else %}
+						<hr>
+						<p>Name : {{ pdata[0]['firstName'] }} {{ pdata[0]['firstName'] }} </p>
+						<p>Street Address : {{ badata[0]['street'] }}</p>
+						<p>Apt No : {{ badata[0]['street2'] }}</p>
+						<p>City : {{ badata[0]['city'] }} </p>
+						<p>State: {{ badata[0]['state'] }} </p>
+						<p>Zip Code : {{ badata[0]['zipCode'] }} </p>
+						{% endif %}
+					</div>
+
+					<div class="centerFormat">
 					<div class="centerFormat">
 						<hr>
 						<h2>Payment Information</h2>
+						{% if paydata|length == 0 %}
 						<hr>
-						<p>Name</p>
-						<p>Visa ending in 0000</p>
-						<p>expires in 00/0000</p>
+						<p>Card Type</p>
+						<p>Card No</p>
+						<p>Name on Card</p>
+						<p>Expires on </p>
+						{% else %}
+						<hr>
+						<p>Card Type : {{ paydata[0]['paymentType'] }}</p>
+						<p>Card No : {{ paydata[0]['cardNumber'] }} </p>
+						<p>Name on Card : {{ paydata[0]['nameoncard'] }}</p>
+						<p>Expires on : {{ paydata[0]['expiryMonth'] }} / {{ paydata[0]['expiryYear'] }} </p>
+						{% endif %}
 					</div>
-					<a href="editprofile.html" class="edit">Edit Profile</a>
+					<a href="{{ url_for('edit_profile') }}" class="edit">Edit Profile</a>
 				</div>
 			</div>
 
