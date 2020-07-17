@@ -74,7 +74,11 @@
             <div id="user_controls">
                 <ul>
                     <li><a href="/cart"><img src="../static/images/cart.png" />MY CART</a></li>
+                    {% if session['logged_in'] %}
+                    <li><a href="/logout"><img src="../static/images/signin.png" />SING OUT</a></li>
+                    {% else %}
                     <li><a href="/login"><img src="../static/images/signin.png" />SING IN</a></li>
+                    {% endif %}
                     <li><a href="/register"><img src="../static/images/signup.png" />SIGN UP</a></li>
                 </ul>
             </div>

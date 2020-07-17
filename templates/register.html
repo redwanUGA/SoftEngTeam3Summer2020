@@ -20,53 +20,45 @@
 		{% block main_content %}
 		<div id="main_content">
 		<div class="viewProf">
-			<div class="head">
+			<!-- div class="head">
 				<div class="item">
 					<img src="../static/images/icons/portrait_icon.png" id="profileImg" alt="profile image" width="150px" length="150px">
 					<a href="#">Add Picture</a>
 				</div>
-			</div>
+			</div -->
 			<h2> Register User </h2>
 			<form action="{{ url_for('register_data') }}" method="post">
 				<div class="centerFormat">
 					<div class="form-group">
 						<label>First Name*</label>
-						<input type="text" name="firstname" value="First Name" required />
+						<input type="text" name="fname" required />
 
 						<label>Last Name*</label>
-						<input type="text" name="lastname" value="Last Name" required />
+						<input type="text" name="lname" required />
 					</div>
-					<div class="form-check">
-						<h5 class="form-check-label">Gender*</h5>
-						<div class="form-check">
-							<input class="form-check-input" type="radio" name="genderoptions" value="Male">
-							<label class="form-check-label">
-								Male
-							</label>
+					<div class="form-group col-md-6">
+							<label for="gender">Gender</label>
+							<select name="gender" class="form-control" id="gender">
+								<option value="male">Male</option>
+								<option value="female">Female</option>
+							</select>
 						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="radio" name="genderoptions" value="Female">
-							<label class="form-check-label">
-								Female
-							</label>
-						</div>
-					</div>
 
 					<div class="form-group">
 						<label>Email ID*</label>
-						<input type="email" name="emailid" value="Enter your email ID" required />
+						<input type="email" name="email" required />
 					</div>
 					<div class="form-group">
 						<label>Password*</label>
-						<input type="password" name="password" value="Enter your password" required />
+						<input type="password" name="password" required />
 					</div>
 					<div class="form-group form-group-inline">
 						<label>Phone Number*</label>
 						<select name="phonenumbercountry">
-							<option value="1">+1</option>
-							<option value="91">+91</option>
-							<option value="67">+67</option>
-							<option value="4">+4</option>
+							<option value="+1">+1</option>
+							<option value="+91">+91</option>
+							<option value="+67">+67</option>
+							<option value="+4">+4</option>
 						</select>
 						<input type="text" name="mainphonenumber" required />
 					</div>
@@ -74,11 +66,11 @@
 					<div class="form-group">
 						<h5> Address Info (Optional) </h5>
 						<label for="streetaddress">Street Address</label>
-						<input type="text" class="form-control" name="streetaddress", id="streetaddress" placeholder="Enter Street Address">
+						<input type="text" class="form-control" name="streetaddress", id="streetaddress">
 					</div>
 					<div class="form-group">
 						<label for="aptno">Apt</label>
-						<input type="text" class="form-control" name="aptno" id="aptno" placeholder="Apartment, studio, or floor">
+						<input type="text" class="form-control" name="aptno" id="aptno">
 					</div>
 					<div class="form-group">
 						<div class="form-group col-md-6">
@@ -88,39 +80,104 @@
 						<div class="form-group col-md-6">
 							<label for="inputState">State</label>
 							<select name="inputState" class="form-control" id="inputState">
-								<option value="Choose..." selected>Choose...</option>
 								<option value="GA">GA</option>
 								<option value="Others">Others</option>
 							</select>
 						</div>
 						<div class="form-group col-md-6">
 							<label for="inputZip">Zip</label>
-							<input type="text" class="form-control" name="inputZip">
+							<input type="number" class="form-control" name="inputZip" id="inputZip">
 						</div>
 					</div>
 
 					<div class="form-group">
 						<h5> Payment Info  (Optional)</h5>
 						<label for="nameoncard">Name on Card</label>
-						<input type="text" class="form-control" id="nameoncard" name="nameoncard" placeholder="Name on Card">
+						<input type="text" class="form-control" id="nameoncard" name="nameoncard">
 					</div>
 					<div class="form-group">
 						<label for="cardno">Card Number</label>
-						<input type="text" class="form-control" id="cardno" name="cardno" placeholder="XXXX-XXXX-XXXX-XXXX">
+						<input type="text" class="form-control" id="cardno" name="cardno">
 					</div>
 					<div class="form-group">
 						<div class="form-group col-md-6">
 							<label for="CVV">CVV</label>
-							<input type="text" class="form-control" id="CVV" name="CVV">
+							<input type="numner" class="form-control" id="CVV" name="CVV">
+						</div>
+
+						<div class="form-group col-md-6">
+							<label for="cardtype">Card Type</label>
+							<select name="cardtype" class="form-control" id="cardtype">
+								<option value="VISA">VISA</option>
+								<option value="MasterCard">MasterCard</option>
+								<option value="AmericanExpress">AmericanExpress</option>
+								<option value="Discover">Discover</option>
+								<option value="JCB">JCB</option>
+							</select>
+						</div>
+
+						<div class="form-group col-md-6">
+							<label for="expmonth">Exp Month</label>
+							<select name="expmonth" class="form-control" id="expmonth">
+								<option value="1">Jan</option>
+								<option value="2">Feb</option>
+								<option value="3">Mar</option>
+								<option value="4">Apr</option>
+								<option value="5">May</option>
+								<option value="6">Jun</option>
+								<option value="7">Jul</option>
+								<option value="8">Aug</option>
+								<option value="9">Sep</option>
+								<option value="10">Oct</option>
+								<option value="11">Nov</option>
+								<option value="12">Dec</option>
+							</select>
 						</div>
 						<div class="form-group col-md-6">
-							<label for="expdate">Exp Date</label>
-							<input type="date" class="form-control" id="expdate" name="expdate">
+							<label for="expyear">Exp Month</label>
+							<select name="expyear" class="form-control" id="expyear">
+								<option value="2019">2019</option>
+								<option value="2020">2020</option>
+								<option value="2021">2021</option>
+								<option value="2022">2022</option>
+								<option value="2023">2023</option>
+								<option value="2024">2024</option>
+								<option value="2025">2025</option>
+								<option value="2026">2026</option>
+								<option value="2027">2027</option>
+								<option value="2028">2028</option>
+								<option value="2029">2029</option>
+								<option value="2030">2030</option>
+							</select>
+						</div>
+
+						<div class="form-group">
+						<h5> Billing Address Info (Optional) </h5>
+						<label for="billstreetaddress">Street Address</label>
+						<input type="text" class="form-control" name="billstreetaddress", id="billstreetaddress">
+						</div>
+					<div class="form-group">
+						<label for="billaptno">Apt</label>
+						<input type="text" class="form-control" name="billaptno" id="billaptno">
+					</div>
+					<div class="form-group">
+						<div class="form-group col-md-6">
+							<label for="billinputCity">City</label>
+							<input type="text" class="form-control" name="billinputCity" id="billinputCity">
 						</div>
 						<div class="form-group col-md-6">
-							<label for="cardzip">Zip</label>
-							<input type="text" class="form-control" id="cardzip" name="cardzip">
+							<label for="billinputState">State</label>
+							<select name="billinputState" class="form-control" id="billinputState">
+								<option value="GA">GA</option>
+								<option value="Others">Others</option>
+							</select>
 						</div>
+						<div class="form-group col-md-6">
+							<label for="billinputZip">Zip</label>
+							<input type="number" class="form-control" name="billinputZip" id="billinputZip">
+						</div>
+					</div>
+
 					</div>
 
 

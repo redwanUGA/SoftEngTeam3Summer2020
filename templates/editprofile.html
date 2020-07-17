@@ -26,41 +26,36 @@
                         <a href="#">Edit Picture</a>
                     </div>
                 </div>
-                <form>
+                <form action="{{ url_for('editProfileData') }}" method="POST">
                     <div class="centerFormat">
                         <hr>
                         <h2>Personal Information</h2>
                         <hr>
-                        <input type="text" value="Name">
-                        <input type="text" value="Phone number">
-                    </div>
-                    <div class="centerFormat">
-                        <hr>
-                        <h2>Change Password</h2>
-                        <hr>
-                        <input type="text" value="Enter New password">
-                        <input type="text" value="Reter New Password">
+                        <input type="text" name="firstname" placeholder="First Name">
+			<input type="text" name="lastname" placeholder="Last Name">
+                        <input type="text" name="phone" placeholder="Phone number">
                     </div>
                     <div class="centerFormat">
                         <hr>
                         <h2>Shipping Address</h2>
                         <hr>
-                        <input type="text" value="Name">
-                        <input type="text" value="Address Line 1">
-                        <input type="text" value="Address Line 2">
-                        <input type="text" value="City, State 00000">
-                        <input type="text" value="Country">
+                        <input type="text" name="addyname" placeholder="Name">
+                        <input type="text" name="street1" placeholder="Address Line 1">
+                        <input type="text" name="street2" placeholder="Address Line 2">
+                        <input type="text" name="city" placeholder="City">
+						<input type="text" name="state" placeholder="State">
+						<input type="text" name="zip" placeholder="00000">
                     </div>
                     <div class="centerFormat">
                         <hr>
                         <h2>Payment Information</h2>
                         <hr>
-                        <input type="text" value="Name">
-                        <input type="text" value="Card Number">
-                        <input type="text" value="Expiration date">
+                        <input type="text" name="cardNum" placeholder="Card Number">
+                        <input type="text" name="expYear" placeholder="Expiration Year">
+			<input type="text" name="expMonth" placeholder="Expiration Month">
                     </div>
-                    <input type="button" value="Save Changes">
-            </form>
+                    <input type="submit" value="Save Changes">
+		</form>
         </div>
 		{% endblock %}<!-- main_content -->
 		{% block footer %}
