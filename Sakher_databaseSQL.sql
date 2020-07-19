@@ -61,10 +61,10 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`Users` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Bookstore`.`Address` (
   `idAddress` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(50) NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
   `street` VARCHAR(100) NOT NULL,
   `street2` VARCHAR(100) NULL,
-  `zipCode` INT(5) NOT NULL,
+  `zipCode` INT(10) NOT NULL,
   `city` VARCHAR(50) NOT NULL,
   `state` VARCHAR(30) NOT NULL,
   `AddressType` VARCHAR(10) NULL,
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`Payment` (
   `expiryYear` INT NOT NULL,
   `expiryMonth` INT NOT NULL,
   `securityCode` INT(3) NULL,
-  `nameoncard` VARCHAR(50) NULL,
+  `nameoncard` VARCHAR(100) NULL,
   `paymentType` VARCHAR(15) NOT NULL,
   `UserID` INT NOT NULL,
   PRIMARY KEY (`UserID`))
