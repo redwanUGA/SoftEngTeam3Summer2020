@@ -37,8 +37,8 @@
 					</div>
 					<div class="headText">
 						<h1>Name : {{ pdata[0]['firstName'] }} {{ pdata[0]['firstName'] }} </h1>
-						<p>Email Address: {{ pdata[0]['firstName'] }}</p>
-						<p>Phone Number: {{ pdata[0]['firstName'] }}</p>
+						<p>Email Address: {{ pdata[0]['email'] }}</p>
+						<p>Phone Number: {{ pdata[0]['phone'] }}</p>
 					</div>
 				</div>
 				<div class="centerFormat">
@@ -55,7 +55,7 @@
 						<p>Zip Code </p>
 						{% else %}
 						<hr>
-						<p>Name : {{ pdata[0]['firstName'] }} {{ pdata[0]['firstName'] }} </p>
+						<p>Name : {{ sadata[0]['name'] }} </p>
 						<p>Street Address : {{ sadata[0]['street'] }}</p>
 						<p>Apt No : {{ sadata[0]['street2'] }}</p>
 						<p>City : {{ sadata[0]['city'] }} </p>
@@ -78,7 +78,7 @@
 						<p>Zip Code </p>
 						{% else %}
 						<hr>
-						<p>Name : {{ pdata[0]['firstName'] }} {{ pdata[0]['firstName'] }} </p>
+						<p>Name : {{ badata[0]['name'] }} </p>
 						<p>Street Address : {{ badata[0]['street'] }}</p>
 						<p>Apt No : {{ badata[0]['street2'] }}</p>
 						<p>City : {{ badata[0]['city'] }} </p>

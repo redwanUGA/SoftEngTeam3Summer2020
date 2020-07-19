@@ -1,70 +1,377 @@
 ﻿{% extends 'base.html' %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	{% block head_header %}
+	<head>
+		{% block head_header %}
 		{{ super() }}
-	{% endblock %}
-	<title> Add Promo </title>
-</head>
-<body>
-	<div id="div1">
-		{% block body_header %}
-			{{ super() }}
-		{% endblock %}<!-- container -->
-
-		{% block menu_content %}
-			{{ super() }}
-		{% endblock %}<!-- container -->
-
-		{% block main_content %}
-		<div id="main_content">
-            <div class="viewProf">
-                <div class="head">
-                    <div class="item">
-                        <img src="../static/images/icons/portrait_icon.png" id="profileImg" alt="profile image" width="225px" length="225px">
-                        <a href="#">Edit Picture</a>
-                    </div>
-                </div>
-                <form action="{{ url_for('editProfileData') }}" method="POST">
-                    <div class="centerFormat">
-                        <hr>
-                        <h2>Personal Information</h2>
-                        <hr>
-                        <input type="text" name="firstname" placeholder="First Name">
-			<input type="text" name="lastname" placeholder="Last Name">
-                        <input type="text" name="phone" placeholder="Phone number">
-                    </div>
-                    <div class="centerFormat">
-                        <hr>
-                        <h2>Shipping Address</h2>
-                        <hr>
-                        <input type="text" name="addyname" placeholder="Name">
-                        <input type="text" name="street1" placeholder="Address Line 1">
-                        <input type="text" name="street2" placeholder="Address Line 2">
-                        <input type="text" name="city" placeholder="City">
-						<input type="text" name="state" placeholder="State">
-						<input type="text" name="zip" placeholder="00000">
-                    </div>
-                    <div class="centerFormat">
-                        <hr>
-                        <h2>Payment Information</h2>
-                        <hr>
-                        <input type="text" name="cardNum" placeholder="Card Number">
-                        <input type="text" name="expYear" placeholder="Expiration Year">
-			<input type="text" name="expMonth" placeholder="Expiration Month">
-                    </div>
-                    <input type="submit" value="Save Changes">
-		</form>
-        </div>
-		{% endblock %}<!-- main_content -->
-		{% block footer %}
-			{{ super() }}
 		{% endblock %}
-	</div><!-- div1 -->
-		{% block scripts %}
+		<title> Add Promo </title>
+	</head>
+	<body>
+		<div id="div1">
+			{% block body_header %}
 			{{ super() }}
-		{% endblock %}
+			{% endblock %}<!-- container -->
 
-</body>
-</html>
+			{% block menu_content %}
+			{{ super() }}
+			{% endblock %}<!-- container -->
+
+			{% block main_content %}
+			<div id="main_content">
+				<div class="viewProf">
+					<!-- div class="head">
+						<div class="item">
+						<img src="../static/images/icons/portrait_icon.png" id="profileImg" alt="profile image" width="150px" length="150px">
+						<a href="#">Add Picture</a>
+						</div>
+					</div -->
+
+					{% with messages = get_flashed_messages() %}
+					{% if messages %}
+					<ul>
+						{% for message in messages %}
+						{% if "Success" in message %}
+						<li class='text-success'>{{ message }}</li>
+						{% else %}
+						<li class='text-danger'>{{ message }}</li>
+						{% endif %}
+						{% endfor %}
+					</ul>
+					{% endif %}
+					{% endwith %}
+
+					<form action=" {{ url_for('editProfileData') }} ", method="post">
+					<table>
+						<tr>
+							<th> Personal Info </th>
+							<th></th>
+						</tr>
+						<tr>
+							<td> <label for="fname"> FirstName </label> </td>
+							<td> <input type="text" name="fname" id="fname" value="{{ pdata[0]['firstName'] }}"> </td>
+						</tr>
+						<tr>
+							<td> <label for="lname"> Last Name </label> </td>
+							<td> <input type="text" name="lname" id="lname" value="{{ pdata[0]['lastName'] }}"> </td>
+						</tr>
+						<tr>
+							<td> <label for="email"> Email Address </label> </td>
+							<td> <input type="email" name="email" id="email" value="{{ pdata[0]['email'] }}" disabled> </td>
+						</tr>
+						<tr>
+							<td> <label for="phonenumbercountry"> Country Code </label> </td>
+							<td>
+								<select name="phonenumbercountry" >
+									<option value="+1" {% if pdata[0]['phone'][0:2] == '+1' %} selected {% endif %} >+1</option>
+									<option value="+9" {% if pdata[0]['phone'][0:2] == '+9' %} selected {% endif %} >+9</option>
+									<option value="+6" {% if pdata[0]['phone'][0:2] == '+6' %} selected {% endif %} >+6</option>
+									<option value="+4" {% if pdata[0]['phone'][0:2] == '+4' %} selected {% endif %} >+4</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td> <label for="mainphonenumber"> Phone Number </label> </td>
+							<td> <input type="text" name="mainphonenumber" id="mainphonenumber" value="{{ pdata[0]['phone'][2:16] }}"> </td>
+						</tr>
+					</table>
+
+
+					<a class="btn btn-primary" href="{{ url_for('change_password_start') }}"> Change Password </a>
+
+						{% if sadata != () %}
+						<table>
+						<tr>
+							<th> Shipping Address Info </th>
+							<th></th>
+						</tr>
+						<tr>
+							<td> <label for="shipname"> Shipping Name </label> </td>
+							<td> <input type="text" name="shipname" id="shipname" value="{{ sadata[0]['name'] }}"> </td>
+						</tr>
+						<tr>
+							<td> <label for="streetaddress"> Street Address </label> </td>
+							<td> <input type="text" name="streetaddress" id="streetaddress" value="{{ sadata[0]['street'] }}"> </td>
+						</tr>
+						<tr>
+							<td> <label for="aptno"> Apartment No </label> </td>
+							<td> <input type="text" name="aptno" id="aptno" value="{{ sadata[0]['street2'] }}"> </td>
+						</tr>
+						<tr>
+							<td> <label for="inputCity"> City </label> </td>
+							<td> <input type="text" name="inputCity" id="inputCity" value="{{ sadata[0]['city'] }}"> </td>
+						</tr>
+						<tr>
+							<td> <label for="inputZip"> Zip Code </label> </td>
+							<td> <input type="text" name="inputZip" id="inputZip" value="{{ sadata[0]['zipCode'] }}"> </td>
+						</tr>
+						<tr>
+							<td> <label for="inputState"> State </label> </td>
+							<td>
+								<select name="inputState" >
+									<option value="GA" {% if sadata[0]['state'] == 'GA' %} selected {% endif %} >GA</option>
+									<option value="Others" {% if sadata[0]['state'] == 'Others' %} selected {% endif %} >Others</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+						{% else %}
+						<table>
+						<tr>
+							<th> Shipping Address Info </th>
+							<th></th>
+						</tr>
+						<tr>
+							<td> <label for="shipname"> Shipping Name </label> </td>
+							<td> <input type="text" name="shipname" id="shipname"> </td>
+						</tr>
+						<tr>
+							<td> <label for="streetaddress"> Street Address </label> </td>
+							<td> <input type="text" name="streetaddress" id="streetaddress"> </td>
+						</tr>
+						<tr>
+							<td> <label for="aptno"> Apt No </label> </td>
+							<td> <input type="text" name="aptno" id="aptno"> </td>
+						</tr>
+						<tr>
+							<td> <label for="inputCity"> City </label> </td>
+							<td> <input type="text" name="inputCity" id="inputCity"> </td>
+						</tr>
+						<tr>
+							<td> <label for="inputZip"> Zip Code </label> </td>
+							<td> <input type="text" name="inputZip" id="inputZip"> </td>
+						</tr>
+						<tr>
+							<td> <label for="inputState"> State </label> </td>
+							<td>
+								<select name="inputState" >
+									<option value="GA">GA</option>
+									<option value="Others">Others</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+
+						{% endif %}
+
+
+						{% if badata != () %}
+						<table>
+						<tr>
+							<th> Billing Address Info </th>
+							<th></th>
+						</tr>
+						<tr>
+							<td> <label for="billname"> Billing Name </label> </td>
+							<td> <input type="text" name="billname" id="billname" value="{{ badata[0]['name'] }}"> </td>
+						</tr>
+						<tr>
+							<td> <label for="billstreetaddress"> Street Address </label> </td>
+							<td> <input type="text" name="billstreetaddress" id="billstreetaddress" value="{{ badata[0]['street'] }}"> </td>
+						</tr>
+						<tr>
+							<td> <label for="billaptno"> Apartment No </label> </td>
+							<td> <input type="text" name="billaptno" id="billaptno" value="{{ badata[0]['street2'] }}"> </td>
+						</tr>
+						<tr>
+							<td> <label for="billinputCity"> City  </label> </td>
+							<td> <input type="text" name="billinputCity" id="billinputCity" value="{{ badata[0]['city'] }}"> </td>
+						</tr>
+						<tr>
+							<td> <label for="billinputZip"> Zip Code </label> </td>
+							<td> <input type="text" name="billinputZip" id="billinputZip" value="{{ badata[0]['zipCode'] }}"> </td>
+						</tr>
+						<tr>
+							<td> <label for="billinputState"> State </label> </td>
+							<td>
+								<select name="billinputState" id="billinputState">
+									<option value="GA" {% if badata[0]['state'] == 'GA' %} selected {% endif %} >GA</option>
+									<option value="Others" {% if badata[0]['state'] == 'Others' %} selected {% endif %} >Others</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+						{% else %}
+						<table>
+						<tr>
+							<th> Billing Address Info </th>
+							<th></th>
+						</tr>
+						<tr>
+							<td> <label for="billname"> Billing Name </label> </td>
+							<td> <input type="text" name="billname" id="billname"> </td>
+						</tr>
+						<tr>
+							<td> <label for="billstreetaddress"> Street Address </label> </td>
+							<td> <input type="text" name="billstreetaddress" id="billstreetaddress"> </td>
+						</tr>
+						<tr>
+							<td> <label for="billaptno"> Apartment No </label> </td>
+							<td> <input type="text" name="billaptno" id="billaptno"> </td>
+						</tr>
+						<tr>
+							<td> <label for="billinputCity"> City </label> </td>
+							<td> <input type="text" name="billinputCity" id="billinputCity"> </td>
+						</tr>
+						<tr>
+							<td> <label for="billinputZip"> Zip Code </label> </td>
+							<td> <input type="text" name="billinputZip" id="billinputZip"> </td>
+						</tr>
+						<tr>
+							<td> <label for="billinputState"> State </label> </td>
+							<td>
+								<select name="billinputState" id="billinputState">
+									<option value="GA" >GA</option>
+									<option value="Others" >Others</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+						{% endif %}
+
+
+
+
+						{% if paydata != () %}
+						<table>
+						<tr>
+							<th> Payment Info </th>
+							<th></th>
+						</tr>
+						<tr>
+							<td> <label for="nameoncard"> Name on Card </label> </td>
+							<td> <input type="text" name="nameoncard" id="nameoncard" value="{{ paydata[0]['nameoncard'] }}"> </td>
+						</tr>
+						<tr>
+							<td> <label for="cardno"> Card Number </label> </td>
+							<td> <input type="text" name="cardno" id="cardno" value="{{ paydata[0]['cardNumber'] }}"> </td>
+						</tr>
+						<tr>
+							<td> <label for="CVV"> CVV </label> </td>
+							<td> <input type="number" name="CVV" id="CVV" value="{{ paydata[0]['securityCode'] }}"> </td>
+						</tr>
+						<tr>
+							<td> <label for="cardtype"> Card Type </label> </td>
+							<td>
+								<select name="cardtype" id="cardtype">
+									<option value="VISA" {% if paydata[0]['paymentType'] == 'VISA' %} selected {% endif %} >VISA</option>
+									<option value="MasterCard" {% if paydata[0]['paymentType'] == 'MasterCard' %} selected {% endif %} >MasterCard</option>
+									<option value="AmEx" {% if paydata[0]['paymentType'] == 'Amex' %} selected {% endif %} >AmericanExpress</option>
+									<option value="Discover" {% if paydata[0]['paymentType'] == 'Discover' %} selected {% endif %} >Discover</option>
+									<option value="JCB" {% if paydata[0]['paymentType'] == 'JCB' %} selected {% endif %} >JCB</option>
+								</select>
+							</td>
+						</tr>
+							<tr>
+							<td> <label for="expmonth"> Expiry Month </label> </td>
+							<td>
+								<select name="expmonth" id="expmonth">
+									<option value="1" {% if paydata[0]['expiryMonth'] == 1 %} selected {% endif %} >Jan</option>
+								<option value="2" {% if paydata[0]['expiryMonth'] == 2 %} selected {% endif %} >Feb</option>
+								<option value="3" {% if paydata[0]['expiryMonth'] == 3 %} selected {% endif %} >Mar</option>
+								<option value="4" {% if paydata[0]['expiryMonth'] == 4 %} selected {% endif %} >Apr</option>
+								<option value="5" {% if paydata[0]['expiryMonth'] == 5 %} selected {% endif %} >May</option>
+								<option value="6" {% if paydata[0]['expiryMonth'] == 6 %} selected {% endif %} >Jun</option>
+								<option value="7" {% if paydata[0]['expiryMonth'] == 7 %} selected {% endif %} >Jul</option>
+								<option value="8" {% if paydata[0]['expiryMonth'] == 8 %} selected {% endif %} >Aug</option>
+								<option value="9" {% if paydata[0]['expiryMonth'] == 9 %} selected {% endif %} >Sep</option>
+								<option value="10" {% if paydata[0]['expiryMonth'] == 10 %} selected {% endif %} >Oct</option>
+								<option value="11" {% if paydata[0]['expiryMonth'] == 11 %} selected {% endif %} >Nov</option>
+								<option value="12" {% if paydata[0]['expiryMonth'] == 12 %} selected {% endif %} >Dec</option>
+								</select>
+							</td>
+						</tr>
+
+							<tr>
+							<td> <label for="expyear"> Expiry Year </label> </td>
+							<td>
+								<select name="expyear" id="expyear">
+								<option value="2019" {% if paydata[0]['expiryYear'] == 2019 %} selected {% endif %} >2019</option>
+								<option value="2020" {% if paydata[0]['expiryYear'] == 2020 %} selected {% endif %} >2020</option>
+								<option value="2021" {% if paydata[0]['expiryYear'] == 2021 %} selected {% endif %} >2021</option>
+								<option value="2022" {% if paydata[0]['expiryYear'] == 2022 %} selected {% endif %} >2022</option>
+								<option value="2023" {% if paydata[0]['expiryYear'] == 2023 %} selected {% endif %} >2023</option>
+								<option value="2024" {% if paydata[0]['expiryYear'] == 2024 %} selected {% endif %} >2024</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+						{% else %}
+						<table>
+						<tr>
+							<th> Payment Info </th>
+							<th></th>
+						</tr>
+						<tr>
+							<td> <label for="nameoncard"> Name on Card </label> </td>
+							<td> <input type="text" name="nameoncard" id="nameoncard"> </td>
+						</tr>
+						<tr>
+							<td> <label for="cardno"> Card Number </label> </td>
+							<td> <input type="text" name="cardno" id="cardno"> </td>
+						</tr>
+						<tr>
+							<td> <label for="CVV"> CVV </label> </td>
+							<td> <input type="number" name="CVV" id="CVV"> </td>
+						</tr>
+						<tr>
+							<td> <label for="cardtype"> Card Tyoe </label> </td>
+							<td>
+								<select name="cardtype" id="cardtype">
+									<option value="VISA" >VISA</option>
+									<option value="MasterCard" >MasterCard</option>
+									<option value="AmEx" >AmericanExpress</option>
+									<option value="Discover" >Discover</option>
+									<option value="JCB">JCB</option>
+								</select>
+							</td>
+						</tr>
+							<tr>
+							<td> <label for="expmonth"> Expiry Month </label> </td>
+							<td>
+								<select name="expmonth" id="expmonth">
+									<option value="1" >Jan</option>
+								<option value="2" >Feb</option>
+								<option value="3" >Mar</option>
+								<option value="4" >Apr</option>
+								<option value="5" >May</option>
+								<option value="6" >Jun</option>
+								<option value="7" >Jul</option>
+								<option value="8" >Aug</option>
+								<option value="9" >Sep</option>
+								<option value="10" >Oct</option>
+								<option value="11" >Nov</option>
+								<option value="12" >Dec</option>
+								</select>
+							</td>
+						</tr>
+
+							<tr>
+							<td> <label for="expyear"> Expiry Year </label> </td>
+							<td>
+								<select name="expyear" id="expyear">
+								<option value="2019" >2019</option>
+								<option value="2020" >2020</option>
+								<option value="2021" >2021</option>
+								<option value="2022" >2022</option>
+								<option value="2023" >2023</option>
+								<option value="2024" >2024</option>
+								</select>
+							</td>
+						</tr>
+					</table>
+						{% endif %}
+
+						<input type="submit" value="Submit Edit">
+					</form>
+				{% endblock %}<!-- main_content -->
+				{% block footer %}
+				{{ super() }}
+				{% endblock %}
+			</div><!-- div1 -->
+			{% block scripts %}
+			{{ super() }}
+			{% endblock %}
+
+		</body>
+	</html>

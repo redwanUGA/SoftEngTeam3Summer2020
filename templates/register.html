@@ -26,69 +26,80 @@
 					<a href="#">Add Picture</a>
 				</div>
 			</div -->
+
+			{% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <ul>
+                {% for message in messages %}
+                {% if "Success" in message %}
+            <li class='text-success'>{{ message }}</li>
+                {% else %}
+            <li class='text-danger'>{{ message }}</li>
+                {% endif %}
+            {% endfor %}
+             </ul>
+            {% endif %}
+            {% endwith %}
+
 			<h2> Register User </h2>
 			<form action="{{ url_for('register_data') }}" method="post">
 				<div class="centerFormat">
 					<div class="form-group">
+						<h5> Personal Information </h5>
 						<label>First Name*</label>
-						<input type="text" name="fname" required />
+						<input type="text" name="fname" class="form-control" required />
 
 						<label>Last Name*</label>
-						<input type="text" name="lname" required />
-					</div>
-					<div class="form-group col-md-6">
-							<label for="gender">Gender</label>
-							<select name="gender" class="form-control" id="gender">
-								<option value="male">Male</option>
-								<option value="female">Female</option>
-							</select>
-						</div>
+						<input type="text" name="lname" class="form-control" required />
 
-					<div class="form-group">
+						<label for="gender">Gender</label>
+						<select name="gender" id="gender">
+							<option value="male">Male</option>
+							<option value="female">Female</option>
+						</select>
+
+						<br>
 						<label>Email ID*</label>
-						<input type="email" name="email" required />
-					</div>
-					<div class="form-group">
+						<input type="email" name="email" required class="form-control" />
+						<br>
 						<label>Password*</label>
-						<input type="password" name="password" required />
-					</div>
-					<div class="form-group form-group-inline">
+						<input type="password" name="password" class="form-control" required data-toggle="tooltip" title="enter a password of at least 16 characters"/>
+						<br>
 						<label>Phone Number*</label>
-						<select name="phonenumbercountry">
+						<select name="phonenumbercountry" >
 							<option value="+1">+1</option>
-							<option value="+91">+91</option>
-							<option value="+67">+67</option>
+							<option value="+9">+91</option>
+							<option value="+6">+67</option>
 							<option value="+4">+4</option>
 						</select>
 						<input type="text" name="mainphonenumber" required />
 					</div>
 
+
 					<div class="form-group">
 						<h5> Address Info (Optional) </h5>
+						<label for="shipname">Name for Shipping Address</label>
+						<input type="text" class="form-control" name="shipname" id="shipname">
+						<br>
 						<label for="streetaddress">Street Address</label>
 						<input type="text" class="form-control" name="streetaddress", id="streetaddress">
-					</div>
-					<div class="form-group">
-						<label for="aptno">Apt</label>
+						<br>
+						<label for="aptno">Apartment No</label>
 						<input type="text" class="form-control" name="aptno" id="aptno">
+						<br>
+						<label for="inputCity">City</label>
+						<input type="text" class="form-control" name="inputCity" id="inputCity">
+						<br>
+						<label for="inputState">State</label>
+						<select name="inputState" id="inputState">
+							<option value="GA">GA</option>
+							<option value="Others">Others</option>
+						</select>
+						<br>
+						<label for="inputZip">Zip</label>
+						<input type="number" class="form-control" name="inputZip" id="inputZip">
 					</div>
-					<div class="form-group">
-						<div class="form-group col-md-6">
-							<label for="inputCity">City</label>
-							<input type="text" class="form-control" name="inputCity" id="inputCity">
-						</div>
-						<div class="form-group col-md-6">
-							<label for="inputState">State</label>
-							<select name="inputState" class="form-control" id="inputState">
-								<option value="GA">GA</option>
-								<option value="Others">Others</option>
-							</select>
-						</div>
-						<div class="form-group col-md-6">
-							<label for="inputZip">Zip</label>
-							<input type="number" class="form-control" name="inputZip" id="inputZip">
-						</div>
-					</div>
+
 
 					<div class="form-group">
 						<h5> Payment Info  (Optional)</h5>
@@ -110,7 +121,7 @@
 							<select name="cardtype" class="form-control" id="cardtype">
 								<option value="VISA">VISA</option>
 								<option value="MasterCard">MasterCard</option>
-								<option value="AmericanExpress">AmericanExpress</option>
+								<option value="AmEx">AmericanExpress</option>
 								<option value="Discover">Discover</option>
 								<option value="JCB">JCB</option>
 							</select>
@@ -142,17 +153,14 @@
 								<option value="2022">2022</option>
 								<option value="2023">2023</option>
 								<option value="2024">2024</option>
-								<option value="2025">2025</option>
-								<option value="2026">2026</option>
-								<option value="2027">2027</option>
-								<option value="2028">2028</option>
-								<option value="2029">2029</option>
-								<option value="2030">2030</option>
 							</select>
 						</div>
 
 						<div class="form-group">
 						<h5> Billing Address Info (Optional) </h5>
+						<label for="billname">Name for Billing Address </label>
+						<input type="text" class="form-control" name="billname" id="billname">
+						<br>
 						<label for="billstreetaddress">Street Address</label>
 						<input type="text" class="form-control" name="billstreetaddress", id="billstreetaddress">
 						</div>
