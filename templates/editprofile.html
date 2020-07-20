@@ -112,6 +112,7 @@
 							<td> <label for="inputState"> State </label> </td>
 							<td>
 								<select class="form-control" name="inputState" >
+									<option value=".." {% if sadata[0]['state'] == '..' %} selected {% endif %} >Choose...</option>
 									<option value="AL" {% if sadata[0]['state'] == 'AL' %} selected {% endif %}  >Alabama</option>
                                 <option value="AK" {% if sadata[0]['state'] == 'AK' %} selected {% endif %}  >Alaska</option>
                                 <option value="AZ" {% if sadata[0]['state'] == 'AZ' %} selected {% endif %}  >Arizona</option>
@@ -197,6 +198,7 @@
 							<td> <label for="inputState"> State </label> </td>
 							<td>
 								<select class="form-control" name="inputState" id="inputState">
+									<option value="..">Choose...</option>
 									<option value="AL">Alabama</option>
                                 <option value="AK">Alaska</option>
                                 <option value="AZ">Arizona</option>
@@ -286,6 +288,7 @@
 							<td> <label for="billinputState"> State </label> </td>
 							<td>
 								<select class="form-control" name="billinputState" id="billinputState">
+									<option value=".." {% if badata[0]['state'] == '..' %} selected {% endif %} >Choose...</option>
 									<option value="AL" {% if badata[0]['state'] == 'AL' %} selected {% endif %}  >Alabama</option>
                                 <option value="AK" {% if badata[0]['state'] == 'AK' %} selected {% endif %}  >Alaska</option>
                                 <option value="AZ" {% if badata[0]['state'] == 'AZ' %} selected {% endif %}  >Arizona</option>
@@ -371,6 +374,7 @@
 							<td> <label for="billinputState"> State </label> </td>
 							<td>
 								<select class="form-control" name="billinputState" id="billinputState">
+									<option value="..">Choose...</option>
 									<option value="AL">Alabama</option>
                                 <option value="AK">Alaska</option>
                                 <option value="AZ">Arizona</option>
@@ -453,6 +457,7 @@
 							<td> <label for="cardtype"> Card Type </label> </td>
 							<td>
 								<select class="form-control" name="cardtype" id="cardtype">
+									<option value="...." {% if paydata[0]['paymentType'] == '....' %} selected {% endif %} >Choose...</option>
 									<option value="VISA" {% if paydata[0]['paymentType'] == 'VISA' %} selected {% endif %} >VISA</option>
 									<option value="MasterCard" {% if paydata[0]['paymentType'] == 'MasterCard' %} selected {% endif %} >MasterCard</option>
 									<option value="AmEx" {% if paydata[0]['paymentType'] == 'Amex' %} selected {% endif %} >AmericanExpress</option>
@@ -465,6 +470,7 @@
 							<td> <label for="expmonth"> Expiry Month </label> </td>
 							<td>
 								<select class="form-control" name="expmonth" id="expmonth">
+									<option value="0" {% if paydata[0]['expiryMonth'] == 0 %} selected {% endif %} >Choose...</option>
 									<option value="1" {% if paydata[0]['expiryMonth'] == 1 %} selected {% endif %} >Jan</option>
 								<option value="2" {% if paydata[0]['expiryMonth'] == 2 %} selected {% endif %} >Feb</option>
 								<option value="3" {% if paydata[0]['expiryMonth'] == 3 %} selected {% endif %} >Mar</option>
@@ -485,6 +491,7 @@
 							<td> <label for="expyear"> Expiry Year </label> </td>
 							<td>
 								<select class="form-control" name="expyear" id="expyear">
+									<option value="0" {% if paydata[0]['expiryYear'] == 0 %} selected {% endif %} >Choose</option>
 								<option value="2019" {% if paydata[0]['expiryYear'] == 2019 %} selected {% endif %} >2019</option>
 								<option value="2020" {% if paydata[0]['expiryYear'] == 2020 %} selected {% endif %} >2020</option>
 								<option value="2021" {% if paydata[0]['expiryYear'] == 2021 %} selected {% endif %} >2021</option>
@@ -517,6 +524,7 @@
 							<td> <label for="cardtype"> Card Tyoe </label> </td>
 							<td>
 								<select class="form-control" name="cardtype" id="cardtype">
+									<option value="....">Choose...</option>
 									<option value="VISA" >VISA</option>
 									<option value="MasterCard" >MasterCard</option>
 									<option value="AmEx" >AmericanExpress</option>
@@ -528,7 +536,9 @@
 							<tr>
 							<td> <label for="expmonth"> Expiry Month </label> </td>
 							<td>
-								<select class="form-control" name="expmonth" id="expmonth"><option value="1" >Jan</option>
+								<select class="form-control" name="expmonth" id="expmonth">
+									<option value="0" >Choose...</option>
+									<option value="1" >Jan</option>
 								<option value="2" >Feb</option>
 								<option value="3" >Mar</option>
 								<option value="4" >Apr</option>
@@ -548,6 +558,7 @@
 							<td> <label for="expyear"> Expiry Year </label> </td>
 							<td>
 								<select class="form-control" name="expyear" id="expyear">
+									<option value="0" >Choose...</option>
 								<option value="2019" >2019</option>
 								<option value="2020" >2020</option>
 								<option value="2021" >2021</option>

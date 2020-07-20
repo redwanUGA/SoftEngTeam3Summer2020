@@ -44,7 +44,7 @@
             <h2> Register User </h2>
             <form action=" {{ url_for('register_data') }} " , method="post">
                 <!-- Personal Data Begins  -->
-                <table class="table table-bordered">
+                <table class="table table-bordered" style="margin-left: 100px;border-right-width: 100px;border-right-style: solid;">
                     <tr>
                         <th> Personal Info</th>
                         <th> <span class="text-danger"> You must Enter ALL the fields </span> </th>
@@ -90,7 +90,7 @@
 
 
                 <!-- Shipping Address Data Begins  -->
-                <table class="table">
+                <table class="table" style="margin-left: 100px;border-right-width: 100px;border-right-style: solid;">
                     <tr>
                         <th> Shipping Address Info (Optional) </th>
                         <th> <span class="text-secondary"> This field is optional. However, you cannot fill this section partially. If you choose to enter information, you must enter all the information in the section. You can later edit your information from your profile. </span> </th>
@@ -125,6 +125,7 @@
                         <td><label for="inputState"> State </label></td>
                         <td>
                             <select name="inputState" id="inputState" class="form-control">
+                                <option value="..">Choose...</option>
                                 <option value="AL">Alabama</option>
                                 <option value="AK">Alaska</option>
                                 <option value="AZ">Arizona</option>
@@ -184,7 +185,7 @@
                 <!-- Shipping Address Data Ends  -->
 
                 <!-- Billing Address Data Begins  -->
-                <table class="table">
+                <table class="table" style="margin-left: 100px;border-right-width: 100px;border-right-style: solid;">
                     <tr>
                         <th> Billing Address Info</th>
                         <th> <span class="text-secondary"> This field is optional. However, you cannot fill this section partially. If you choose to enter information, you must enter all the information in the section. You can later edit your information from your profile. </span>  </th>
@@ -219,6 +220,7 @@
                         <td><label for="billinputState"> State </label></td>
                         <td>
                             <select name="billinputState" id="billinputState" class="form-control">
+                                <option value="..">Choose....</option>
                                 <option value="AL">Alabama</option>
                                 <option value="AK">Alaska</option>
                                 <option value="AZ">Arizona</option>
@@ -279,7 +281,7 @@
 
 
                 <!-- Payment Info Data Begins  -->
-                <table class="table">
+                <table class="table" style="margin-left: 100px;border-right-width: 100px;border-right-style: solid;">
                     <tr>
                         <th> Payment Info</th>
                         <th><span class="text-secondary"> This field is optional. However, you cannot fill this section partially. If you choose to enter information, you must enter all the information in the section. You can later edit your information from your profile. </span>  </th>
@@ -304,6 +306,7 @@
                         <td><label for="cardtype"> Card Type </label></td>
                         <td>
                             <select class="form-control" name="cardtype" id="cardtype">
+                                <option value="....">Choose...</option>
                                 <option value="VISA">VISA</option>
                                 <option value="MasterCard">MasterCard</option>
                                 <option value="AmEx">AmericanExpress</option>
@@ -317,6 +320,7 @@
                         <td><label for="expmonth"> Expiry Month </label></td>
                         <td>
                             <select class="form-control" name="expmonth" id="expmonth">
+                                <option value="0">Choose...</option>
                                 <option value="1">Jan</option>
                                 <option value="2">Feb</option>
                                 <option value="3">Mar</option>
@@ -338,6 +342,7 @@
                         <td><label for="expyear"> Expiry Year </label></td>
                         <td>
                             <select class="form-control" name="expyear" id="expyear">
+                                <option value="0"> Choose </option>
                                 <option value="2019">2019</option>
                                 <option value="2020">2020</option>
                                 <option value="2021">2021</option>
