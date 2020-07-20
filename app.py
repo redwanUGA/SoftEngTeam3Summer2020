@@ -203,14 +203,22 @@ def index():
 # Login Page
 @app.route('/login')
 def login():
-    return render_template('login.html')
+    if not session.get('uid'):
+        return render_template('login.html')
+    else:
+        flash('You are already logged in')
+        return redirect(url_for('view_profile'))
 
 
 
 # Register Page
 @app.route('/register')
 def register():
-    return render_template('register.html')
+    if not session.get('uid'):
+        return render_template('register.html')
+    else:
+        flash('You are already logged as %s. Logout First to signup as a new user.' % session.get('email') )
+        return redirect(url_for('view_profile'))
 
 
 # Cart Page
@@ -424,7 +432,7 @@ def register_data():
             insert_cardinfo = "INSERT INTO `bookstore`.`payment`" \
                               "(`cardNumber`, `expiryYear`, `expiryMonth`, `securityCode`, `paymentType`, `UserID`, `nameoncard`)" \
                               "VALUES( \'%s\' , \'%d\', \'%d\', \'%d\' , \'%s\', \'%d\', \'%s\' );" \
-                              % (val_cardno, val_expyear, val_expmonth, val_CVV, val_cardtype, userid, val_nameoncard)
+                              % (val_cardno, val_expyear, val_expmonth, val_CVV, val_cardtype, userid, val_nameoncard.upper())
             cur.execute(insert_cardinfo)
             mysql.connection.commit()
 
@@ -448,6 +456,8 @@ def register_data():
                     you have to enter the following code when logging in : %s ''' % str(val_activationKey)
 
     mail.send(msgg)
+
+    flash('You have successfully completed your registration. Please check your email for further procedures.')
     return redirect(url_for('index'))
 
 
@@ -736,7 +746,7 @@ def editProfileData():
         paydataupdate = "UPDATE `bookstore`.`payment`" \
                         "SET `cardNumber` = \'%s\', `expiryYear` = %d, `expiryMonth` = %d, `securityCode` = %d, `nameoncard` = \'%s\', `paymentType` = \'%s\' " \
                         "WHERE `UserID` = %d ;" \
-                        % (val_cardno, val_expyear, val_expmonth, val_CVV, val_nameoncard, val_cardtype, userid)
+                        % (val_cardno, val_expyear, val_expmonth, val_CVV, val_nameoncard.upper(), val_cardtype, userid)
 
         sadatainsert = "INSERT INTO `bookstore`.`address`" \
                          "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
@@ -751,7 +761,7 @@ def editProfileData():
         paydatainsert = "INSERT INTO `bookstore`.`payment`" \
                           "(`cardNumber`, `expiryYear`, `expiryMonth`, `securityCode`, `paymentType`, `UserID`, `nameoncard`)" \
                           "VALUES( \'%s\' , \'%d\', \'%d\', \'%d\' , \'%s\', \'%d\', \'%s\' );" \
-                          % (val_cardno, val_expyear, val_expmonth, val_CVV, val_cardtype, userid, val_nameoncard)
+                          % (val_cardno, val_expyear, val_expmonth, val_CVV, val_cardtype, userid, val_nameoncard.upper())
 
         cur.execute(pdataupdate)
         mysql.connection.commit()
@@ -777,14 +787,18 @@ def editProfileData():
             cur.execute(paydatainsert)
             mysql.connection.commit()
 
-    return redirect(url_for('view_profile'))
+        msgg = Message("Team3 Book Store", sender="t3@myw.urq.mybluehost.me", recipients=[val_email])
+        msgg.body = ''' You have successfully updated your profile information.'''
+        mail.send(msgg)
+        flash('You have sucessfully updated your profile information.')
+        return redirect(url_for('view_profile'))
 
 
 @app.route('/change_password')
 def change_password_start():
     return render_template('change_password.html')
 
-@app.route('/password_changed')
+@app.route('/password_changed' , methods = ['GET', 'POST'] )
 def password_change_finished():
     cur = mysql.connection.cursor()
     val_email = session.get('email')
@@ -800,22 +814,26 @@ def password_change_finished():
     if not check_password_hash(res1[0]['password'], oldp):
         flash('Old password did not match')
         return render_template('change_password.html')
-    elif val_newpass == val_rnewpass:
-        if not check_goodness(val_newpass, 'password'):
-            flash(error_message(val_newpass, 'password'))
-            return render_template('change_password.html')
-        else:
-            password_change = "UPDATE `bookstore`.`users` " \
-                              "SET `password` = \'%s\' " \
-                              "WHERE (`email` = \'%s\')" \
-                              % (generate_password_hash(val_newpass), val_email)
-            cur.execute(password_change)
-            mysql.connection.commit()
-            flash('Password Successfully Changed')
+    elif val_newpass != val_rnewpass:
+        flash('ReTyped password did not match')
+        return render_template('change_password.html')
+    elif not check_goodness(val_newpass, 'password'):
+        flash(error_message(val_newpass, 'password'))
+        return render_template('change_password.html')
+    else:
+        password_change = "UPDATE `bookstore`.`users` " \
+                          "SET `password` = \'%s\' " \
+                          "WHERE (`email` = \'%s\')" \
+                           % (generate_password_hash(val_newpass), val_email)
+        cur.execute(password_change)
+        mysql.connection.commit()
 
-            return redirect(url_for('edit_profile'))
+        msgg = Message("Team3 Book Store", sender="t3@myw.urq.mybluehost.me", recipients=[val_email])
+        msgg.body = ''' You have successfully changed your password.'''
+        mail.send(msgg)
 
-
+        flash('Password Successfully Changed')
+        return redirect(url_for('edit_profile'))
 
 
 
