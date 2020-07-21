@@ -1,0 +1,88 @@
+﻿{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head_header %}
+    {{ super() }}
+    {% endblock %}
+    <title> Add Promo </title>
+</head>
+<body>
+<div id="div1">
+    {% block body_header %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
+
+    {% block menu_content %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
+
+    {% block main_content %}
+    <div class="container">
+        <form class="form-group" action=" {{ url_for('remove_from_cart_action') }}" method="post">
+            <table class="table">
+                <tr>
+                    <th>Book</th>
+                    <th>Quantity</th>
+                    <th>Unit Price (USD)</th>
+                    <th>Item total (USD)</th>
+                    <th>Select Item to remove</th>
+                </tr>
+                <!-- Your for loop starts here -->
+                <tr>
+                    <td class="col-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Book title1</h5>
+                                <p class="card-text">Author : Author1</p>
+                                <input class="card-text" type="text" value="ISBN : ISBN1" name="item0" disabled>
+                                <p class="card-text">Category : Category1</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="display-4 col-2">1</td>
+                    <td class="display-4 col-2">4.00</td>
+                    <td class="display-4 col-3">8.00</td>
+                    <td class="col-1"><input type="checkbox" name="ISBN1"/></td>
+                </tr>
+                <tr>
+                    <td class="col-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">This is a larger book title</h5>
+                                <p class="card-text">Author : With larger author name</p>
+                                <input class="card-text" type="text" value="ISBN : ISBN1" name="item0" disabled>
+                                <p class="card-text">Category : Category2</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="display-4 col-3">1</td>
+                    <td class="display-4 col-3">4.00</td>
+                    <td class="display-4 col-3">8.00</td>
+                    <td class="col-1"><input type="checkbox" name="ISBN1"/></td>
+                </tr>
+                <tr>
+                    <td class="display-4 col-3"></td>
+                    <td class="display-4 col-3"><input type="submit" class="btn btn-primary btn-block"
+                                                       role="button"
+                                                       value="Apply Modification"/></td>
+                    <td class="display-4 col-3"><a class="btn btn-primary btn-block" href=" {{ url_for('cart')}} "
+                                                   role="button">Cancel Modification</a></td>
+                    <td class="display-4 col-3"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <!-- For loop ends here -->
+
+    {% endblock %}<!-- main_content -->
+    {% block footer %}
+    {{ super() }}
+    {% endblock %}
+</div><!-- div1 -->
+{% block scripts %}
+{{ super() }}
+{% endblock %}
+
+</body>
+</html>

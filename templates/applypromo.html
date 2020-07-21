@@ -53,61 +53,30 @@
                         </div>
                     </div>
                 </td>
-                <td class="display-4 col-3" >2</td>
-                <td class="display-4 col-3" >4.00</td>
-                <td class="display-4 col-3" >8.00</td>
+                <td class="display-4 col-3">2</td>
+                <td class="display-4 col-3">4.00</td>
+                <td class="display-4 col-3">8.00</td>
             </tr>
         </table>
     </div>
     <!-- For loop ends here -->
     <div class="container">
         <div class="row">
-            <div class="col-3"></div>
-            <div class="col-3"></div>
+            <div class="col-6"></div>
             <div class="col-3 display-4">Total Price</div>
-            <div class="col-3 display-4">12.00 </div>
+            <div class="col-3 display-4">12.00</div>
         </div>
     </div>
     <!-- Should be another conditional
       HTML for after promocode application-->
     <div class="container">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <a class="btn btn-primary btn-block" href="{{ url_for('modify_cart') }}" role="button">Modify item numbers in my cart</a>
+        <form action="" method="post">
+            <div class="row">
+                <div class="col-6"></div>
+                <div class="col-3 display-5">Enter Promo Code</div>
+                <div class="col-3"><input class="form-control" type="text" name="promocode" id="promocode"/> Enter Promo Code</div>
             </div>
-            <div class="col-3"></div>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <a class="btn btn-primary btn-block" href="{{ url_for('remove_from_cart') }}" role="button">Remove Items from my cart</a>
-            </div>
-            <div class="col-3"></div>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <a class="btn btn-primary btn-block" href="{{ url_for('apply_promo') }}" role="button">I have a promo code</a>
-            </div>
-            <div class="col-3"></div>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <a class="btn btn-primary btn-block" href="#" role="button">I'm good. Let's checkout</a>
-            </div>
-            <div class="col-3"></div>
-        </div>
+        </form>
     </div>
 
     {% endblock %}<!-- main_content -->

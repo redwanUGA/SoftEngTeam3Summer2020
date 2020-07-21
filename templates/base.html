@@ -32,40 +32,18 @@
 <div id="div1">
     {% block body_header %}
         <header class="container-fluid">
-
             <div>
                 <a href="#" id="logo"><img src="../static/images/icons/books-icon.png" alt="team3" /> Team#3 BookStore</a>
             </div>
             <div>
                 <form><input type="search" name="search_query" id="search_query" value="Search ..." onclick="this.value='';" /></form>
             </div>
-
         </header>
     {% endblock %}
     {% block menu_content %}
         <div id="menu">
             <ul id="menu_content">
                 <li><a href="/">Home</a></li>
-                <li>
-                    <a href="#">Categories</a><ul>
-                        <li><a href="#">Classic</a></li>
-                        <li><a href="#">Romance</a></li>
-                        <li><a href="#">Technology</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">Browse</a>
-                </li>
-                <li>
-                    <a href="#">Help</a><ul>
-                        <li><a href="#">Support Request</a></li>
-                        <li><a href="#">FAQs</a></li>
-                        <li><a href="search.html">Advanced Search</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#">About</a>
-                </li>
             </ul>
 
             <div id="mobile_button">
@@ -73,13 +51,19 @@
             </div>
             <div id="user_controls">
                 <ul>
-                    <li><a href="/cart"><img src="../static/images/cart.png" />MY CART</a></li>
-                    {% if session['logged_in'] %}
-                    <li><a href="/logout"><img src="../static/images/signin.png" />SING OUT</a></li>
+
+                    {% if session['logged_in'] == True and session['usertype'] == 1 %}
+                    <li><a href="{{ url_for('logout') }}">SING OUT</a></li>
+                    {% elif session['logged_in'] == True and session['usertype'] == 2 %}
+                    <li><a href="{{ url_for('cart') }}">MY CART</a></li>
+                    <li><a href="{{ url_for('view_profile') }}">VIEW PROFLIE</a></li>
+                    <li><a href="#">ORDER HISTORY</a></li>
+                    <li><a href="{{ url_for('logout') }}">SING OUT</a></li>
                     {% else %}
-                    <li><a href="/login"><img src="../static/images/signin.png" />SING IN</a></li>
+                    <li><a href="/login">SING IN</a></li>
+                    <li><a href="/register">SIGN UP</a></li>
                     {% endif %}
-                    <li><a href="/register"><img src="../static/images/signup.png" />SIGN UP</a></li>
+
                 </ul>
             </div>
         </div>

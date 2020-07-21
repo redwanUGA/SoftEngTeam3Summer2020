@@ -27,6 +27,8 @@ mysql = MySQL(app)
 key = b'fRmBje4ZejoeBPmxESfU2ElslhIcjiose6rHt4qaV4c='
 fenc = Fernet(key=key)
 
+##### Custom functions go here ####
+
 def conv_int(a):
     try:
         int(a)
@@ -195,6 +197,13 @@ def validate_all_nonempty_input(inputlist, valuelist):
 ##### Page Routes  ######
 
 # HomePage
+
+'''
+@app.route('/let_me_see_base')
+def base():
+    return render_template('base.html')
+'''
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -209,7 +218,29 @@ def login():
         flash('You are already logged in')
         return redirect(url_for('view_profile'))
 
+@app.route('/admin_panel')
+def show_admin_panel():
+    return render_template('admin.html')
 
+@app.route('/manage_user')
+def manage_user():
+    return render_template('usermanagement.html')
+
+@app.route('/manage_books')
+def manage_books():
+    return render_template('manage_books.html')
+
+@app.route('/add_book')
+def add_book():
+    return render_template('addbook.html')
+
+@app.route('/search_book')
+def search_book():
+    return render_template('searchbook.html')
+
+@app.route('/manage_promotions')
+def manage_promotions():
+    return render_template('promomanagement.html')
 
 # Register Page
 @app.route('/register')
@@ -225,6 +256,22 @@ def register():
 @app.route('/cart')
 def cart():
     return render_template('cart.html')
+
+@app.route('/modify_cart')
+def modify_cart():
+    return render_template('modifycart.html')
+
+@app.route('/remove_from_cart')
+def remove_from_cart():
+    return render_template('removefromcart.html')
+
+@app.route('/apply_promo')
+def apply_promo():
+    return render_template('applypromo.html')
+
+@app.route('/checkout')
+def checkout():
+    return render_template('checkout.html')
 
 # View Profile Page
 @app.route('/view_profile')
@@ -250,7 +297,7 @@ def view_profile():
         else:
             return redirect(url_for('index'))
 
-
+# edit profile page
 @app.route('/edit_profile')
 def edit_profile():
     if session.get('uid') != None:
@@ -272,6 +319,10 @@ def edit_profile():
         return render_template('editprofile.html', pdata=pdata, sadata=sadata, badata=badata, paydata=paydata)
     else:
         return redirect(url_for('index'))
+
+@app.route('/add_promo_page')
+def add_promo():
+    return render_template('addpromo.html')
 
 # Show Books
 # @@ Get from Database
@@ -491,23 +542,22 @@ def login_action():
     elif results[0]['active'] == 0:
         return redirect(url_for('activate_user_start'))
     else:
-
         session['logged_in'] = True
-        flash('You are Logged in as %s' % val_email)
-
         if results[0]['userTypeID'] == 1:
             session['usertype'] = 1
             uid = results[0]['userID']
             email = results[0]['email']
             session['uid'] = uid
-            session['email'] = email
-            return render_template('admin.html')
+            session['email'] = val_email
+            flash('You are Logged in as %s' % session.get('email'))
+            return redirect(url_for('show_admin_panel'))
         else:
             session['usertype'] = 2
             uid = results[0]['userID']
             email = results[0]['email']
             session['uid'] = uid
-            session['email'] = email
+            session['email'] = val_email
+            flash('You are Logged in as %s' % val_email)
             return redirect(url_for('view_profile'))
 
 
@@ -787,7 +837,7 @@ def editProfileData():
             cur.execute(paydatainsert)
             mysql.connection.commit()
 
-        msgg = Message("Team3 Book Store", sender="t3@myw.urq.mybluehost.me", recipients=[val_email])
+        msgg = Message("Team3 Book Store", sender="t3@myw.urq.mybluehost.me", recipients=[session.get('email')])
         msgg.body = ''' You have successfully updated your profile information.'''
         mail.send(msgg)
         flash('You have sucessfully updated your profile information.')
@@ -835,8 +885,29 @@ def password_change_finished():
         flash('Password Successfully Changed')
         return redirect(url_for('edit_profile'))
 
+@app.route('/add_book_action', methods=['GET','POST'])
+def add_book_action():
+    return 'Needs to be implemented by Sakher/Divya/Andres/Redwan'
 
+@app.route('/search_book_action', methods=['GET','POST'])
+def search_book_action():
+    return 'Needs to be implemented by Sakher/Divya/Andres/Redwan'
 
+@app.route('/get_EOD')
+def get_EOD():
+    return 'Needs to be implemented by Sakher/Divya/Andres/Redwan'
+
+@app.route('/get_Inventory')
+def get_Inventory():
+    return 'Needs to be implemented by Sakher/Divya/Andres/Redwan'
+
+@app.route('/modify_cart_action', methods=['GET', 'POST'])
+def modify_cart_action():
+    return 'Needs to be implemented by Sakher/Divya/Andres/Redwan'
+
+@app.route('/remove_from_cart_action', methods=['GET', 'POST'])
+def remove_from_cart_action():
+    return 'Needs to be implemented by Sakher/Divya/Andres/Redwan'
 
 if __name__ == '__main__':
     app.run(debug=True)
