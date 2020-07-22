@@ -1,10 +1,10 @@
-CREATE SCHEMA IF NOT EXISTS `Bookstore` ;
-USE `Bookstore` ;
+CREATE SCHEMA IF NOT EXISTS `bookstore` ;
+USE `bookstore` ;
 
 -- -----------------------------------------------------
--- Table `Bookstore`.`Category`
+-- Table `bookstore`.`Category`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Bookstore`.`Category` (
+CREATE TABLE IF NOT EXISTS `bookstore`.`Category` (
   `idCategory` INT NOT NULL AUTO_INCREMENT,
   `category` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`idCategory`))
@@ -12,9 +12,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `Bookstore`.`Books`
+-- Table `bookstore`.`Books`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Bookstore`.`Books` (
+CREATE TABLE IF NOT EXISTS `bookstore`.`Books` (
   `ISBN` INT NOT NULL,
   `author` VARCHAR(50) NOT NULL,
   `title` VARCHAR(50) NOT NULL,
@@ -28,9 +28,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `Bookstore`.`userType`
+-- Table `bookstore`.`userType`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Bookstore`.`userType` (
+CREATE TABLE IF NOT EXISTS `bookstore`.`userType` (
   `idUserType` INT NOT NULL,
   `userStatus` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idUserType`))
@@ -38,9 +38,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `Bookstore`.`Users`
+-- Table `bookstore`.`Users`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Bookstore`.`Users` (
+CREATE TABLE IF NOT EXISTS `bookstore`.`users` (
   `userID` INT NOT NULL AUTO_INCREMENT,
   `firstName` VARCHAR(45) NOT NULL,
   `lastName` VARCHAR(45) NOT NULL,
@@ -57,14 +57,14 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`Users` (
 
 
 -- -----------------------------------------------------
--- Table `Bookstore`.`Address`
+-- Table `bookstore`.`Address`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Bookstore`.`Address` (
+CREATE TABLE IF NOT EXISTS `bookstore`.`address` (
   `idAddress` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(50) NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
   `street` VARCHAR(100) NOT NULL,
   `street2` VARCHAR(100) NULL,
-  `zipCode` INT(5) NOT NULL,
+  `zipCode` INT(10) NOT NULL,
   `city` VARCHAR(50) NOT NULL,
   `state` VARCHAR(30) NOT NULL,
   `AddressType` VARCHAR(10) NULL,
@@ -74,14 +74,14 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `Bookstore`.`Payment`
+-- Table `bookstore`.`Payment`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Bookstore`.`Payment` (
+CREATE TABLE IF NOT EXISTS `bookstore`.`payment` (
   `cardNumber` VARCHAR(100) NOT NULL,
   `expiryYear` INT NOT NULL,
   `expiryMonth` INT NOT NULL,
   `securityCode` INT(3) NULL,
-  `nameoncard` VARCHAR(50) NULL,
+  `nameoncard` VARCHAR(100) NULL,
   `paymentType` VARCHAR(15) NOT NULL,
   `UserID` INT NOT NULL,
   PRIMARY KEY (`UserID`))
@@ -89,9 +89,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `Bookstore`.`Promotion`
+-- Table `bookstore`.`Promotion`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Bookstore`.`Promotion` (
+CREATE TABLE IF NOT EXISTS `bookstore`.`Promotion` (
   `idPromotion` INT NOT NULL AUTO_INCREMENT,
   `promoCode` VARCHAR(45) NOT NULL,
   `discountAmount` INT(5) NOT NULL,
@@ -102,9 +102,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `Bookstore`.`Order`
+-- Table `bookstore`.`Order`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Bookstore`.`Order` (
+CREATE TABLE IF NOT EXISTS `bookstore`.`Order` (
   `orderID` INT NOT NULL AUTO_INCREMENT,
   `userID` INT NOT NULL,
   `total` INT NULL,
@@ -117,9 +117,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `Bookstore`.`cartItems`
+-- Table `bookstore`.`cartItems`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Bookstore`.`cart` (
+CREATE TABLE IF NOT EXISTS `bookstore`.`cart` (
   `userID` INT NOT NULL,
   `bookID` INT NOT NULL,
   `quantity` INT(10) NOT NULL,
@@ -128,9 +128,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `Bookstore`.`orderItems`
+-- Table `bookstore`.`orderItems`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Bookstore`.`orderItems` (
+CREATE TABLE IF NOT EXISTS `bookstore`.`orderItems` (
   `idOrder_Product` INT NOT NULL AUTO_INCREMENT,
   `orderID` INT NOT NULL,
   `ProductID` INT NOT NULL,
@@ -140,9 +140,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `Bookstore`.`bookInventory`
+-- Table `bookstore`.`bookInventory`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Bookstore`.`bookInventory` (
+CREATE TABLE IF NOT EXISTS `bookstore`.`bookInventory` (
   `idbookInventory` INT NOT NULL AUTO_INCREMENT,
   `bookID` INT NOT NULL,
   `bookStatus` VARCHAR(15) NULL,
@@ -154,4 +154,4 @@ ENGINE = InnoDB;
 
 INSERT INTO `userType` (`idUserType`, `userStatus`) VALUES ('1', 'Admin');
 INSERT INTO `userType` (`idUserType`, `userStatus`) VALUES ('2', 'Registered User');
-INSERT INTO `Users` VALUES ('team3','admin','password','email@email.com',NULL,'',1,1,1,1234,0);
+INSERT INTO `users` VALUES (1,'team3','admin','pbkdf2:sha256:150000$1EGsALIX$da3cd4923a0591df667460428594bb64da58a64f806c5febc9aa49032ca6d376','MdRedwan.Islam@uga.edu',NULL,'',1,1,1,1234,0);
