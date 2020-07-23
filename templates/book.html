@@ -19,20 +19,26 @@
 
 		{% block main_content %}
 		<div id="main_content">
-
-            <h1>{{ infopass.book_title }}</h1>
+			<!--- remove this potion of the code --->
+            <h1>{{ infopass.title }}</h1>
             <div class="section section_third">
-                <img src="{{ infopass.book_dir }}" id="book_img" style="transition-duration:0.5s;" />
+                <img src="{{ url_for('static', filename=infopass.cover) }}" id="book_img" style="transition-duration:0.5s;" />
             </div>
             <div class="section section_2thirds">
-                <span id="book_title">{{ infopass.book_title }}</span>
-                <span id="book_author">Author: {{ infopass.book_author }}</span>
-                <span>Publisher: CS books</span>
-                <span>2015</span>
-                <span>Category: Technology</span>
-                <span>Rateing: 4.5/ 5 </span>
+                <span id="book_title">{{ infopass.title }}</span>
+                <span id="book_author">Author: {{ infopass.author }}</span>
+                <span>Publisher: {{ infopass.publisher }}</span>
+                <span> {{ infopass.pubYear }} </span>
+                <span>Category: {{ cat.category }}</span>
+                <span id="book_price">{{ infopass.sellingPrice }}</span>
                 <span id="book_price">{{ infopass.book_price }}</span>
-                <a href="#" class="btn"><img src="../static/images/cart.png" />Add to cart</a>
+				<form action="{{url_for('add2cart')}}" method="post">
+					<!-- Complete the hidden form -->
+					<input type="hidden" name="id" value="val"/>
+					<input type="hidden" name="book_author" value="val"/>
+                	<input type="hidden" name="publisher" value="valuefromdb"/>
+					<input type="submit" value="Add to cart">
+				</form>
             </div>
 
         </div>

@@ -2,84 +2,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	{% block head_header %}
-		{{ super() }}
-	{% endblock %}
-	<title> Add Promo </title>
+    {% block head_header %}
+    {{ super() }}
+    {% endblock %}
+    <title> Add Promo </title>
 </head>
 <body>
-	<div id="div1">
-		{% block body_header %}
-			{{ super() }}
-		{% endblock %}<!-- container -->
+<div id="div1">
+    {% block body_header %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
 
-		{% block menu_content %}
-			{{ super() }}
-		{% endblock %}<!-- container -->
+    {% block menu_content %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
 
-		{% block main_content %}
-		<div id="main_content">
-            <div class="container mb-4">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th> Book Preview </th>
-                                        <th> Book Name </th>
-                                        <th> Order ID </th>
-                                        <th> Quantity </th>
-                                        <th> Total Price </th>
-                                        <th> Reorder </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><img src="../static/images/books/01.jpg" width="80px" length="80px"> </td>
-                                        <td> Software Enggineering <br>by SommerVille</td>
-                                        <td>243</td>
-                                        <td>2</td>
-                                        <td>30.00 USD</td>
+    {% block flash %}
+    {{ super() }}
+    {% endblock %}
 
-                                        <td>
-                                            <button type="button" class="btn btn-success">+</button>
-                                        </td>
-                                    </tr>
+    {% block main_content %}
 
-                                    <tr>
-                                        <td><img src="../static/images/books/02.jpg" width="80px" length="80px"> </td>
-                                        <td> Data Mining <br>by SommerVille</td>
-                                        <td>55</td>
-                                        <td>1</td>
-                                        <td>15.00 USD</td>
-                                        <td>
-                                            <button type="button" class="btn btn-success">+</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="col mb-2">
-                        <div class="row">
-                            <div class="col-sm-12  col-md-6">
-                                <button class="btn btn-block btn-light">Continue Shopping</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-		{% endblock %}<!-- main_content -->
-		{% block footer %}
-			{{ super() }}
-		{% endblock %}
-	</div><!-- div1 -->
-		{% block scripts %}
-			{{ super() }}
-		{% endblock %}
+
+    <div class="container">
+        <h1 class="text-primary display-3">Order history</h1>
+        <!-- for loop starts here -->
+        <h3> Ordered on 07/09/2020 </h3>
+        <h5> Order ID : XXXX </h5>
+
+        <table class="table">
+            <tr class="row">
+                <th class="col-4"> Book Name</th>
+                <th class="col-4"> Quantity</th>
+                <th class="col-4"> Price</th>
+            </tr>
+            <!-- nested for for items-->
+            <tr class="row">
+                <td class="col-4"> Book Name from DB</td>
+                <td class="col-4"> Quantity from DB</td>
+                <td class="col-4"> Price from DB</td>
+            </tr>
+            <tr class="row">
+                <td class="col-4"> Book Name from DB</td>
+                <td class="col-4"> Quantity from DB</td>
+                <td class="col-4"> Price from DB</td>
+            </tr>
+            <tr class="row">
+                <td class="col-4"></td>
+                <td class="col-4"> Promotional Reduction</td>
+                <td class="col-4"> 20%</td>
+            </tr>
+            <tr class="row">
+                <td class="col-4"></td>
+                <td class="col-4"> Order Total</td>
+                <td class="col-4"> Price from DB</td>
+            </tr>
+            <tr class="row">
+                <td class="col-3"></td>
+                <td class="col-6"><a class="btn btn-primary btn-block" href="{{ url_for('cancel_order') }}" role="button">Cancel
+                    this order</a></td>
+                <td class="col-3"></td>
+            </tr>
+        </table>
+
+        <h3> Ordered on 07/09/2020 </h3>
+        <h5> Order ID : XXXX </h5>
+
+        <table class="table">
+            <tr class="row">
+                <th class="col-4"> Book Name</th>
+                <th class="col-4"> Quantity</th>
+                <th class="col-4"> Price</th>
+            </tr>
+            <!-- nested for for items-->
+            <tr class="row">
+                <td class="col-4"> Book Name from DB</td>
+                <td class="col-4"> Quantity from DB</td>
+                <td class="col-4"> Price from DB</td>
+            </tr>
+            <tr class="row">
+                <td class="col-4"> Book Name from DB</td>
+                <td class="col-4"> Quantity from DB</td>
+                <td class="col-4"> Price from DB</td>
+            </tr>
+            <tr class="row">
+                <td class="col-4"></td>
+                <td class="col-4"> Promotional Reduction</td>
+                <td class="col-4"> 20%</td>
+            </tr>
+            <tr class="row">
+                <td class="col-4"></td>
+                <td class="col-4"> Order Total</td>
+                <td class="col-4"> Price from DB</td>
+            </tr>
+            <tr class="row">
+                <td class="col-3"></td>
+                <td class="col-6"><a class="btn btn-primary btn-block" href="{{ url_for('cancel_order') }}" role="button">Cancel
+                    this order</a></td>
+                <td class="col-3"></td>
+            </tr>
+        </table>
+
+    </div>
+    {% endblock %}<!-- main_content -->
+    {% block footer %}
+    {{ super() }}
+    {% endblock %}
+</div><!-- div1 -->
+{% block scripts %}
+{{ super() }}
+{% endblock %}
 
 </body>
 </html>

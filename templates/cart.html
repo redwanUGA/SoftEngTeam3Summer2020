@@ -17,6 +17,10 @@
     {{ super() }}
     {% endblock %}<!-- container -->
 
+    {% block flash %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
+
     {% block main_content %}
     <div class="container">
         <table class="table">
@@ -53,9 +57,9 @@
                         </div>
                     </div>
                 </td>
-                <td class="display-4 col-3" >2</td>
-                <td class="display-4 col-3" >4.00</td>
-                <td class="display-4 col-3" >8.00</td>
+                <td class="display-4 col-3">2</td>
+                <td class="display-4 col-3">4.00</td>
+                <td class="display-4 col-3">8.00</td>
             </tr>
         </table>
     </div>
@@ -65,16 +69,17 @@
             <div class="col-3"></div>
             <div class="col-3"></div>
             <div class="col-3 display-4">Total Price</div>
-            <div class="col-3 display-4">12.00 </div>
+            <div class="col-3 display-4">12.00</div>
         </div>
     </div>
     <!-- Should be another conditional
       HTML for after promocode application-->
+
     <div class="container">
-        <div class="row">
+        <div class="row content-justify-center">
             <div class="col-3"></div>
             <div class="col-6">
-                <a class="btn btn-primary btn-block" href="{{ url_for('modify_cart') }}" role="button">Modify item numbers in my cart</a>
+                <a class="btn btn-primary btn-block" href="{{ url_for('index') }}" role="button">Continue Shopping</a>
             </div>
             <div class="col-3"></div>
         </div>
@@ -84,7 +89,8 @@
         <div class="row">
             <div class="col-3"></div>
             <div class="col-6">
-                <a class="btn btn-primary btn-block" href="{{ url_for('remove_from_cart') }}" role="button">Remove Items from my cart</a>
+                <a class="btn btn-primary btn-block" href="{{ url_for('modify_cart') }}" role="button">Modify item
+                    numbers in my cart</a>
             </div>
             <div class="col-3"></div>
         </div>
@@ -94,7 +100,8 @@
         <div class="row">
             <div class="col-3"></div>
             <div class="col-6">
-                <a class="btn btn-primary btn-block" href="{{ url_for('apply_promo') }}" role="button">I have a promo code</a>
+                <a class="btn btn-primary btn-block" href="{{ url_for('remove_from_cart') }}" role="button">Remove Items
+                    from my cart</a>
             </div>
             <div class="col-3"></div>
         </div>
@@ -104,7 +111,19 @@
         <div class="row">
             <div class="col-3"></div>
             <div class="col-6">
-                <a class="btn btn-primary btn-block" href="#" role="button">I'm good. Let's checkout</a>
+                <a class="btn btn-primary btn-block" href="{{ url_for('apply_promo') }}" role="button">I have a promo
+                    code</a>
+            </div>
+            <div class="col-3"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6">
+                <a class="btn btn-primary btn-block" href=" {{ url_for('checkout') }} " role="button">I'm good. Let's
+                    checkout</a>
             </div>
             <div class="col-3"></div>
         </div>

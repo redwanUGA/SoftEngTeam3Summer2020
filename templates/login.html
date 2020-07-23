@@ -17,6 +17,10 @@
 			{{ super() }}
 		{% endblock %}<!-- container -->
 
+        {% block flash %}
+            {{ super() }}
+        {% endblock %}
+
 		{% block main_content %}
 		<div id="main_content">
             <style>
@@ -73,21 +77,6 @@
                     padding-top: 16px;
                 }
             </style>
-
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            <ul>
-                {% for message in messages %}
-                {% if "Success" in message %}
-            <li class='text-success'>{{ message }}</li>
-                {% else %}
-            <li class='text-danger'>{{ message }}</li>
-                {% endif %}
-            {% endfor %}
-             </ul>
-            {% endif %}
-            {% endwith %}
-
             <div id="login">
                 <form action="{{ url_for('login_action') }}" method="post">
                     <div class="container">

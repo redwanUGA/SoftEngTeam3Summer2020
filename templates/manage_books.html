@@ -17,6 +17,10 @@
     {{ super() }}
     {% endblock %}<!-- container -->
 
+    {% block flash %}
+    {{ super() }}
+    {% endblock %}
+
     {% block main_content %}
     <div class="container">
         <h1 class="display-4">Manage Books</h1>
@@ -28,13 +32,16 @@
                 <a class="btn btn-success btn-block btn-lg" href="{{ url_for('add_book') }}" role="button">Add Books</a>
             </div>
             <div class="col-3">
-                <a class="btn btn-primary btn-block btn-lg" href="{{ url_for('search_book') }}" role="button">Advanced Search</a>
+                <a class="btn btn-primary btn-block btn-lg" href="{{ url_for('search_book') }}" role="button">Advanced
+                    Search</a>
             </div>
             <div class="col-3">
-                <a class="btn btn-primary btn-block btn-lg" href="{{ url_for('get_EOD') }}" role="button">Get End-of-day sales report</a>
+                <a class="btn btn-primary btn-block btn-lg" href="{{ url_for('get_EOD') }}" role="button">Get End-of-day
+                    sales report</a>
             </div>
             <div class="col-3">
-                <a class="btn btn-primary btn-block btn-lg" href="{{ url_for('get_Inventory') }}" role="button">Get Inventory report</a>
+                <a class="btn btn-primary btn-block btn-lg" href="{{ url_for('get_Inventory') }}" role="button">Get
+                    Inventory report</a>
             </div>
         </div>
     </div>
@@ -44,33 +51,33 @@
         <h3 class="display-5"> See all books </h3>
         <table class="table table-strped">
             <tr>
-                <th> Title </th>
-                <th> Author </th>
-                <th> Category </th>
-                <th> ISBN </th>
-                <th> Editor </th>
-                <th> Publisher </th>
-                <th> Year </th>
-                <th> In Stock </th>
-                <th> Threshold </th>
-                <th> Buying Price </th>
-                <th> Selling Price </th>
-                <th> Actions </th>
+                <th> Title</th>
+                <th> Author</th>
+                <th> Category</th>
+                <th> ISBN</th>
+                <th> Editor</th>
+                <th> Publisher</th>
+                <th> Year</th>
+                <th> In Stock</th>
+                <th> Threshold</th>
+                <th> Buying Price</th>
+                <th> Selling Price</th>
+                <th> Actions</th>
             </tr>
             <!-- Your for loop goes here -->
             <tr>
-                <td> Title1 </td>
-                <td> Author1 </td>
-                <td> Category1 </td>
-                <td> ISBN1 </td>
-                <td> Editor1 </td>
-                <td> Publisher1 </td>
-                <td> Year1 </td>
-                <td> In Stock1 </td>
-                <td> Threshold1 </td>
-                <td> Buying Price1 </td>
-                <td> Selling Price1 </td>
-                <td> Actions1 </td>
+                <td> Title1</td>
+                <td> Author1</td>
+                <td> Category1</td>
+                <td> ISBN1</td>
+                <td> Editor1</td>
+                <td> Publisher1</td>
+                <td> Year1</td>
+                <td> In Stock1</td>
+                <td> Threshold1</td>
+                <td> Buying Price1</td>
+                <td> Selling Price1</td>
+                <td> Actions1</td>
             </tr>
 
         </table>
