@@ -2,177 +2,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	{% block head_header %}
-		{{ super() }}
-	{% endblock %}
-	<title> Add Promo </title>
+    {% block head_header %}
+    {{ super() }}
+    {% endblock %}
+    <title> Add Promo </title>
 </head>
 <body>
-	<div id="div1">
-	        {% block body_header %}
-			{{ super() }}
-		{% endblock %}<!-- container -->
+<div id="div1">
+    {% block body_header %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
 
-		{% block menu_content %}
-			{{ super() }}
-		{% endblock %}<!-- container -->
+    {% block menu_content %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
 
-		{% block main_content %}
-		<div id="main_content">
-		  
-			<style>
-				/*CHECKOUT style*/
-				#orderSum {
-					padding-bottom: 3em;
-				}
+    {% block flash %}
+    {{ super() }}
+    {% endblock %}
 
-				.content {
-					margin-left: 10px;
-					display: inline-block;
-					vertical-align: middle;
-				}
+    {% block main_content %}
+    <div class="container">
+        <div class="row justify-content-center"><h1 class="display-3"> Order Summary</h1></div>
+    </div>
+    <div class="container">
+        <table class="table">
+            <tr>
+                <th>Book</th>
+                <th>Quantity</th>
+                <th>Unit Price (USD)</th>
+                <th>Item total (USD)</th>
+            </tr>
 
-					.content p {
-						margin: .2em;
-					}
+	    {%for i in range(0,leng)%}
+            <tr>
+                <td class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{books[i]['title']}}</h5>
+                            <p class="card-text">Author : {{books[i]['author']}}</p>
+                            <p class="card-text">ISBN : {{books[i]['ISBN']}}</p>
+                            <p class="card-text">Category : {{books[i]['category']}}</p>
+                        </div>
+                    </div>
+                </td>
+                <td class="display-4 col-3">{{books[i]['quant']}}</td>
+                <td class="display-4 col-3">{{books[i]['price']}}</td>
+                <td class="display-4 col-3">{{books[i]['price'] * books[i]['quant']}}</td>
+            </tr>
+            {%endfor%}
+        </table>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-3"></div>
+            <div class="col-3 display-4">Total Price</div>
+            <div class="col-3 display-4">{{total}}</div>
+        </div>
+    </div>
+    <!-- Should be another conditional
+  HTML for after promocode application-->
+    <div class="container">
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6 display-4">
+                Promo Code Applied
+            </div>
+            <div class="col-3 display-4"> PROMO</div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6 display-4">
+                Final Total (USD)
+            </div>
+            <div class="col-3 display-4"> 10.45</div>
+        </div>
+    </div>
 
-				#foot {
-					text-align: left;
-				}
+    <div class="container">
+        <div class="row justify-content-center"><h1 class="display-3"> Shipping Address Information </h1></div>
+    </div>
+    <div class="container">
+        <table class="table">
+            <tr class="row justify-content-center">
+                <td class="col-4"> Street Address</td>
+                <td class="col-4"> {{ship['street']}}</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> Apartment No</td>
+                <td class="col-4"> {{ship['street2']}}</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> City</td>
+                <td class="col-4"> {{ship['city']}}</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> State</td>
+                <td class="col-4"> {{ship['state']}}</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> Zip</td>
+                <td class="col-4"> {{ship['zipCode']}}</td>
+            </tr>
+        </table>
+    </div>
 
-					#foot p {
-						padding: 0;
-						padding-left: 1em;
-						margin: .2em;
-					}
+    <div class="container">
+        <div class="row justify-content-center"><h1 class="display-3"> Billing Address Information </h1></div>
+    </div>
+    <div class="container">
+        <table class="table">
+            <tr class="row justify-content-center">
+                <td class="col-4"> Street Address</td>
+                <td class="col-4"> {{bill['street']}}</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> Apartment No</td>
+                <td class="col-4"> {{bill['street2']}}</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> City</td>
+                <td class="col-4"> {{bill['city']}}</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> State</td>
+                <td class="col-4"> {{bill['state']}}</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> Zip</td>
+                <td class="col-4"> {{bill['zipCode']}}</td>
+            </tr>
+        </table>
+    </div>
 
-				#total {
-					text-align: right;
-					padding: .2em;
-					padding-right: 1em;
-				}
-				
-				#total h4 {
-				    text-align: right;
-				}
-				#total div{
-				    display: inline-block;
-				}
-				#promoForm{
-				    margin-right: 5em;
-				    text-align: center;
-				}
-				#code{
-				    margin: .2em;
-				    display: list-item;
-				}
-				#checkout {
-					display: block;
-					margin: 1em;
-					margin-left: auto;
-				}
 
-				.container hr {
-					margin: .2em;
-					padding: 0;
-				}
+    <div class="container">
+        <div class="row justify-content-center"><h1 class="display-3"> Payment Information </h1></div>
+    </div>
+    <div class="container">
+        <table class="table">
+            <tr class="row justify-content-center">
+                <td class="col-4"> Name on Card</td>
+                <td class="col-4"> {{pay['nameoncard']}}</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> Card Info</td>
+                <td class="col-4"> CardType ending {{pay['cardNumber']}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-3">
+                <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('edit_profile') }}" role="button">Edit
+                    Information</a>
+            </div>
+            <div class="col-3">
+                <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('cart') }}" role="button">Go Back to
+                    Cart</a>
+            </div>
+            <div class="col-3">
+                <!--  create a hidden form with all the info !-->
+                <form action="{{ url_for(('checkout_action')) }}" method="post">
+                    <input type="hidden" name="name1" value="valuefromdb1"/>
+                    <input type="hidden" name="name2" value="valuefromdb2"/>
+                    <input class="btn btn-primary btn-lg btn-block" type="submit" value="Confirm Checkout"/>
+                </form>
+            </div>
+        </div>
+    </div>
 
-				.container h4 {
-					text-align: left;
-					padding: 0;
-				}
-				.quant{
-				    margin:0;
-				    margin-top:1em;
-				}
-				.price{
-				    margin-left: 5em;
-				}
-			</style>
-			<form>
-				<div id="orderSum" class="container">
-					<hr class="centerFormat">
-					<h2 class="centerFormat">Order Summary</h2>
-					<hr class="centerFormat">
 
-					{%for i in range(0,leng) %}
-					<div class="container">
-					  <img src="{{ books[i]['cover']}}" width="100px" length="100px">
-					  <div class="content">
-					    <p>Title: {{ books[i]['title']}}</p>
-					    <p>ISBN: {{books[i]['ISBN']}}</p>
-					    <p>Author: {{books[i]['author']}}</p>
-					  </div>
-					  <div class='content price'>
-					    <p>${{books[i]['sellPrice']}} X {{books[i]['quant']}}</p>
-					    <p class="quant">Total: ${{books[i]['sellPrice'] * books[i]['quant']}}</p>
-					  </div>
-					</div>
-					{%endfor%}
-				</div>
+    {% endblock %}<!-- main_content -->
+    {% block footer %}
+    {{ super() }}
+    {% endblock %}
+</div><!-- div1 -->
+{% block scripts %}
+{{ super() }}
+{% endblock %}
 
-				<div id="foot">
-				  <div class="container">
-						<hr class="centerFormat">
-						<h4 class="centerFormat">Shipping Information</h4>
-						<hr class="centerFormat">
-						<p>{{ship['name']}}</p>
-						<p>{{ship['street']}}</p>
-						<p>{{ship['street2']}}</p>
-						<p>{{ship['city']}} {{ship['state']}} {{ship['zipCode']}}</p>
-						<br>
-						<p>
-							<button type="button" style=" height: 30px; width:200px" class="btn btn-success" onclick="location.href='edit_profile'">Enter New address</button>
-						</p>
-						<br>
-				  </div>
-				  <div class="container">
-						<hr class="centerFormat">
-						<h4 class="centerFormat">Payment Information</h4>
-						<hr class="centerFormat">
-						<h5 class="centerFormat">Card</h5>
-						<hr class="centerFormat">
-						<p>{{pay['nameoncard']}}</p>
-						<p>Visa ending in {{pay['cardNumber']}}</p>
-						<p>expires in {{pay['expiryMonth']}}/{{pay['expiryYear']}}</p>
-						<h5 class="centerFormat">Billing Address</h5>
-						<hr class="centerFormat">
-						<p>{{bill['name']}}</p>
-						<p>{{bill['street']}}</p>
-						<p>{{bill['street2']}}</p>
-						<p>{{bill['city']}} {{bill['state']}} {{bill['zipCode']}}</p>
-						<br>
-						<p>
-						  <button type="button" style=" height: 30px; width:300px" class="btn btn-success" onclick="location.href='edit_profile'">Enter New Payment details</button>
-						</p>
-						<br>
-				  </div>
-										
-				  <div id="total" class="container">
-				    <div id="promoForm">
-				      <form action="{{ url_for('checkout') }}"o>
-					<p>Enter Promo code</p>
-					<input type='text' id='code' name='code'>
-					<input type='submit' value='Enter'>
-				      </form>
-				    </div>
-				    <div>
-				      <h5>Subtotal ${{subtotal}}</h5>
-				      <h5>Shipping ${{shipping}}</h5>
-				      <h4>Total ${{total}}</h4>
-				      <input type="button" value="Confirm Order" id="checkout">
-				    </div>
-				  </div>
-				</div>
-			</form>
-		</div>
-		{% endblock %}<!-- main_content -->
-		{% block footer %}
-			{{ super() }}
-		{% endblock %}
-	</div><!-- div1 -->
-		{% block scripts %}
-			{{ super() }}
-	{% endblock %}
 </body>
 </html>

@@ -17,18 +17,9 @@
     {{ super() }}
     {% endblock %}<!-- container -->
 
+
     {% block main_content %}
     <div id="main_content">
-
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul class='text-success'>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
 
         <div class="jumbotron jumbotron-fluid">
             <div class="container">

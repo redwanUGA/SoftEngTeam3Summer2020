@@ -27,7 +27,33 @@ mysql = MySQL(app)
 key = b'fRmBje4ZejoeBPmxESfU2ElslhIcjiose6rHt4qaV4c='
 fenc = Fernet(key=key)
 
+
 ##### Custom functions go here ####
+
+
+def set_query(query):
+    try:
+        with app.app_context():
+            cur = mysql.connection.cursor()
+            cur.execute(query)
+            mysql.connection.commit()
+        return True
+    except:
+        return False
+
+
+def get_query(query):
+    with app.app_context():
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        return cur.fetchall()
+
+
+def send_message(body, val_email):
+    msgg = Message("Team3 Book Store", sender="t3@myw.urq.mybluehost.me", recipients=[val_email])
+    msgg.body = body
+    mail.send(msgg)
+
 
 def conv_int(a):
     try:
@@ -206,7 +232,11 @@ def base():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    all_book_query = "select  `books`.*, `bookinventory`.`bookID` , `bookinventory`.`sellingPrice` from `books`" \
+                     "inner join `bookinventory`" \
+                     "on `books`.`ISBN` = `bookinventory`.`idbookInventory`;"
+    result = get_query(all_book_query)
+    return render_template('index.html', data = result)
 
 
 # Login Page
@@ -255,11 +285,24 @@ def register():
 # Cart Page
 @app.route('/cart')
 def cart():
-    return render_template('cart.html')
+    if session['logged_in'] == True and session.get('userTypeID') == 2:
+        # query for users cart
+        # pass data to cart page from cart table
+        return render_template('cart.html')
+    else:
+        flash('You are not allowed to view this page')
+        return redirect(url_for('index'))
 
 @app.route('/modify_cart')
 def modify_cart():
-    return render_template('modifycart.html')
+    if session['logged_in'] == True and session.get('userTypeID') == 2:
+        # query for users cart
+        # pass data to modifycart.html from the current user's cart
+        return render_template('modifycart.html')
+    else:
+        flash('You are not allowed view this page')
+        return redirect(url_for('index'))
+
 
 @app.route('/remove_from_cart')
 def remove_from_cart():
@@ -267,33 +310,41 @@ def remove_from_cart():
 
 @app.route('/apply_promo')
 def apply_promo():
+    # check for proper user permission
+    # pass cart information to applypromo.html
     return render_template('applypromo.html')
 
 @app.route('/checkout')
 def checkout():
-    if(session.get('uid') != None):
+    if session['logged_in'] == True and session.get('userTypeID') == 2:
         #user is signed in
         subtotal=0
         totalItems = 0
         cur = mysql.connection.cursor()
-        uid = session.get('uid')
+        uid = session.get('userID')
         cart_query = "SELECT * FROM bookstore.cart WHERE userID=%d;" % uid
         cur.execute(cart_query)
         cart = cur.fetchall()
         books =[]
         for x in cart:
             bookID=x['bookID']
-            book_query = "SELECT * FROM bookstore.Books WHERE ISBN=%d" % bookID
+            book_query = "SELECT * FROM bookstore.books WHERE ISBN=%d" % bookID
             cur.execute(book_query)
             book = cur.fetchall()
             book[0]['quant'] = x['quantity']
             totalItems += x['quantity']
-            subtotal += book[0]['quant'] * book[0]['sellPrice']
+
+            priceQ = "SELECT * FROM bookstore.bookinventory WHERE bookID=%d" % bookID
+            price = get_query(priceQ)[0]['sellingPrice']
+            subtotal += book[0]['quant'] * price
+            book[0]['price'] = price
             
             books += book
 
+        #apply the promocode discount
+        #however promocode application is supposed to work, calculate it here
         promocode = None
-        promo_query = 'SELECT * FROM bookstore.Promotion WHERE idPromotion=\'%s\'' % promocode
+        promo_query = 'SELECT * FROM bookstore.promotion WHERE idPromotion=\'%s\'' % promocode
         cur.execute(promo_query)
         discount = cur.fetchall()
         print(discount)
@@ -308,47 +359,45 @@ def checkout():
         #shipping information
         ship_query = 'SELECT * FROM bookstore.address WHERE userID=%d AND AddressType=\'ship\'' % uid
         cur.execute(ship_query)
-        ship = cur.fetchall()[0]
+        ship = cur.fetchall()
+        if(len(ship) != 0):
+            ship = ship[0]
 
         #billing information
         bill_query = 'SELECT * FROM bookstore.address WHERE userID=%d AND AddressType=\'bill\'' % uid
         cur.execute(bill_query)
-        bill = cur.fetchall()[0]
+        bill = cur.fetchall()
+        if(len(bill) != 0):
+            bill = bill[0]
 
         pay_query = 'SELECT * FROM bookstore.payment WHERE userID=%d' % uid
         cur.execute(pay_query)
-        pay = cur.fetchall()[0]
+        pay = cur.fetchall()
+        if(len(pay) != 0):
+            cardNumber = pay[0]['cardNumber']
+            cardNumber = cardNumber[len(cardNumber)-4:]
+            pay[0]['cardNumber'] = cardNumber
+            pay = pay[0]
         
         return render_template('checkout.html', leng=len(books), books=books, shipping=shipping, subtotal=subtotal, total=total, ship=ship, pay=pay, bill=bill)
     else:
-        #user is not signed in
-        return render_template('cart.html')
+        flash('You are not allowed to view this page')
+        return redirect(url_for('index'))
 
-@app.route('/enter_promo', methods=['POST'])
-def enter_promo():
-    promoCode = request.form['code']
-    checkout(promoCode)
-    
-    
 # View Profile Page
 @app.route('/view_profile')
 def view_profile():
-        if session.get('uid') != None:
-            uid = session.get('uid')
+        if session.get('userID') != None:
+            uid = session.get('userID')
             pdata_query = "SELECT * FROM `bookstore`.`users` where `userID`= %d ;" % uid
             sadata_query = "SELECT * FROM `bookstore`.`address` where `userID`=%d and `AddressType`='ship' " % uid
             badata_query = "SELECT * FROM `bookstore`.`address` where `userID`=%d and `AddressType`='bill' " % uid
             paydata_query = "SELECT * FROM `bookstore`.`payment` where `UserID`= %d ;" % uid
-            cur = mysql.connection.cursor()
 
-            cur.execute(pdata_query)
-            pdata = cur.fetchall()
-            cur.execute(sadata_query)
-            sadata = cur.fetchall()
-            cur.execute(badata_query)
-            badata = cur.fetchall()
-            cur.execute(paydata_query)
-            paydata = cur.fetchall()
+            pdata = get_query(pdata_query)
+            sadata = get_query(sadata_query)
+            badata = get_query(badata_query)
+            paydata = get_query(paydata_query)
             print(pdata, sadata, badata, paydata)
             return render_template('viewprofile.html', pdata=pdata, sadata= sadata, badata = badata, paydata = paydata)
         else:
@@ -357,51 +406,60 @@ def view_profile():
 # edit profile page
 @app.route('/edit_profile')
 def edit_profile():
-    if session.get('uid') != None:
-        uid = session.get('uid')
+    if session.get('userID') != None:
+        uid = session.get('userID')
         pdata_query = "SELECT * FROM `bookstore`.`users` where `userID`= %d ;" % uid
         sadata_query = "SELECT * FROM `bookstore`.`address` where `userID`=%d and `AddressType`='ship' " % uid
         badata_query = "SELECT * FROM `bookstore`.`address` where `userID`=%d and `AddressType`='bill' " % uid
         paydata_query = "SELECT * FROM `bookstore`.`payment` where `UserID`= %d ;" % uid
-        cur = mysql.connection.cursor()
 
-        cur.execute(pdata_query)
-        pdata = cur.fetchall()
-        cur.execute(sadata_query)
-        sadata = cur.fetchall()
-        cur.execute(badata_query)
-        badata = cur.fetchall()
-        cur.execute(paydata_query)
-        paydata = cur.fetchall()
+        pdata = get_query(pdata_query)
+        sadata = get_query(sadata_query)
+        badata = get_query(badata_query)
+        paydata = get_query(paydata_query)
+
         return render_template('editprofile.html', pdata=pdata, sadata=sadata, badata=badata, paydata=paydata)
     else:
         return redirect(url_for('index'))
 
 @app.route('/add_promo_page')
 def add_promo():
+    # check proper user permission
+    # get data from the users cart
+    # pass cart information to addpromo.html
     return render_template('addpromo.html')
 
-# Show Books
-# @@ Get from Database
+@app.route('/thank_you')
+def thank_you():
+    return render_template('thank_you.html')
+
+@app.route('/order_history')
+def order_history():
+    # check proper user permission
+    # run query from database
+    # pass data to orderhistory.html
+    # make sure cancel order is properly linked
+    return render_template('orderhistory.html')
+
+@app.route('/order_confirmation')
+def order_confirmation():
+    return render_template('orderconfirmation.html')
+
+
 @app.route('/book/<int:book_num>')
 def bookshow(book_num):
-    book_title = ["Software Engineering", "Computer Networks", "C How to program", "Data Mining", "Operating System",
-                  "Rome History"]
-    book_author = ["SommerVille", "Andrew S Tanenbaum", "Dietel", "Vipin Kumar", "Greg Gagne", "John Smith"]
-    book_price = ["$15", "$25", "$40", "$50", "$18", "$15"]
-    book_dir = ["../static/images/books/05.jpg",
-                "../static/images/books/06.jpg",
-                "../static/images/books/03.jpg",
-                "../static/images/books/02.jpg",
-                "../static/images/books/04.jpg",
-                "../static/images/books/01.jpg"]
+    specific_book_query = "select  `books`.*, `bookinventory`.`bookID`, `bookinventory`.`sellingPrice` from `books`" \
+                          "inner join `bookinventory`" \
+                          "on `books`.`ISBN` = `bookinventory`.`idbookInventory` " \
+                          "where `bookinventory`.`bookID` = %d;" % book_num
+    infopass = get_query(specific_book_query)
+    print(infopass)
+    catID = int(infopass[0]['category'])
+    find_cat = "select * from `bookstore`.`category` where `category`.`idCategory` = %d " % catID
+    cat_res = get_query(find_cat)
+    print(cat_res)
+    return render_template('book.html', infopass=infopass[0], cat = cat_res[0])
 
-    infopass = {'book_title': book_title[book_num - 1],
-                'book_author': book_author[book_num - 1],
-                'book_price': book_price[book_num - 1],
-                'book_dir': book_dir[book_num - 1]}
-    # print(infopass)
-    return render_template('book.html', infopass=infopass)
 
 
 ##### Actions #####
@@ -524,8 +582,7 @@ def register_data():
                              val_email, val_phone, \
                              val_activationKey, \
                              val_gender)
-        cur.execute(sqlstatementman)
-        mysql.connection.commit()
+        set_query(sqlstatementman)
         userid = cur.lastrowid
 
         if ship_address_insert == 1:
@@ -533,37 +590,33 @@ def register_data():
                              "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
                              "VALUES( \'%s\', \'%s\', \'%s\', \'%d\', \'%s\', \'%s\', 'ship', \'%d\');" \
                              % (val_shipname, val_streetaddress, val_aptno, val_inputZip, val_inputCity, val_inputState, userid)
-            cur.execute(insert_address)
-            mysql.connection.commit()
+            set_query(insert_address)
 
         if card_info_insert == 1:
             insert_cardinfo = "INSERT INTO `bookstore`.`payment`" \
                               "(`cardNumber`, `expiryYear`, `expiryMonth`, `securityCode`, `paymentType`, `UserID`, `nameoncard`)" \
                               "VALUES( \'%s\' , \'%d\', \'%d\', \'%d\' , \'%s\', \'%d\', \'%s\' );" \
                               % (val_cardno, val_expyear, val_expmonth, val_CVV, val_cardtype, userid, val_nameoncard.upper())
-            cur.execute(insert_cardinfo)
-            mysql.connection.commit()
+            set_query(insert_cardinfo)
 
         if bill_address_insert == 1:
             insert_billaddress = "INSERT INTO `bookstore`.`address`" \
                                  "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
                                  "VALUES( \'%s\', \'%s\', \'%s\', \'%d\', \'%s\', \'%s\', 'bill', \'%d\');" \
                                  % (val_billname, val_billstreetaddress, val_billaptno, val_billinputZip, val_billinputCity, val_billinputState, userid)
-            cur.execute(insert_billaddress)
-            mysql.connection.commit()
+            set_query(insert_billaddress)
 
     except:
         flash('Duplicate Email Address')
         return redirect(url_for('register'))
 
 
-    msgg = Message("Team3 Book Store", sender="t3@myw.urq.mybluehost.me", recipients=[val_email])
-    msgg.body = '''Thank you for registering, ... 
+    body_text = '''Thank you for registering, ... 
                     to activate your account ... 
                     sign in with your password and ...
                     you have to enter the following code when logging in : %s ''' % str(val_activationKey)
 
-    mail.send(msgg)
+    send_message(body_text, val_email)
 
     flash('You have successfully completed your registration. Please check your email for further procedures.')
     return redirect(url_for('index'))
@@ -571,7 +624,6 @@ def register_data():
 
 @app.route('/login_action', methods=['GET', 'POST'])
 def login_action():
-    cur = mysql.connection.cursor()
     # get email and password from form
     val_email = request.form['email']
     val_password = request.form['psw']
@@ -582,8 +634,8 @@ def login_action():
     # search for email and password in database
     querystatement = "SELECT * FROM `bookstore`.`users`" \
                      "where email=\'%s\' " % val_email
-    cur.execute(querystatement)
-    results = cur.fetchall()
+
+    results = get_query(querystatement)
 
     # storing email in session
     if len(val_rem) == 1:
@@ -601,18 +653,18 @@ def login_action():
     else:
         session['logged_in'] = True
         if results[0]['userTypeID'] == 1:
-            session['usertype'] = 1
+            session['userTypeID'] = 1
             uid = results[0]['userID']
             email = results[0]['email']
-            session['uid'] = uid
+            session['userID'] = uid
             session['email'] = val_email
             flash('You are Logged in as %s' % session.get('email'))
             return redirect(url_for('show_admin_panel'))
         else:
-            session['usertype'] = 2
+            session['userTypeID'] = 2
             uid = results[0]['userID']
             email = results[0]['email']
-            session['uid'] = uid
+            session['userID'] = uid
             session['email'] = val_email
             flash('You are Logged in as %s' % val_email)
             return redirect(url_for('view_profile'))
@@ -622,8 +674,9 @@ def login_action():
 def logout():
     if session['logged_in'] == True:
         session['logged_in'] = False
-        session['uid'] = None
+        session['userID'] = None
         session['email'] = None
+        session['userTypeID'] = None
         flash('You are successfully logged out')
         return redirect(url_for('index'))
     else:
@@ -638,13 +691,11 @@ def password_recover_start():
 
 @app.route('/send_otp', methods=['GET', 'POST'])
 def send_otp():
-    cur = mysql.connection.cursor()
     # get email and password from form
     val_email = request.form['email']
     search_email_query = "SELECT * FROM `bookstore`.`users`" \
                          "where email=\'%s\' " % (val_email)
-    cur.execute(search_email_query)
-    results = cur.fetchall()
+    results = get_query(search_email_query)
     print(results)
     if results:
         update_id = results[0]['userID']
@@ -653,13 +704,10 @@ def send_otp():
                                 "SET `activationKey` = %d " \
                                 "WHERE (`userID` = %d)" \
                                 % (new_activation_key, update_id)
-        cur.execute(update_activation_key)
-        mysql.connection.commit()
+        set_query(update_activation_key)
 
-        msgg = Message("Team3 Book Store", sender="t3@myw.urq.mybluehost.me", recipients=[val_email])
-        msgg.body = ''' We have sent you a one time password to recover your password %s ''' % str(new_activation_key)
-
-        mail.send(msgg)
+        body_text = ''' We have sent you a one time password to recover your password %s ''' % str(new_activation_key)
+        send_message(body_text, val_email)
 
         return render_template('password_recover_2.html')
     else:
@@ -669,7 +717,6 @@ def send_otp():
 
 @app.route('/password_recovery_finished', methods=['GET', 'POST'])
 def password_recovery_finished():
-    cur = mysql.connection.cursor()
     val_email = request.form['email']
     val_otp = int(request.form['OTP'])
     val_newpass = request.form['newpass']
@@ -677,8 +724,7 @@ def password_recovery_finished():
     stage_1_conf = "SELECT email, activationKey FROM `bookstore`.`users`" \
                    "where email=\'%s\' AND activationKey=\'%d\'" \
                    % (val_email, val_otp)
-    cur.execute(stage_1_conf)
-    res1 = cur.fetchall()
+    res1 = get_query(stage_1_conf)
     if len(res1) != 0:
         if val_newpass == val_rnewpass:
             if not check_goodness(val_newpass, 'password'):
@@ -689,15 +735,13 @@ def password_recovery_finished():
                                   "SET `password` = \'%s\' " \
                                   "WHERE (`email` = \'%s\')" \
                                   % (generate_password_hash(val_newpass), val_email)
-                cur.execute(password_change)
-                mysql.connection.commit()
+                set_query(password_change)
                 flash('Password Successfully Changed')
 
             #see if activated
 
             active_check = "SELECT active FROM `bookstore`.`users` WHERE ( `email` = \'%s\' )" % val_email
-            cur.execute(active_check)
-            res = cur.fetchall()
+            res = get_query(active_check)
             active_stat = int(res[0]['active'])
 
             # update OTP and notify user
@@ -707,17 +751,12 @@ def password_recovery_finished():
                               "SET `activationKey` = \'%d\' " \
                               "WHERE (`email` = \'%s\')" \
                               % (new_otp, val_email)
-                cur.execute(otp_update)
-                mysql.connection.commit()
-
-                msgg = Message("Team3 Book Store", sender="t3@myw.urq.mybluehost.me", recipients=[val_email])
-                msgg.body = ''' You have successfully changed your password. Please use the new activation key %d to activate yourself''' % new_otp
-                mail.send(msgg)
+                set_query(otp_update)
+                body_text = ''' You have successfully changed your password. Please use the new activation key %d to activate yourself''' % new_otp
             else:
-                msgg = Message("Team3 Book Store", sender="t3@myw.urq.mybluehost.me", recipients=[val_email])
-                msgg.body = ''' You have successfully changed your password '''
-                mail.send(msgg)
+                body_text = ''' You have successfully changed your password '''
 
+            send_message(body_text, val_email)
             return redirect(url_for('login'))
         else:
             flash('Retyeped Password Did Not Match')
@@ -734,7 +773,6 @@ def activate_user_start():
 
 @app.route('/activate_user_action', methods=['GET', 'POST'])
 def activate_user_action():
-    cur = mysql.connection.cursor()
 
     val_email = request.form['email']
     val_otp = request.form['otp']
@@ -742,8 +780,7 @@ def activate_user_action():
     find_user = "SELECT * FROM `bookstore`.`users`" \
                 "where email=\'%s\' " % (val_email)
 
-    cur.execute(find_user)
-    res = cur.fetchall()
+    res = get_query(find_user)
 
     if len(res) == 0:
         flash('Wrong Email')
@@ -757,22 +794,15 @@ def activate_user_action():
                             "WHERE (`email` = \'%s\')" \
                             % val_email
 
-        cur.execute(activation_change)
-        mysql.connection.commit()
-
-        msgg = Message("Team3 Book Store", sender="t3@myw.urq.mybluehost.me", recipients=[val_email])
-        msgg.body = "You have been activated. Use your password to login"
-
-        mail.send(msgg)
+        set_query(activation_change)
+        body_text = "You have been activated. Use your password to login"
+        send_message(body_text, val_email)
 
         flash('User Successfully activated')
         return redirect(url_for('login'))
 
-
-
 @app.route('/editProfileData', methods=['GET', 'POST'])
 def editProfileData():
-    cur = mysql.connection.cursor()
     userid = session.get('uid')
 
     val_firstName = str(request.form['fname']).strip()
@@ -870,33 +900,26 @@ def editProfileData():
                           "VALUES( \'%s\' , \'%d\', \'%d\', \'%d\' , \'%s\', \'%d\', \'%s\' );" \
                           % (val_cardno, val_expyear, val_expmonth, val_CVV, val_cardtype, userid, val_nameoncard.upper())
 
-        cur.execute(pdataupdate)
-        mysql.connection.commit()
+        set_query(pdataupdate)
 
         if sadataex != ():
-            cur.execute(sadataupdate)
-            mysql.connection.commit()
+            set_query(sadataupdate)
         else:
-            cur.execute(sadatainsert)
-            mysql.connection.commit()
+            set_query(sadatainsert)
 
         if badataex != ():
-            cur.execute(badataupdate)
-            mysql.connection.commit()
+            set_query(badataupdate)
         else:
-            cur.execute(badatainsert)
-            mysql.connection.commit()
+            set_query(badatainsert)
 
         if paydataex != ():
-            cur.execute(paydataupdate)
-            mysql.connection.commit()
+            set_query(paydataupdate)
         else:
-            cur.execute(paydatainsert)
-            mysql.connection.commit()
+            set_query(paydatainsert)
 
-        msgg = Message("Team3 Book Store", sender="t3@myw.urq.mybluehost.me", recipients=[session.get('email')])
-        msgg.body = ''' You have successfully updated your profile information.'''
-        mail.send(msgg)
+        ses_email = session.get('email')
+        body_text = ''' You have successfully updated your profile information.'''
+        send_message(body_text, ses_email)
         flash('You have sucessfully updated your profile information.')
         return redirect(url_for('view_profile'))
 
@@ -915,8 +938,7 @@ def password_change_finished():
     stage_1_conf = "SELECT email, password FROM `bookstore`.`users`" \
                    "where email=\'%s\'" \
                    % val_email
-    cur.execute(stage_1_conf)
-    res1 = cur.fetchall()
+    res1 = get_query(stage_1_conf)
 
     if not check_password_hash(res1[0]['password'], oldp):
         flash('Old password did not match')
@@ -932,15 +954,21 @@ def password_change_finished():
                           "SET `password` = \'%s\' " \
                           "WHERE (`email` = \'%s\')" \
                            % (generate_password_hash(val_newpass), val_email)
-        cur.execute(password_change)
-        mysql.connection.commit()
+        set_query(password_change)
 
-        msgg = Message("Team3 Book Store", sender="t3@myw.urq.mybluehost.me", recipients=[val_email])
-        msgg.body = ''' You have successfully changed your password.'''
-        mail.send(msgg)
+        body_text = ''' You have successfully changed your password.'''
+        send_message(body_text, val_email)
 
         flash('Password Successfully Changed')
         return redirect(url_for('edit_profile'))
+
+@app.route('/add2cart', methods=['GET','POST'])
+def add2cart():
+    # check if proper user (customer and not admin) is logged in
+    # get data from book.html hidden form
+    # push data to cart table
+    # return to the same page with a flash message
+    return 'Needs to be implemented by Sakher'
 
 @app.route('/add_book_action', methods=['GET','POST'])
 def add_book_action():
@@ -960,11 +988,41 @@ def get_Inventory():
 
 @app.route('/modify_cart_action', methods=['GET', 'POST'])
 def modify_cart_action():
-    return 'Needs to be implemented by Sakher/Divya/Andres/Redwan'
+    # complete the modifycart.html and make sure the form is properly build with proper name and value
+    # get data from modifycart.html
+    # push data to database
+    # redirect to cart()
+    return 'Needs to be implemented by Sakher'
 
 @app.route('/remove_from_cart_action', methods=['GET', 'POST'])
 def remove_from_cart_action():
-    return 'Needs to be implemented by Sakher/Divya/Andres/Redwan'
+    # complete the removefromcart.html and make sure the form is properly build proper name and value
+    # get data from removefromcart.html
+    # delete data from database
+    # redirect to cart()
+    return 'Needs to be implemented by Sakher'
+
+@app.route('/apply_promo_action', methods=['GET', 'POST'])
+def apply_promo_action():
+    # get the total
+    # check if promo applied is correct
+    # show redirect to cart with promo information
+    return 'Needs to be implemented by Sakher'
+
+@app.route('/checkout_action', methods=['GET', 'POST'])
+def checkout_action():
+    # push data to database order
+    # redirect to confirmation page with proper information
+    return 'Needs to be implemented by Andres'
+
+@app.route('/cancel_order', methods=['GET', 'POST'])
+def cancel_order():
+    # link button with the order id
+    # pass value if needed
+    # modify order status in database
+    # redirect to order history
+    return 'Needs to be implemented by Divya'
+
 
 if __name__ == '__main__':
     app.run(debug=True)

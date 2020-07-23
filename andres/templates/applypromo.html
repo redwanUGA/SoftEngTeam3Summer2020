@@ -69,16 +69,22 @@
     </div>
     <!-- Should be another conditional
       HTML for after promocode application-->
-    <div class="container">
-        <form action="" method="post">
+    <form action="{{ url_for('apply_promo_action') }}" method="post">
+        <div class="container">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6 display-4">Enter Promo Code</div>
+                <div class="col-3"><input class="form-control-lg" type="text" name="promocode" id="promocode"/></div>
+            </div>
+        </div>
+        <div class="container">
             <div class="row">
                 <div class="col-6"></div>
-                <div class="col-3 display-5">Enter Promo Code</div>
-                <div class="col-3"><input class="form-control" type="text" name="promocode" id="promocode"/> Enter Promo Code</div>
+                <div class="col-3"> <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('cart') }}" role="button">Go back to cart</a> </div>
+                <div class="col-3"><input class="btn btn-primary btn-lg btn-block" type="submit" value="Apply PromoCode"/></div>
             </div>
-        </form>
-    </div>
-
+        </div>
+    </form>
     {% endblock %}<!-- main_content -->
     {% block footer %}
     {{ super() }}

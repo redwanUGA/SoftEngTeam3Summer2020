@@ -4,7 +4,7 @@ USE `bookstore` ;
 -- -----------------------------------------------------
 -- Table `bookstore`.`Category`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bookstore`.`Category` (
+CREATE TABLE IF NOT EXISTS `bookstore`.`category` (
   `idCategory` INT NOT NULL AUTO_INCREMENT,
   `category` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`idCategory`))
@@ -14,7 +14,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `bookstore`.`Books`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bookstore`.`Books` (
+CREATE TABLE IF NOT EXISTS `bookstore`.`books` (
   `ISBN` INT NOT NULL,
   `author` VARCHAR(50) NOT NULL,
   `title` VARCHAR(50) NOT NULL,
@@ -30,7 +30,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `bookstore`.`userType`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bookstore`.`userType` (
+CREATE TABLE IF NOT EXISTS `bookstore`.`usertype` (
   `idUserType` INT NOT NULL,
   `userStatus` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`idUserType`))
@@ -91,7 +91,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `bookstore`.`Promotion`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bookstore`.`Promotion` (
+CREATE TABLE IF NOT EXISTS `bookstore`.`promotion` (
   `idPromotion` INT NOT NULL AUTO_INCREMENT,
   `promoCode` VARCHAR(45) NOT NULL,
   `discountAmount` INT(5) NOT NULL,
@@ -142,7 +142,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `bookstore`.`bookInventory`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bookstore`.`bookInventory` (
+CREATE TABLE IF NOT EXISTS `bookstore`.`bookinventory` (
   `idbookInventory` INT NOT NULL AUTO_INCREMENT,
   `bookID` INT NOT NULL,
   `bookStatus` VARCHAR(15) NULL,
@@ -152,6 +152,15 @@ CREATE TABLE IF NOT EXISTS `bookstore`.`bookInventory` (
   PRIMARY KEY (`idbookInventory`))
 ENGINE = InnoDB;
 
-INSERT INTO `userType` (`idUserType`, `userStatus`) VALUES ('1', 'Admin');
-INSERT INTO `userType` (`idUserType`, `userStatus`) VALUES ('2', 'Registered User');
+INSERT INTO `usertype` (`idUserType`, `userStatus`) VALUES ('1', 'Admin');
+INSERT INTO `usertype` (`idUserType`, `userStatus`) VALUES ('2', 'Registered User');
 INSERT INTO `users` VALUES (1,'team3','admin','pbkdf2:sha256:150000$1EGsALIX$da3cd4923a0591df667460428594bb64da58a64f806c5febc9aa49032ca6d376','MdRedwan.Islam@uga.edu',NULL,'',1,1,1,1234,0);
+INSERT INTO `promotion` (`promoCode`, `discountAmount`, `startDate`, `expirationDate`) VALUES ('50OFF', '50', '2020-02-14', '2020-04-14');
+INSERT INTO `promotion` (`promoCode`, `discountAmount`, `startDate`, `expirationDate`) VALUES ('JUL04', '25', '2020-07-01', '2020-07-05');
+INSERT INTO `promotion` (`promoCode`, `discountAmount`, `startDate`, `expirationDate`) VALUES ('LOYAL', '30', '2020-07-20', '2020-11-06');
+INSERT INTO `category` (`category`) VALUES ('Romance');
+INSERT INTO `category` (`category`) VALUES ('Technology');
+INSERT INTO `category` (`category`) VALUES ('Fantasy');
+INSERT INTO `category` (`category`) VALUES ('Mystery');
+INSERT INTO `category` (`category`) VALUES ('History');
+INSERT INTO `category` (`category`) VALUES ('Thriller');
