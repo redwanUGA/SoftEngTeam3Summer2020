@@ -9,7 +9,7 @@
 </head>
 <body>
 	<div id="div1">
-		{% block body_header %}
+	        {% block body_header %}
 			{{ super() }}
 		{% endblock %}<!-- container -->
 
@@ -19,15 +19,17 @@
 
 		{% block main_content %}
 		<div id="main_content">
+		  
 			<style>
 				/*CHECKOUT style*/
 				#orderSum {
-					margin-bottom: 3em;
+					padding-bottom: 3em;
 				}
 
 				.content {
 					margin-left: 10px;
 					display: inline-block;
+					vertical-align: middle;
 				}
 
 					.content p {
@@ -49,11 +51,21 @@
 					padding: .2em;
 					padding-right: 1em;
 				}
-
-					#total h4 {
-						text-align: right;
-					}
-
+				
+				#total h4 {
+				    text-align: right;
+				}
+				#total div{
+				    display: inline-block;
+				}
+				#promoForm{
+				    margin-right: 5em;
+				    text-align: center;
+				}
+				#code{
+				    margin: .2em;
+				    display: list-item;
+				}
 				#checkout {
 					display: block;
 					margin: 1em;
@@ -69,71 +81,88 @@
 					text-align: left;
 					padding: 0;
 				}
+				.quant{
+				    margin:0;
+				    margin-top:1em;
+				}
+				.price{
+				    margin-left: 5em;
+				}
 			</style>
 			<form>
 				<div id="orderSum" class="container">
 					<hr class="centerFormat">
 					<h2 class="centerFormat">Order Summary</h2>
 					<hr class="centerFormat">
+
+					{%for i in range(0,leng) %}
 					<div class="container">
-						<img src="../static/images/icons/books-icon.png" width="100px" length="100px">
-						<div class="content">
-							<p>Item Description.</p>
-							<p>$0.00</p>
-							<p>
-								<button type="button" style=" height: 35px; width:125px" class="btn btn-success">Update Book</button>
-								<button type="button" style=" height: 35px; width:125px" class="btn btn-danger">Delete Book</button>
-							</p>
-						</div>
+					  <img src="{{ books[i]['cover']}}" width="100px" length="100px">
+					  <div class="content">
+					    <p>Title: {{ books[i]['title']}}</p>
+					    <p>ISBN: {{books[i]['ISBN']}}</p>
+					    <p>Author: {{books[i]['author']}}</p>
+					  </div>
+					  <div class='content price'>
+					    <p>${{books[i]['sellPrice']}} X {{books[i]['quant']}}</p>
+					    <p class="quant">Total: ${{books[i]['sellPrice'] * books[i]['quant']}}</p>
+					  </div>
 					</div>
-					<div class="container">
-						<img src="../static/images/icons/books-icon.png" width="100px" length="100px">
-						<div class="content">
-							<p>Item Description.</p>
-							<p>$0.00</p>
-							<p>
-								<button type="button" style=" height: 35px; width:125px" class="btn btn-success">Update Book</button>
-								<button type="button" style=" height: 35px; width:125px" class="btn btn-danger">Delete Book</button>
-							</p>
-						</div>
-					</div>
+					{%endfor%}
 				</div>
 
 				<div id="foot">
-					<div class="container">
+				  <div class="container">
 						<hr class="centerFormat">
 						<h4 class="centerFormat">Shipping Information</h4>
 						<hr class="centerFormat">
-						<p>Name</p>
-						<p>Address Line 1</p>
-						<p>Address Line 2</p>
-						<p>City, State 00000</p>
-						<p>Country</p>
+						<p>{{ship['name']}}</p>
+						<p>{{ship['street']}}</p>
+						<p>{{ship['street2']}}</p>
+						<p>{{ship['city']}} {{ship['state']}} {{ship['zipCode']}}</p>
 						<br>
 						<p>
-							<button type="button" style=" height: 30px; width:200px" class="btn btn-success">Enter New address</button>
+							<button type="button" style=" height: 30px; width:200px" class="btn btn-success" onclick="location.href='edit_profile'">Enter New address</button>
 						</p>
 						<br>
-					</div>
-					<div class="container">
+				  </div>
+				  <div class="container">
 						<hr class="centerFormat">
 						<h4 class="centerFormat">Payment Information</h4>
 						<hr class="centerFormat">
-						<p>Name</p>
-						<p>Visa ending in 0000</p>
-						<p>expires in 00/0000</p>
+						<h5 class="centerFormat">Card</h5>
+						<hr class="centerFormat">
+						<p>{{pay['nameoncard']}}</p>
+						<p>Visa ending in {{pay['cardNumber']}}</p>
+						<p>expires in {{pay['expiryMonth']}}/{{pay['expiryYear']}}</p>
+						<h5 class="centerFormat">Billing Address</h5>
+						<hr class="centerFormat">
+						<p>{{bill['name']}}</p>
+						<p>{{bill['street']}}</p>
+						<p>{{bill['street2']}}</p>
+						<p>{{bill['city']}} {{bill['state']}} {{bill['zipCode']}}</p>
 						<br>
 						<p>
-							<button type="button" style=" height: 30px; width:300px" class="btn btn-success">Enter New Payment details</button>
+						  <button type="button" style=" height: 30px; width:300px" class="btn btn-success" onclick="location.href='edit_profile'">Enter New Payment details</button>
 						</p>
 						<br>
-					</div>
-					<div id="total" class="container">
-						<h5>Subtotal: $0.00</h5>
-						<h5>Shipping: $0.00</h5>
-						<h4>Total: $0.00</h4>
-						<input type="button" value="Confirm Order" id="checkout">
-					</div>
+				  </div>
+										
+				  <div id="total" class="container">
+				    <div id="promoForm">
+				      <form action="{{ url_for('checkout') }}"o>
+					<p>Enter Promo code</p>
+					<input type='text' id='code' name='code'>
+					<input type='submit' value='Enter'>
+				      </form>
+				    </div>
+				    <div>
+				      <h5>Subtotal ${{subtotal}}</h5>
+				      <h5>Shipping ${{shipping}}</h5>
+				      <h4>Total ${{total}}</h4>
+				      <input type="button" value="Confirm Order" id="checkout">
+				    </div>
+				  </div>
 				</div>
 			</form>
 		</div>
@@ -144,7 +173,6 @@
 	</div><!-- div1 -->
 		{% block scripts %}
 			{{ super() }}
-		{% endblock %}
-
+	{% endblock %}
 </body>
 </html>

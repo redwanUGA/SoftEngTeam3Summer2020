@@ -271,8 +271,65 @@ def apply_promo():
 
 @app.route('/checkout')
 def checkout():
-    return render_template('checkout.html')
+    if(session.get('uid') != None):
+        #user is signed in
+        subtotal=0
+        totalItems = 0
+        cur = mysql.connection.cursor()
+        uid = session.get('uid')
+        cart_query = "SELECT * FROM bookstore.cart WHERE userID=%d;" % uid
+        cur.execute(cart_query)
+        cart = cur.fetchall()
+        books =[]
+        for x in cart:
+            bookID=x['bookID']
+            book_query = "SELECT * FROM bookstore.Books WHERE ISBN=%d" % bookID
+            cur.execute(book_query)
+            book = cur.fetchall()
+            book[0]['quant'] = x['quantity']
+            totalItems += x['quantity']
+            subtotal += book[0]['quant'] * book[0]['sellPrice']
+            
+            books += book
 
+        promocode = None
+        promo_query = 'SELECT * FROM bookstore.Promotion WHERE idPromotion=\'%s\'' % promocode
+        cur.execute(promo_query)
+        discount = cur.fetchall()
+        print(discount)
+        
+        shipping = totalItems * 20
+        total = 0
+        if(not discount):
+            total = shipping+subtotal
+        else:
+            total = shipping + (subtotal*discount)
+
+        #shipping information
+        ship_query = 'SELECT * FROM bookstore.address WHERE userID=%d AND AddressType=\'ship\'' % uid
+        cur.execute(ship_query)
+        ship = cur.fetchall()[0]
+
+        #billing information
+        bill_query = 'SELECT * FROM bookstore.address WHERE userID=%d AND AddressType=\'bill\'' % uid
+        cur.execute(bill_query)
+        bill = cur.fetchall()[0]
+
+        pay_query = 'SELECT * FROM bookstore.payment WHERE userID=%d' % uid
+        cur.execute(pay_query)
+        pay = cur.fetchall()[0]
+        
+        return render_template('checkout.html', leng=len(books), books=books, shipping=shipping, subtotal=subtotal, total=total, ship=ship, pay=pay, bill=bill)
+    else:
+        #user is not signed in
+        return render_template('cart.html')
+
+@app.route('/enter_promo', methods=['POST'])
+def enter_promo():
+    promoCode = request.form['code']
+    checkout(promoCode)
+    
+    
 # View Profile Page
 @app.route('/view_profile')
 def view_profile():
