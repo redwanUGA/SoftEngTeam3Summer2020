@@ -17,41 +17,25 @@
     {{ super() }}
     {% endblock %}<!-- container -->
 
+    {% block flash %}
+    {{ super() }}
+    {% endblock %}
+
     {% block main_content %}
     <div class="form-group">
         <div class="form-group">
-            <!-- div class="head">
-                <div class="item">
-                <img src="../static/images/icons/portrait_icon.png" id="profileImg" alt="profile image" width="150px" length="150px">
-                <a href="#">Add Picture</a>
-                </div>
-            </div -->
-
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            <ul>
-                {% for message in messages %}
-                {% if "Success" in message %}
-                <li class='text-success'>{{ message }}</li>
-                {% else %}
-                <li class='text-danger'>{{ message }}</li>
-                {% endif %}
-                {% endfor %}
-            </ul>
-            {% endif %}
-            {% endwith %}
-
             <h2> Register User </h2>
             <form action=" {{ url_for('register_data') }} " , method="post">
                 <!-- Personal Data Begins  -->
-                <table class="table table-bordered" style="margin-left: 100px;border-right-width: 100px;border-right-style: solid;">
+                <table class="table table-bordered"
+                       style="margin-left: 100px;border-right-width: 100px;border-right-style: solid;">
                     <tr>
                         <th> Personal Info</th>
-                        <th> <span class="text-danger"> You must Enter ALL the fields </span> </th>
+                        <th><span class="text-danger"> You must Enter ALL the fields </span></th>
                         <th>Tips</th>
                     </tr>
                     <tr>
-                        <td><label for="fname"> First Name *  </label></td>
+                        <td><label for="fname"> First Name * </label></td>
                         <td><input type="text" name="fname" id="fname" class="form-control" required></td>
                         <td> Enter your first name</td>
                     </tr>
@@ -63,27 +47,31 @@
                     <tr>
                         <td><label for="email"> Email Address * </label></td>
                         <td><input type="email" name="email" id="email" class="form-control" required></td>
-                        <td> Enter your email address. <span class="text-danger"> Note: You cannot change this email later </span> </td>
+                        <td> Enter your email address. <span class="text-danger"> Note: You cannot change this email later </span>
+                        </td>
                     </tr>
                     <tr>
                         <td><label for="password"> Password * </label></td>
                         <td><input type="password" name="password" id="password" class="form-control" required/></td>
-                        <td> Enter your password. <span class="text-danger"> Password should be at least 8 characters. </span> </td>
+                        <td> Enter your password. <span
+                                class="text-danger"> Password should be at least 8 characters. </span></td>
                     </tr>
                     <tr>
                         <td><label for="phonenumbercountry"> Country Code * </label></td>
                         <td>
                             <select class="form-control" name="phonenumbercountry">
-                                <option value="+1">+1 (US and Canada) </option>
-                                <option value="+7">+7 (Russia) </option>
+                                <option value="+1">+1 (US and Canada)</option>
+                                <option value="+7">+7 (Russia)</option>
                             </select>
                         </td>
-                        <td> Select your phone's country code </td>
+                        <td> Select your phone's country code</td>
                     </tr>
                     <tr>
                         <td><label for="mainphonenumber"> Phone Number * </label></td>
-                        <td><input class="form-control" type="text" name="mainphonenumber" id="mainphonenumber" required></td>
-                        <td> Enter your phone number. <span class="text-danger"> Maintain the format (XXX)-XXX-XXXX </span> </td>
+                        <td><input class="form-control" type="text" name="mainphonenumber" id="mainphonenumber"
+                                   required></td>
+                        <td> Enter your phone number. <span
+                                class="text-danger"> Maintain the format (XXX)-XXX-XXXX </span></td>
                     </tr>
                 </table>
                 <!-- Personal Data Ends  -->
@@ -92,34 +80,37 @@
                 <!-- Shipping Address Data Begins  -->
                 <table class="table" style="margin-left: 100px;border-right-width: 100px;border-right-style: solid;">
                     <tr>
-                        <th> Shipping Address Info (Optional) </th>
-                        <th> <span class="text-secondary"> This field is optional. However, you cannot fill this section partially. If you choose to enter information, you must enter all the information in the section. You can later edit your information from your profile. </span> </th>
+                        <th> Shipping Address Info (Optional)</th>
+                        <th><span class="text-secondary"> This field is optional. However, you cannot fill this section partially. If you choose to enter information, you must enter all the information in the section. You can later edit your information from your profile. </span>
+                        </th>
                         <th>Tips</th>
                     </tr>
                     <tr>
                         <td><label for="shipname"> Shipping Name </label></td>
                         <td><input class="form-control" type="text" name="shipname" id="shipname"></td>
-                        <td> Enter your shipping address name </td>
+                        <td> Enter your shipping address name</td>
                     </tr>
                     <tr>
                         <td><label for="streetaddress"> Street Address </label></td>
                         <td><input class="form-control" type="text" name="streetaddress" id="streetaddress"></td>
-                        <td> Enter your street address. <span class="text-info"> e.g. 100 Rogers Road / 45 NE Druid Hill </span> </td>
+                        <td> Enter your street address. <span
+                                class="text-info"> e.g. 100 Rogers Road / 45 NE Druid Hill </span></td>
                     </tr>
                     <tr>
                         <td><label for="aptno"> Apt No </label></td>
                         <td><input class="form-control" type="text" name="aptno" id="aptno"></td>
-                        <td> Enter your Apartment / House No <span class="text-info"> e.g. M208 / 1013 </span> </td>
+                        <td> Enter your Apartment / House No <span class="text-info"> e.g. M208 / 1013 </span></td>
                     </tr>
                     <tr>
                         <td><label for="inputCity"> City </label></td>
                         <td><input class="form-control" type="text" name="inputCity" id="inputCity"></td>
-                        <td> Enter your city name. <span class="text-info"> e.g. Athens </span> </td>
+                        <td> Enter your city name. <span class="text-info"> e.g. Athens </span></td>
                     </tr>
                     <tr>
                         <td><label for="inputZip"> Zip Code </label></td>
                         <td><input class="form-control" type="text" name="inputZip" id="inputZip"></td>
-                        <td> Enter your ZIP Code. <span class="text-danger"> This filed should contain only numbers </span> </td>
+                        <td> Enter your ZIP Code. <span
+                                class="text-danger"> This filed should contain only numbers </span></td>
                     </tr>
                     <tr>
                         <td><label for="inputState"> State </label></td>
@@ -179,7 +170,7 @@
                                 <option value="WY">Wyoming</option>
                             </select>
                         </td>
-                        <td> Select your state </td>
+                        <td> Select your state</td>
                     </tr>
                 </table>
                 <!-- Shipping Address Data Ends  -->
@@ -188,33 +179,39 @@
                 <table class="table" style="margin-left: 100px;border-right-width: 100px;border-right-style: solid;">
                     <tr>
                         <th> Billing Address Info</th>
-                        <th> <span class="text-secondary"> This field is optional. However, you cannot fill this section partially. If you choose to enter information, you must enter all the information in the section. You can later edit your information from your profile. </span>  </th>
-                        <th> Tips </th>
+                        <th><span class="text-secondary"> This field is optional. However, you cannot fill this section partially. If you choose to enter information, you must enter all the information in the section. You can later edit your information from your profile. </span>
+                        </th>
+                        <th> Tips</th>
                     </tr>
                     <tr>
                         <td><label for="billname"> Billing Name </label></td>
                         <td><input class="form-control" type="text" name="billname" id="billname"></td>
-                        <td><Enter your Billing Address Name</td>
+                        <td>
+                            <Enter your Billing Address Name
+                        </td>
                     </tr>
                     <tr>
                         <td><label for="billstreetaddress"> Street Address </label></td>
-                        <td><input class="form-control" type="text" name="billstreetaddress" id="billstreetaddress"></td>
-                        <td> Enter your billing address. <span class="text-info"> e.g. 100 Rogers Road / 45 NE Druid Hill  </span> </td>
+                        <td><input class="form-control" type="text" name="billstreetaddress" id="billstreetaddress">
+                        </td>
+                        <td> Enter your billing address. <span class="text-info"> e.g. 100 Rogers Road / 45 NE Druid Hill  </span>
+                        </td>
                     </tr>
                     <tr>
                         <td><label for="billaptno"> Apartment No </label></td>
                         <td><input class="form-control" type="text" name="billaptno" id="billaptno"></td>
-                        <td> Enter your Apartment / House No <span class="text-info"> e.g. M208 / 1013 </span> </td>
+                        <td> Enter your Apartment / House No <span class="text-info"> e.g. M208 / 1013 </span></td>
                     </tr>
                     <tr>
                         <td><label for="billinputCity"> City </label></td>
                         <td><input class="form-control" type="text" name="billinputCity" id="billinputCity"></td>
-                        <td> Enter your city name. <span class="text-info"> e.g. Athens </span> </td>
+                        <td> Enter your city name. <span class="text-info"> e.g. Athens </span></td>
                     </tr>
                     <tr>
                         <td><label for="billinputZip"> Zip Code </label></td>
                         <td><input class="form-control" type="text" name="billinputZip" id="billinputZip"></td>
-                        <td> Enter your ZIP Code. <span class="text-danger"> This filed should contain only numbers </span> </td>
+                        <td> Enter your ZIP Code. <span
+                                class="text-danger"> This filed should contain only numbers </span></td>
                     </tr>
                     <tr>
                         <td><label for="billinputState"> State </label></td>
@@ -284,23 +281,27 @@
                 <table class="table" style="margin-left: 100px;border-right-width: 100px;border-right-style: solid;">
                     <tr>
                         <th> Payment Info</th>
-                        <th><span class="text-secondary"> This field is optional. However, you cannot fill this section partially. If you choose to enter information, you must enter all the information in the section. You can later edit your information from your profile. </span>  </th>
+                        <th><span class="text-secondary"> This field is optional. However, you cannot fill this section partially. If you choose to enter information, you must enter all the information in the section. You can later edit your information from your profile. </span>
+                        </th>
                         <th>Tips</th>
                     </tr>
                     <tr>
                         <td><label for="nameoncard"> Name on Card </label></td>
                         <td><input class="form-control" type="text" name="nameoncard" id="nameoncard"></td>
-                        <td> Enter the name on your debit / credit card </td>
+                        <td> Enter the name on your debit / credit card</td>
                     </tr>
                     <tr>
                         <td><label for="cardno"> Card Number </label></td>
                         <td><input class="form-control" type="text" name="cardno" id="cardno"></td>
-                        <td> Enter your debit / credit card number <span class="text-info"> Note: Maintain the format XXXX-XXXX-XXXX-XXXX </span>  </td>
+                        <td> Enter your debit / credit card number <span class="text-info"> Note: Maintain the format XXXX-XXXX-XXXX-XXXX </span>
+                        </td>
                     </tr>
                     <tr>
                         <td><label for="CVV"> CVV </label></td>
                         <td><input class="form-control" type="number" name="CVV" id="CVV"></td>
-                        <td>Enter the 3 digit (for VISA, MasterCard, Discover and JCB) / 4 digit (for American Express) at the back of your card</td>
+                        <td>Enter the 3 digit (for VISA, MasterCard, Discover and JCB) / 4 digit (for American Express)
+                            at the back of your card
+                        </td>
                     </tr>
                     <tr>
                         <td><label for="cardtype"> Card Type </label></td>
@@ -335,14 +336,14 @@
                                 <option value="12">Dec</option>
                             </select>
                         </td>
-                        <td> Select your card's Expiry Month </td>
+                        <td> Select your card's Expiry Month</td>
                     </tr>
 
                     <tr>
                         <td><label for="expyear"> Expiry Year </label></td>
                         <td>
                             <select class="form-control" name="expyear" id="expyear">
-                                <option value="0"> Choose </option>
+                                <option value="0"> Choose</option>
                                 <option value="2019">2019</option>
                                 <option value="2020">2020</option>
                                 <option value="2021">2021</option>
@@ -351,12 +352,13 @@
                                 <option value="2024">2024</option>
                             </select>
                         </td>
-                        <td> Select your card's Expiry Year </td>
+                        <td> Select your card's Expiry Year</td>
                     </tr>
                     <tr>
                         <td><a class="btn btn-danger" href="{{ url_for('index') }}"> Cancel </a></td>
                         <td></td>
-                        <td><input class="form-control form-row bg-success text-white" type="submit" value="Complete Registration"></input></td>
+                        <td><input class="form-control form-row bg-success text-white" type="submit"
+                                   value="Complete Registration"></input></td>
                     </tr>
                 </table>
                 <!-- Payment Info Data Ends  -->

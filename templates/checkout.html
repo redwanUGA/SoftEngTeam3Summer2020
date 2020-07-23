@@ -2,149 +2,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	{% block head_header %}
-		{{ super() }}
-	{% endblock %}
-	<title> Add Promo </title>
+    {% block head_header %}
+    {{ super() }}
+    {% endblock %}
+    <title> Add Promo </title>
 </head>
 <body>
-	<div id="div1">
-		{% block body_header %}
-			{{ super() }}
-		{% endblock %}<!-- container -->
+<div id="div1">
+    {% block body_header %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
 
-		{% block menu_content %}
-			{{ super() }}
-		{% endblock %}<!-- container -->
+    {% block menu_content %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
 
-		{% block main_content %}
-		<div id="main_content">
-			<style>
-				/*CHECKOUT style*/
-				#orderSum {
-					margin-bottom: 3em;
-				}
+    {% block flash %}
+    {{ super() }}
+    {% endblock %}
 
-				.content {
-					margin-left: 10px;
-					display: inline-block;
-				}
+    {% block main_content %}
+    <div class="container">
+        <div class="row justify-content-center"><h1 class="display-3"> Order Summary</h1></div>
+    </div>
+    <div class="container">
+        <table class="table">
+            <tr>
+                <th>Book</th>
+                <th>Quantity</th>
+                <th>Unit Price (USD)</th>
+                <th>Item total (USD)</th>
+            </tr>
+            <!-- Your for loop starts here -->
+            <tr>
+                <td class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Book title1</h5>
+                            <p class="card-text">Author : Author1</p>
+                            <p class="card-text">ISBN : ISBN1</p>
+                            <p class="card-text">Category : Category1</p>
+                        </div>
+                    </div>
+                </td>
+                <td class="display-4 col-3">1</td>
+                <td class="display-4 col-3">4.00</td>
+                <td class="display-4 col-3">8.00</td>
+            </tr>
+            <tr>
+                <td class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">This is a larger book title</h5>
+                            <p class="card-text">Author : With larger author name</p>
+                            <p class="card-text">ISBN : ISBN-ISBN-ISBN</p>
+                            <p class="card-text">Category : Category2</p>
+                        </div>
+                    </div>
+                </td>
+                <td class="display-4 col-3">2</td>
+                <td class="display-4 col-3">4.00</td>
+                <td class="display-4 col-3">8.00</td>
+            </tr>
+        </table>
+    </div>
+    <!-- For loop ends here -->
+    <div class="container">
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-3"></div>
+            <div class="col-3 display-4">Total Price</div>
+            <div class="col-3 display-4">12.00</div>
+        </div>
+    </div>
+    <!-- Should be another conditional
+  HTML for after promocode application-->
+    <div class="container">
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6 display-4">
+                Promo Code Applied
+            </div>
+            <div class="col-3 display-4"> PROMO</div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6 display-4">
+                Final Total (USD)
+            </div>
+            <div class="col-3 display-4"> 10.45</div>
+        </div>
+    </div>
 
-					.content p {
-						margin: .2em;
-					}
+    <div class="container">
+        <div class="row justify-content-center"><h1 class="display-3"> Shipping Address Information </h1></div>
+    </div>
+    <div class="container">
+        <table class="table">
+            <tr class="row justify-content-center">
+                <td class="col-4"> Street Address</td>
+                <td class="col-4"> Street Address from DB</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> Apartment No</td>
+                <td class="col-4"> Apartment No from DB</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> City</td>
+                <td class="col-4"> City from DB</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> State</td>
+                <td class="col-4"> State from DB</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> Zip</td>
+                <td class="col-4"> Zip from DB</td>
+            </tr>
+        </table>
+    </div>
 
-				#foot {
-					text-align: left;
-				}
+    <div class="container">
+        <div class="row justify-content-center"><h1 class="display-3"> Billing Address Information </h1></div>
+    </div>
+    <div class="container">
+        <table class="table">
+            <tr class="row justify-content-center">
+                <td class="col-4"> Street Address</td>
+                <td class="col-4"> Street Address from DB</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> Apartment No</td>
+                <td class="col-4"> Apartment No from DB</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> City</td>
+                <td class="col-4"> City from DB</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> State</td>
+                <td class="col-4"> State from DB</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> Zip</td>
+                <td class="col-4"> Zip from DB</td>
+            </tr>
+        </table>
+    </div>
 
-					#foot p {
-						padding: 0;
-						padding-left: 1em;
-						margin: .2em;
-					}
 
-				#total {
-					text-align: right;
-					padding: .2em;
-					padding-right: 1em;
-				}
+    <div class="container">
+        <div class="row justify-content-center"><h1 class="display-3"> Payment Information </h1></div>
+    </div>
+    <div class="container">
+        <table class="table">
+            <tr class="row justify-content-center">
+                <td class="col-4"> Name on Card</td>
+                <td class="col-4"> Name on Card from DB</td>
+            </tr>
+            <tr class="row justify-content-center">
+                <td class="col-4"> Card Info</td>
+                <td class="col-4"> CardType ending ****-****-****-1234</td>
+            </tr>
+        </table>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-3">
+                <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('edit_profile') }}" role="button">Edit
+                    Information</a>
+            </div>
+            <div class="col-3">
+                <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('cart') }}" role="button">Go Back to
+                    Cart</a>
+            </div>
+            <div class="col-3">
+                <!--  create a hidden form with all the info !-->
+                <form action="{{ url_for(('checkout_action')) }}" method="post">
+                    <input type="hidden" name="name1" value="valuefromdb1"/>
+                    <input type="hidden" name="name2" value="valuefromdb2"/>
+                    <input class="btn btn-primary btn-lg btn-block" type="submit" value="Confirm Checkout"/>
+                </form>
+            </div>
+        </div>
+    </div>
 
-					#total h4 {
-						text-align: right;
-					}
 
-				#checkout {
-					display: block;
-					margin: 1em;
-					margin-left: auto;
-				}
-
-				.container hr {
-					margin: .2em;
-					padding: 0;
-				}
-
-				.container h4 {
-					text-align: left;
-					padding: 0;
-				}
-			</style>
-			<form>
-				<div id="orderSum" class="container">
-					<hr class="centerFormat">
-					<h2 class="centerFormat">Order Summary</h2>
-					<hr class="centerFormat">
-					<div class="container">
-						<img src="../static/images/icons/books-icon.png" width="100px" length="100px">
-						<div class="content">
-							<p>Item Description.</p>
-							<p>$0.00</p>
-							<p>
-								<button type="button" style=" height: 35px; width:125px" class="btn btn-success">Update Book</button>
-								<button type="button" style=" height: 35px; width:125px" class="btn btn-danger">Delete Book</button>
-							</p>
-						</div>
-					</div>
-					<div class="container">
-						<img src="../static/images/icons/books-icon.png" width="100px" length="100px">
-						<div class="content">
-							<p>Item Description.</p>
-							<p>$0.00</p>
-							<p>
-								<button type="button" style=" height: 35px; width:125px" class="btn btn-success">Update Book</button>
-								<button type="button" style=" height: 35px; width:125px" class="btn btn-danger">Delete Book</button>
-							</p>
-						</div>
-					</div>
-				</div>
-
-				<div id="foot">
-					<div class="container">
-						<hr class="centerFormat">
-						<h4 class="centerFormat">Shipping Information</h4>
-						<hr class="centerFormat">
-						<p>Name</p>
-						<p>Address Line 1</p>
-						<p>Address Line 2</p>
-						<p>City, State 00000</p>
-						<p>Country</p>
-						<br>
-						<p>
-							<button type="button" style=" height: 30px; width:200px" class="btn btn-success">Enter New address</button>
-						</p>
-						<br>
-					</div>
-					<div class="container">
-						<hr class="centerFormat">
-						<h4 class="centerFormat">Payment Information</h4>
-						<hr class="centerFormat">
-						<p>Name</p>
-						<p>Visa ending in 0000</p>
-						<p>expires in 00/0000</p>
-						<br>
-						<p>
-							<button type="button" style=" height: 30px; width:300px" class="btn btn-success">Enter New Payment details</button>
-						</p>
-						<br>
-					</div>
-					<div id="total" class="container">
-						<h5>Subtotal: $0.00</h5>
-						<h5>Shipping: $0.00</h5>
-						<h4>Total: $0.00</h4>
-						<input type="button" value="Confirm Order" id="checkout">
-					</div>
-				</div>
-			</form>
-		</div>
-		{% endblock %}<!-- main_content -->
-		{% block footer %}
-			{{ super() }}
-		{% endblock %}
-	</div><!-- div1 -->
-		{% block scripts %}
-			{{ super() }}
-		{% endblock %}
+    {% endblock %}<!-- main_content -->
+    {% block footer %}
+    {{ super() }}
+    {% endblock %}
+</div><!-- div1 -->
+{% block scripts %}
+{{ super() }}
+{% endblock %}
 
 </body>
 </html>

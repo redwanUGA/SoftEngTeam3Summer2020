@@ -2,44 +2,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	{% block head_header %}
-		{{ super() }}
-	{% endblock %}
-	<title> Add Promo </title>
+    {% block head_header %}
+    {{ super() }}
+    {% endblock %}
+    <title> Add Promo </title>
 </head>
 <body>
-	<div id="div1">
-		{% block body_header %}
-			{{ super() }}
-		{% endblock %}<!-- container -->
+<div id="div1">
+    {% block body_header %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
 
-		{% block menu_content %}
-			{{ super() }}
-		{% endblock %}<!-- container -->
+    {% block menu_content %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
 
-		{% block main_content %}
-		<div id="main_content">
+    {% block flash %}
+    {{ super() }}
+    {% endblock %}
 
-            <div class="msg">
-                Thank you, your order is complete now !
-                <hr color="black">
-
-                    <p>Order confirmation sent to &nbsp&nbsp&nbsp mike.russel@gmail.com</p>
-                    <p>Your oder ID  &nbsp&nbsp&nbsp 3452</p>
-                    <p>Order Date &nbsp&nbsp&nbsp 2/2/30</p>
-                    <p> Estimated delivery date 5/2/2020</p>
-
-            </div>
-
+    {% block main_content %}
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">Order Confirmed</h1>
+            <p class="lead">Dear "Name", You have successfully placed an order. View your order history <a
+                    href="{{ url_for('order_history') }}"> Here </a></p>
         </div>
-		{% endblock %}<!-- main_content -->
-		{% block footer %}
-			{{ super() }}
-		{% endblock %}
-	</div><!-- div1 -->
-		{% block scripts %}
-			{{ super() }}
-		{% endblock %}
+    </div>
+
+    {% endblock %}<!-- main_content -->
+    {% block footer %}
+    {{ super() }}
+    {% endblock %}
+</div><!-- div1 -->
+{% block scripts %}
+{{ super() }}
+{% endblock %}
 
 </body>
 </html>
