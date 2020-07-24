@@ -71,7 +71,7 @@
             <div class="col-6 display-4">
                 Promo Code Applied
             </div>
-            <div class="col-3 display-4"> PROMO</div>
+            <div class="col-3 display-4"> {{promo['promoCode']}}</div>
         </div>
     </div>
     <div class="container">
@@ -80,7 +80,11 @@
             <div class="col-6 display-4">
                 Final Total (USD)
             </div>
-            <div class="col-3 display-4"> 10.45</div>
+	    {% if 'discountAmount' in promo%}
+            <div class="col-3 display-4"> {{total.value - (total.value * (promo['discountAmount'] / 100))}}</div>
+	    {%else%}
+	    <div class="col-3 display-4"> {{total.value}}</div>
+	    {%endif%}
         </div>
     </div>
 

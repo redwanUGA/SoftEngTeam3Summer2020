@@ -344,12 +344,17 @@ def checkout():
             books += book
 
         #apply the promocode discount
-        #however promocode application is supposed to work, calculate it here
         promocode = None
-        promo_query = 'SELECT * FROM bookstore.promotion WHERE idPromotion=\'%s\'' % promocode
+        #if a promocode was applied then there is a pending order in the order table
+        promo_query = 'SELECT * FROM bookstore.Order WHERE userID=%d AND orderStatus=\'pending\' AND OrderDateTime=\'%s\'' % (uid, date.today())
         cur.execute(promo_query)
-        discount = cur.fetchall()
+        promo = cur.fetchall()
         
+        if(len(promo) != 0):
+            getCode = 'SELECT * FROM bookstore.promotion WHERE idPromotion=%d' % promo[0]['PromoID']
+            cur.execute(getCode)
+            code = cur.fetchall()
+            promo=code[0]
 
         #shipping information
         ship_query = 'SELECT * FROM bookstore.address WHERE userID=%d AND AddressType=\'ship\'' % uid
@@ -374,7 +379,7 @@ def checkout():
             pay[0]['cardNumber'] = cardNumber
             pay = pay[0]
         
-        return render_template('checkout.html', leng=len(books), books=books, subtotal=subtotal, ship=ship, pay=pay, bill=bill, promo=discount)
+        return render_template('checkout.html', leng=len(books), books=books, subtotal=subtotal, ship=ship, pay=pay, bill=bill, promo=promo)
     else:
         flash('You are not allowed to view this page')
         return redirect(url_for('index'))
@@ -798,8 +803,9 @@ def activate_user_action():
 
 @app.route('/editProfileData', methods=['GET', 'POST'])
 def editProfileData():
-    userid = session.get('uid')
-
+    userid = session.get('userID')
+    cur = mysql.connection.cursor()
+    
     val_firstName = str(request.form['fname']).strip()
     val_lastName = str(request.form['lname']).strip()
     val_gender = str(request.form.get('gender')).strip()
@@ -1038,26 +1044,49 @@ def checkout_action():
             #create a new order entry
             orderID = randint(0, 99999)
             #if there is a promo applied
-            #HAVE TO PUT A PLACEHOLDER PROMO IN PLACE SINCE THE PROMOID COLUMN IN NOT NULL
-            order_new = "INSERT INTO bookstore.Order (orderID, userID, OrderDateTime, AddressID, PromoID, paymentID) VALUES (%d, %d, \'%s\', %d, %d, %d)" % (orderID, uid, date.today(), ship[0]['idAddress'], 1, pay[0]['UserID'])
-            #else no promo applied
-            #order_new = "INSERT INTO bookstore.Order (userID, OrderDateTime, AddressID, paymentID) VALUES (%d, \'%s\', %d, %d)" % (uid, date.today(), ship[0]['idAddress'], pay[0]['UserID'])
-            set_query(order_new)
+            promo_query = 'SELECT * FROM bookstore.Order WHERE userID=%d AND orderStatus=\'pending\' AND OrderDateTime=\'%s\'' % (uid, date.today())
+            cur.execute(promo_query)
+            promo = cur.fetchall()
+
+            code = None
+            if(len(promo) != 0):
+                orderID = promo[0]['orderID']
+                getCode = 'SELECT * FROM bookstore.promotion WHERE idPromotion=%d' % promo[0]['PromoID']
+                cur.execute(getCode)
+                code = cur.fetchall()
+            else:
+                #else no promo applied
+                order_new = "INSERT INTO bookstore.Order (orderID,userID, OrderDateTime, AddressID, paymentID) VALUES (%d, %d, \'%s\', %d, %d)" % (orderID, uid, date.today(), ship[0]['idAddress'], pay[0]['UserID'])
+                set_query(order_new)
             print(orderID)
             
             total = 0            
             for item in cartItems:
                 priceQ = "SELECT * FROM bookstore.bookinventory WHERE bookID=%d" % item['bookID']
-                price = get_query(priceQ)[0]['sellingPrice']
+                currentBook = get_query(priceQ)
+                price = currentBook[0]['sellingPrice']
 
                 total += price * item['quantity']
                 
                 insertOrderItem = "INSERT INTO bookstore.orderItems (orderID, ProductID, quantity) VALUES (%d,%d, %d)" % (orderID, item['bookID'], item['quantity'])
                 set_query(insertOrderItem)
 
+                #delete inserted item from cart
+                updateCart = 'DELETE FROM bookstore.cart WHERE userID=%d AND bookID=%d AND quantity=%d' % (uid, item['bookID'], item['quantity'])
+                set_query(updateCart)
+
+                #update bookInventory
+                #get currentBook quantity
+                inventory = currentBook[0]['quantity'] 
+                updateBookInv = 'UPDATE bookstore.bookinventory SET quantity=%d WHERE bookID=%d' % ((inventory-item['quantity']), item['bookID'])
+                set_query(updateBookInv)
+                
             #update total
-            #APPLY PROMOCODE DISCOUNT TO TOTAL IF THERE WAS ONE APPLIED
-            updateQ = "UPDATE bookstore.Order SET total=%d WHERE orderID=%d" % (total, orderID)
+            print(total)
+            if(code != None):
+                total = (total - (total*float(code[0]['discountAmount'])/100))
+            updateQ = "UPDATE bookstore.Order SET total=%d, orderStatus=\'active\' WHERE orderID=%d" % (total, orderID)
+            print(total)
             set_query(updateQ)
             
             return render_template('orderconfirmation.html')
