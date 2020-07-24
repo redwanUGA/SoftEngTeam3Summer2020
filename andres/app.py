@@ -9,6 +9,8 @@ from flask_mail import Mail, Message
 from cryptography.fernet import Fernet
 import re
 
+from datetime import date
+
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
@@ -347,14 +349,7 @@ def checkout():
         promo_query = 'SELECT * FROM bookstore.promotion WHERE idPromotion=\'%s\'' % promocode
         cur.execute(promo_query)
         discount = cur.fetchall()
-        print(discount)
         
-        shipping = totalItems * 20
-        total = 0
-        if(not discount):
-            total = shipping+subtotal
-        else:
-            total = shipping + (subtotal*discount)
 
         #shipping information
         ship_query = 'SELECT * FROM bookstore.address WHERE userID=%d AND AddressType=\'ship\'' % uid
@@ -379,7 +374,7 @@ def checkout():
             pay[0]['cardNumber'] = cardNumber
             pay = pay[0]
         
-        return render_template('checkout.html', leng=len(books), books=books, shipping=shipping, subtotal=subtotal, total=total, ship=ship, pay=pay, bill=bill)
+        return render_template('checkout.html', leng=len(books), books=books, subtotal=subtotal, ship=ship, pay=pay, bill=bill, promo=discount)
     else:
         flash('You are not allowed to view this page')
         return redirect(url_for('index'))
@@ -1011,9 +1006,63 @@ def apply_promo_action():
 
 @app.route('/checkout_action', methods=['GET', 'POST'])
 def checkout_action():
-    # push data to database order
-    # redirect to confirmation page with proper information
-    return 'Needs to be implemented by Andres'
+    if(session.get('userID') != None):
+        cur = mysql.connection.cursor()
+        uid = session.get('userID')
+        #transfer cart items to order items
+        
+        #get cart items
+        cart_query="SELECT * FROM bookstore.cart WHERE userID=%d" % uid
+        cur.execute(cart_query)
+        cartItems = cur.fetchall()
+        #get payment info
+        pay_query = "SELECT * FROM bookstore.payment WHERE userID=%d" % uid
+        cur.execute(pay_query)
+        pay = cur.fetchall()
+        #get billShipping info
+        bill_query = "SELECT * FROM bookstore.address WHERE userID=%d AND AddressType=\'bill\'" % uid
+        cur.execute(bill_query)
+        bill = cur.fetchall()
+        #get shippingAddy
+        ship_query = "SELECT * FROM bookstore.address WHERE userID=%d AND AddressType=\'ship\'" % uid
+        cur.execute(ship_query)
+        ship = cur.fetchall()
+
+        if(len(cartItems) == 0):
+            flash('Your cart is empty.')
+            return redirect(url_for('index'))
+        elif(len(pay) == 0 or len(bill) == 0 or len(ship) == 0):
+            flash('Please enter Shipping/Billing Address and/or payment.')
+            return redirect(url_for('index'))
+        else:
+            #create a new order entry
+            orderID = randint(0, 99999)
+            #if there is a promo applied
+            #HAVE TO PUT A PLACEHOLDER PROMO IN PLACE SINCE THE PROMOID COLUMN IN NOT NULL
+            order_new = "INSERT INTO bookstore.Order (orderID, userID, OrderDateTime, AddressID, PromoID, paymentID) VALUES (%d, %d, \'%s\', %d, %d, %d)" % (orderID, uid, date.today(), ship[0]['idAddress'], 1, pay[0]['UserID'])
+            #else no promo applied
+            #order_new = "INSERT INTO bookstore.Order (userID, OrderDateTime, AddressID, paymentID) VALUES (%d, \'%s\', %d, %d)" % (uid, date.today(), ship[0]['idAddress'], pay[0]['UserID'])
+            set_query(order_new)
+            print(orderID)
+            
+            total = 0            
+            for item in cartItems:
+                priceQ = "SELECT * FROM bookstore.bookinventory WHERE bookID=%d" % item['bookID']
+                price = get_query(priceQ)[0]['sellingPrice']
+
+                total += price * item['quantity']
+                
+                insertOrderItem = "INSERT INTO bookstore.orderItems (orderID, ProductID, quantity) VALUES (%d,%d, %d)" % (orderID, item['bookID'], item['quantity'])
+                set_query(insertOrderItem)
+
+            #update total
+            #APPLY PROMOCODE DISCOUNT TO TOTAL IF THERE WAS ONE APPLIED
+            updateQ = "UPDATE bookstore.Order SET total=%d WHERE orderID=%d" % (total, orderID)
+            set_query(updateQ)
+            
+            return render_template('orderconfirmation.html')
+    else:
+        return redirect(url_for('/index'))
 
 @app.route('/cancel_order', methods=['GET', 'POST'])
 def cancel_order():
