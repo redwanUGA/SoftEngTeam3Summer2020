@@ -120,7 +120,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Bookstore`.`cart` (
   `userID` INT NOT NULL,
-  `bookID` INT NOT NULL,
+  `bookID` VARCHAR(15) NOT NULL,
   `quantity` INT(10) NOT NULL,
   PRIMARY KEY (`userID` ,`bookID`))
 ENGINE = InnoDB;
@@ -145,8 +145,8 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`bookInventory` (
   `idbookInventory` INT NOT NULL AUTO_INCREMENT,
   `bookID` VARCHAR(15) NOT NULL,
   `bookStatus` VARCHAR(15) NULL,
-  `buyingPrice` INT(10) NULL,
-  `sellingPrice` INT(10) NULL,
+  `buyingPrice` FLOAT(10) NULL,
+  `sellingPrice` FLOAT(10) NULL,
   `quantity` INT(5) NULL,
   PRIMARY KEY (`idbookInventory`))
 ENGINE = InnoDB;

@@ -8,132 +8,135 @@
     <title> Add Promo </title>
 </head>
 <body>
-<div id="div1">
-    {% block body_header %}
-    {{ super() }}
-    {% endblock %}<!-- container -->
-
-    {% block menu_content %}
-    {{ super() }}
-    {% endblock %}<!-- container -->
-
-    {% block flash %}
-    {{ super() }}
-    {% endblock %}<!-- container -->
-
-    {% block main_content %}
-    <div class="container">
-        <table class="table">
-            <tr>
-                <th>Book</th>
-                <th>Quantity</th>
-                <th>Unit Price (USD)</th>
-                <th>Item total (USD)</th>
-            </tr>
-            <!-- Your for loop starts here -->
-            <tr>
-                <td class="col-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Book title1</h5>
-                            <p class="card-text">Author : Author1</p>
-                            <p class="card-text">ISBN : ISBN1</p>
-                            <p class="card-text">Category : Category1</p>
+    <div id="div1">
+        {% block body_header %}
+        {{ super() }}
+        {% endblock %}<!-- container -->
+        {% block menu_content %}
+        {{ super() }}
+        {% endblock %}<!-- container -->
+        {% block flash %}
+        {{ super() }}
+        {% endblock %}<!-- container -->
+        {% block main_content %}
+        <div class="container">
+            <table class="table">
+                <tr>
+                    <th>Book</th>
+                    <th>Quantity</th>
+                    <th>Unit Price (USD)</th>
+                    <th>Item total (USD)</th>
+                </tr>
+                <script type="text/javascript">
+                    var prc=0;
+                </script>
+                <!-- Your for loop starts here -->
+                {% for jj in data %}
+                <tr>
+                    <td class="col-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ jj.title }}</h5>
+                                <p class="card-text">Author : {{ jj.author }}</p>
+                                <p class="card-text">ISBN : {{ jj.bookID }}</p>
+                                <p class="card-text">Category : {{ jj.category }}</p>
+                            </div>
                         </div>
-                    </div>
-                </td>
-                <td class="display-4 col-3">1</td>
-                <td class="display-4 col-3">4.00</td>
-                <td class="display-4 col-3">8.00</td>
-            </tr>
-            <tr>
-                <td class="col-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">This is a larger book title</h5>
-                            <p class="card-text">Author : With larger author name</p>
-                            <p class="card-text">ISBN : ISBN-ISBN-ISBN</p>
-                            <p class="card-text">Category : Category2</p>
-                        </div>
-                    </div>
-                </td>
-                <td class="display-4 col-3">2</td>
-                <td class="display-4 col-3">4.00</td>
-                <td class="display-4 col-3">8.00</td>
-            </tr>
-        </table>
-    </div>
-    <!-- For loop ends here -->
-    <div class="container">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-3"></div>
-            <div class="col-3 display-4">Total Price</div>
-            <div class="col-3 display-4">12.00</div>
+                    </td>
+                    <td class="display-4 col-3">{{ jj.quantity }}</td>
+                    <td class="display-4 col-3">{{ jj.buyingPrice }}</td>
+                    <td class="display-4 col-3">
+                        {{ jj.prc }}
+                        <script type="text/javascript"> prc += {{ jj.prc }};</script>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
         </div>
-    </div>
-    <!-- Should be another conditional
-      HTML for after promocode application-->
 
-    <div class="container">
-        <div class="row content-justify-center">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <a class="btn btn-primary btn-block" href="{{ url_for('index') }}" role="button">Continue Shopping</a>
+        <!-- For loop ends here -->
+
+        <div class="container">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-3"></div>
+                <div class="col-3 display-4">Total Price</div>
+                <div class="col-3 display-4" id="prc"></div>
             </div>
-            <div class="col-3"></div>
         </div>
-    </div>
+        <script type="text/javascript">
+            document.getElementById('prc').innerText=prc;
+        </script>
+        <!-- Should be another conditional
+    HTML for after promocode application-->
 
-    <div class="container">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <a class="btn btn-primary btn-block" href="{{ url_for('modify_cart') }}" role="button">Modify item
-                    numbers in my cart</a>
+        <div class="container">
+            <div class="row content-justify-center">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <a class="btn btn-primary btn-block" href="{{ url_for('index') }}" role="button">Continue Shopping</a>
+                </div>
+                <div class="col-3"></div>
             </div>
-            <div class="col-3"></div>
         </div>
-    </div>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <a class="btn btn-primary btn-block" href="{{ url_for('remove_from_cart') }}" role="button">Remove Items
-                    from my cart</a>
+        <div class="container">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <a class="btn btn-primary btn-block" href="{{ url_for('modify_cart') }}" role="button">
+                        Modify item
+                        numbers in my cart
+                    </a>
+                </div>
+                <div class="col-3"></div>
             </div>
-            <div class="col-3"></div>
         </div>
-    </div>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <a class="btn btn-primary btn-block" href="{{ url_for('apply_promo') }}" role="button">I have a promo
-                    code</a>
+        <div class="container">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <a class="btn btn-primary btn-block" href="{{ url_for('remove_from_cart') }}" role="button">
+                        Remove Items
+                        from my cart
+                    </a>
+                </div>
+                <div class="col-3"></div>
             </div>
-            <div class="col-3"></div>
         </div>
-    </div>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-3"></div>
-            <div class="col-6">
-                <a class="btn btn-primary btn-block" href=" {{ url_for('checkout') }} " role="button">I'm good. Let's
-                    checkout</a>
+        <div class="container">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <a class="btn btn-primary btn-block" href="{{ url_for('apply_promo') }}" role="button">
+                        I have a promo
+                        code
+                    </a>
+                </div>
+                <div class="col-3"></div>
             </div>
-            <div class="col-3"></div>
         </div>
-    </div>
 
-    {% endblock %}<!-- main_content -->
-    {% block footer %}
-    {{ super() }}
-    {% endblock %}
-</div><!-- div1 -->
+        <div class="container">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <a class="btn btn-primary btn-block" href=" {{ url_for('checkout') }} " role="button">
+                        I'm good. Let's
+                        checkout
+                    </a>
+                </div>
+                <div class="col-3"></div>
+            </div>
+        </div>
+
+        {% endblock %}<!-- main_content -->
+        {% block footer %}
+        {{ super() }}
+        {% endblock %}
+    </div><!-- div1 -->
 {% block scripts %}
 {{ super() }}
 {% endblock %}
