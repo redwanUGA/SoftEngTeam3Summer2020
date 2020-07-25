@@ -15,7 +15,7 @@ ENGINE = InnoDB;
 -- Table `Bookstore`.`Books`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Bookstore`.`Books` (
-  `ISBN` INT NOT NULL,
+  `ISBN` VARCHAR(15) NOT NULL,
   `author` VARCHAR(50) NOT NULL,
   `title` VARCHAR(50) NOT NULL,
   `cover` VARCHAR(50) NOT NULL,
@@ -109,9 +109,8 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`Order` (
   `userID` INT NOT NULL,
   `total` INT NULL,
   `OrderDateTime` DATE NOT NULL,
-  `AddressID` INT NOT NULL,
   `PromoID` INT NOT NULL,
-  `paymentID` INT NOT NULL,
+  `orderstatus` VARCHAR(15) NULL,
   PRIMARY KEY (`orderID`))
 ENGINE = InnoDB;
 
@@ -144,7 +143,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Bookstore`.`bookInventory` (
   `idbookInventory` INT NOT NULL AUTO_INCREMENT,
-  `bookID` INT NOT NULL,
+  `bookID` VARCHAR(15) NOT NULL,
   `bookStatus` VARCHAR(15) NULL,
   `buyingPrice` INT(10) NULL,
   `sellingPrice` INT(10) NULL,
