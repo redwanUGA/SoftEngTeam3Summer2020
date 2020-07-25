@@ -12,7 +12,7 @@ import re
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'root' ####################################### change this to your mysql password before running the app
+app.config['MYSQL_PASSWORD'] = '12341234'
 app.config['MYSQL_DB'] = 'bookstore'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 app.config['SECRET_KEY'] = 'abcdabcd'
@@ -288,15 +288,7 @@ def cart():
     if session['logged_in'] == True and session.get('userTypeID') == 2:
         # query for users cart
         # pass data to cart page from cart table
-
-        cart = """SELECT `c`.`bookID`,`c`.`quantity`,`b`.`title`, b.author, b.cover , b.edition, cat.category, inv.buyingPrice , inv.buyingPrice * c.quantity AS prc
-        FROM `cart` `c`
-        LEFT JOIN `books` `b` ON `c`.`bookID` = `b`.`ISBN`
-        LEFT JOIN category cat ON b.category=cat.idCategory
-        LEFT JOIN bookinventory inv ON inv.bookID = c.bookID
-        WHERE `c`.`userID`=%s""" % str(session.get('userID'))
-        result = get_query(cart)
-        return render_template('cart.html', data = result)
+        return render_template('cart.html')
     else:
         flash('You are not allowed to view this page')
         return redirect(url_for('index'))
