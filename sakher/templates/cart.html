@@ -1,182 +1,146 @@
-﻿<!DOCTYPE html>
+﻿{% extends 'base.html' %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>Team3 Bookstore</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-	<link rel="stylesheet" href="style.css" type="text/css" />
-	<script type="text/javascript">
-		window.onload = initiate;
-		function initiate() {
-		//var search_query=document.getElementById('search_query');
-		var menu_closed=true;
-		var menu_content=document.getElementById('menu_content');
-		var mobile_button=document.getElementById('mobile_button');
-		mobile_button.onclick=function(){
-		if(menu_closed) {
-		menu_closed=false;
-		menu_content.style.display='block';
-		menu_content.style.height='70%';
-		} else {
-		menu_content.style.display='none';
-		menu_content.style.height='0%';
-		menu_closed=true;
-		}
-		};
-		};
-	</script>
+    {% block head_header %}
+    {{ super() }}
+    {% endblock %}
+    <title> Add Promo </title>
 </head>
 <body>
-	<div id="div1">
-		<header class="container-fluid">
+    <div id="div1">
+        {% block body_header %}
+        {{ super() }}
+        {% endblock %}<!-- container -->
+        {% block menu_content %}
+        {{ super() }}
+        {% endblock %}<!-- container -->
+        {% block flash %}
+        {{ super() }}
+        {% endblock %}<!-- container -->
+        {% block main_content %}
+        <div class="container">
+            <table class="table">
+                <tr>
+                    <th>Book</th>
+                    <th>Quantity</th>
+                    <th>Unit Price (USD)</th>
+                    <th>Item total (USD)</th>
+                </tr>
+                <script type="text/javascript">
+                    var prc=0;
+                </script>
+                <!-- Your for loop starts here -->
+                {% for jj in data %}
+                <tr>
+                    <td class="col-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ jj.title }}</h5>
+                                <p class="card-text">Author : {{ jj.author }}</p>
+                                <p class="card-text">ISBN : {{ jj.bookID }}</p>
+                                <p class="card-text">Category : {{ jj.category }}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="display-4 col-3">{{ jj.quantity }}</td>
+                    <td class="display-4 col-3">{{ jj.buyingPrice }}</td>
+                    <td class="display-4 col-3">
+                        {{ jj.prc }}
+                        <script type="text/javascript"> prc += {{ jj.prc }};</script>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
 
-			<div>
-				<a href="#" id="logo"><img src="images/icons/books-icon.png" alt="team3" /> Team#3 BookStore</a>
-			</div>
-			<div>
-				<form><input type="search" name="search_query" id="search_query" value="Search ..." onclick="this.value='';" /></form>
-			</div>
+        <!-- For loop ends here -->
 
-		</header><!-- container -->
-		<div id="menu">
-			<ul id="menu_content">
-				<li><a href="index.html">Home</a></li>
-				<li>
-					<a href="#">Categories</a><ul>
-						<li><a href="#">Classic</a></li>
-						<li><a href="#">Romance</a></li>
-						<li><a href="#">Technology</a></li>
-					</ul>
-				</li>
-				<li>
-					<a href="#">Browse</a>
-				</li>
-				<li>
-					<a href="#">Help</a><ul>
-						<li><a href="#">Support Request</a></li>
-						<li><a href="#">FAQs</a></li>
-						<li><a href="search.html">Advanced Search</a></li>
-					</ul>
-				</li>
-				<li>
-					<a href="#">About</a>
-				</li>
-			</ul>
+        <div class="container">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-3"></div>
+                <div class="col-3 display-4">Total Price</div>
+                <div class="col-3 display-4" id="prc"></div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            document.getElementById('prc').innerText=prc;
+        </script>
+        <!-- Should be another conditional
+    HTML for after promocode application-->
 
-			<div id="mobile_button">
-				<img src="images/menu.png" />
-			</div>
-			<div id="user_controls">
-				<ul>
-					<li><a href="cart.html"><img src="images/cart.png" />MY CART</a></li>
-					<li><a href="login.html"><img src="images/signin.png" />SING IN</a></li>
-					<li><a href="register.html"><img src="images/signup.png" />SIGN UP</a></li>
-				</ul>
-			</div>
-		</div>
-		<div id="main_content">
-			<div class="container mb-4">
-				<div class="row">
-					<div class="col-12">
-						<div class="table-responsive">
-							<table class="table table-striped">
-								<thead>
-									<tr>
-										<th> Book Preview </th>
-										<th> Book Name </th>
-										<th> Quantity </th>
-										<th> Price per Quantity </th>
-										<th> Total Price </th>
-										<th> Action </th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td><img src=""> </td>
-										<td>Book1</td>
-										<td>2</td>
-										<td>4.00 USD</td>
-										<td>8.00 USD</td>
+        <div class="container">
+            <div class="row content-justify-center">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <a class="btn btn-primary btn-block" href="{{ url_for('index') }}" role="button">Continue Shopping</a>
+                </div>
+                <div class="col-3"></div>
+            </div>
+        </div>
 
-										<td>
-											<button type="button" class="btn btn-danger">X</button>
-											<button type="button" class="btn btn-success">+</button>
-											<button type="button" class="btn btn-secondary">-</button>
-										</td>
-									</tr>
-									<tr>
-										<td><img src=""> </td>
-										<td>Book2</td>
-										<td>1</td>
-										<td>6.00 USD</td>
-										<td>6.00 USD</td>
-										<td>
-											<button type="button" class="btn btn-danger">X</button>
-											<button type="button" class="btn btn-success">+</button>
-											<button type="button" class="btn btn-secondary">-</button>
-										</td>
-									</tr>
-									<tr>
-										<td><img src=""> </td>
-										<td>Book3</td>
-										<td>2</td>
-										<td>2.00 USD</td>
-										<td>4.00 USD</td>
-										<td>
-											<button type="button" class="btn btn-danger">X</button>
-											<button type="button" class="btn btn-success">+</button>
-											<button type="button" class="btn btn-secondary">-</button>
-										</td>
-									</tr>
-									<tr>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td>Sub-Total</td>
-										<td>18.00 USD</td>
-										<td></td>
-									</tr>
-									<tr>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td>Promotional Reduction</td>
-										<td>2.00 USD</td>
-										<td></td>
-									</tr>
-									<tr>
-										<td></td>
-										<td></td>
-										<td></td>
-										<td><strong>Total</strong></td>
-										<td><strong>16 USD</strong></td>
-										<td></td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-					<div class="col mb-2">
-						<div class="row">
-							<div class="col-sm-12  col-md-6">
-								<button class="btn btn-block btn-light">Continue Shopping</button>
-							</div>
-							<div class="col-sm-12 col-md-6 text-right">
-								<button class="btn btn-lg btn-block btn-success text-uppercase">Checkout</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div><!-- main_content -->
-		<footer>
-			team 3 book store
-		</footer>
-	</div><!-- div1 -->
+        <div class="container">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <a class="btn btn-primary btn-block" href="{{ url_for('modify_cart') }}" role="button">
+                        Modify item
+                        numbers in my cart
+                    </a>
+                </div>
+                <div class="col-3"></div>
+            </div>
+        </div>
 
-	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+        <div class="container">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <a class="btn btn-primary btn-block" href="{{ url_for('remove_from_cart') }}" role="button">
+                        Remove Items
+                        from my cart
+                    </a>
+                </div>
+                <div class="col-3"></div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6" id="promo">
+                    <div><form method="post" action="{{ url_for('apply_promo') }}"> Enter promo code <input type="text" name="code" /> <input type="submit" value="Apply" /></form></div>
+                    <a class="btn btn-primary btn-block" href="#" id="promobtn" onclick="document.getElementById('promo').style.display='block';document.getElementById('promobtn').style.display='none';" role="button">
+                        I have a promo
+                        code
+                    </a>
+                </div>
+                <div class="col-3"></div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <a class="btn btn-primary btn-block" href=" {{ url_for('checkout') }} " role="button">
+                        I'm good. Let's
+                        checkout
+                    </a>
+                </div>
+                <div class="col-3"></div>
+            </div>
+        </div>
+
+        {% endblock %}<!-- main_content -->
+        {% block footer %}
+        {{ super() }}
+        {% endblock %}
+    </div><!-- div1 -->
+{% block scripts %}
+{{ super() }}
+{% endblock %}
+
 </body>
 </html>

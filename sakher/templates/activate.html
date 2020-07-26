@@ -1,0 +1,106 @@
+﻿{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% block head_header %}
+		{{ super() }}
+	{% endblock %}
+	<title> Add Promo </title>
+</head>
+<body>
+	<div id="div1">
+		{% block body_header %}
+			{{ super() }}
+		{% endblock %}<!-- container -->
+
+		{% block menu_content %}
+			{{ super() }}
+		{% endblock %}<!-- container -->
+        {% block flash %}
+            {{ super() }}
+        {% endblock %}
+		{% block main_content %}
+		<div id="main_content">
+            <style>
+                /*LOGIN form*/
+                .login {
+                    width: 30%;
+                }
+
+                #log {
+                    border: 3px solid #f1f1f1;
+                    position: relative;
+                    margin: auto;
+                    width: 30em;
+                    margin-top: 2em;
+                    border-radius: 10px;
+                }
+
+                input[type=email], input[type=password], input[type=text] {
+                    width: 100%;
+                    padding: 12px 20px;
+                    margin: 8px 0;
+                    display: inline-block;
+                    border: 1px solid #ccc;
+                    box-sizing: border-box;
+                }
+
+                .bttn {
+                    background-color: #cc0000;
+                    color: white;
+                    padding: 14px 20px;
+                    margin: 8px 0;
+                    border: none;
+                    cursor: pointer;
+                    width: 100%;
+                    border-radius: 7px;
+                }
+
+                    .bttn:hover {
+                        opacity: 0.8;
+                    }
+
+                .cancelbtn {
+                    width: auto;
+                    padding: 10px 10px;
+                    background-color: #ff3300;
+                }
+
+                .container {
+                    padding: 16px;
+                }
+
+                span.psw {
+                    float: right;
+                    padding-top: 16px;
+                }
+            </style>
+            <div id="login">
+                <form action="{{ url_for('activate_user_action') }}" method="post">
+                    <div class="container">
+                        <label for="email"><b>Email Address</b></label>
+                        <input type="email" placeholder="Enter Email Address" name="email" id="email" required>
+
+                        <label for="otp"><b>Email Activation Key</b></label>
+                        <input type="text" placeholder="Activation Key" name="otp" id="otp" required>
+
+                        <button class="bttn" type="submit"> Activate Yourself </button>
+                    </div>
+
+                    <div class="container" style="background-color:#f1f1f1">
+                        <button type="button" class="cancelbtn bttn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+		{% endblock %}<!-- main_content -->
+		{% block footer %}
+			{{ super() }}
+		{% endblock %}
+	</div><!-- div1 -->
+		{% block scripts %}
+			{{ super() }}
+		{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head_header %}
+    {{ super() }}
+    {% endblock %}
+    <title> Add Promo </title>
+</head>
+<body>
+<div id="div1">
+    {% block body_header %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
+
+    {% block menu_content %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
+
+    {% block flash %}
+    {{ super() }}
+    {% endblock %}
+
+    {% block main_content %}
+    <div class="container">
+        <h1 class="display-4">Add Book</h1>
+        <p class="lead">This panel lets you add a new book</p>
+    </div>
+
+    <div class="container">
+        <form action="{{ url_for('add_book_action') }}" , method="post">
+            <div class="form-group row">
+                <label class="col-3 col-form-label" for="title"> Book Title </label>
+                <input type="text" class="col-6 form-control" id="title" name="title">
+            </div>
+            <div class="form-group row">
+                <label class="col-3 col-form-label" for="author"> Book Author </label>
+                <input type="text" class="col-6 form-control" id="author" name="author">
+            </div>
+            <div class="form-group row">
+                <label class="col-3 col-form-label" for="ISBN"> ISBN </label>
+                <input type="text" class="col-6 form-control" id="ISBN" name="ISBN">
+            </div>
+            <div class="form-group row">
+                <label class="col-3 col-form-label" for="edition"> Book Edition </label>
+                <input type="text" class="col-6 form-control" id="edition" name="edition">
+            </div>
+            <div class="form-group row">
+                <label class="col-3 col-form-label" for="publisher"> Book Publisher </label>
+                <input type="text" class="col-6 form-control" id="publisher" name="publisher">
+            </div>
+            <div class="form-group row">
+                <label class="col-3 col-form-label" for="pubYear"> Publication Year </label>
+                <input type="text" class="col-6 form-control" id="pubYear" name="pubYear">
+            </div>
+            <div class="form-group row">
+                <label class="col-3 col-form-label" for="category"> Book Category </label>
+                <select class="form-control col-6" name="category" id="category">
+                    <option value="1"> opt1</option>
+                    <option value="2"> opt2</option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label class="col-3 col-form-label" for="cover"> Book Cover </label>
+                <input type="file" class="col-6 form-control" id="cover" name="cover">
+            </div>
+            <input type="submit" class="btn btn-primary btn-lg btn-block col-4 justify-content-center"
+                   value="Submit Book">
+        </form>
+    </div>
+
+    {% endblock %}<!-- main_content -->
+    {% block footer %}
+    {{ super() }}
+    {% endblock %}
+</div><!-- div1 -->
+{% block scripts %}
+{{ super() }}
+{% endblock %}
+
+</body>
+</html>

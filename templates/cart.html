@@ -109,8 +109,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-3"></div>
-                <div class="col-6">
-                    <a class="btn btn-primary btn-block" href="{{ url_for('apply_promo') }}" role="button">
+                <div class="col-6" id="promo">
+                    <div><form method="post" action="{{ url_for('apply_promo') }}"> Enter promo code <input type="text" name="code" /> <input type="submit" value="Apply" /></form></div>
+                    <a class="btn btn-primary btn-block" href="#" id="promobtn" onclick="document.getElementById('promo').style.display='block';document.getElementById('promobtn').style.display='none';" role="button">
                         I have a promo
                         code
                     </a>

@@ -289,12 +289,12 @@ def cart():
         # query for users cart
         # pass data to cart page from cart table
 
-        cart = """SELECT `c`.`bookID`,`c`.`quantity`,`b`.`title`, b.author, b.cover , b.edition, cat.category, inv.buyingPrice , inv.buyingPrice * c.quantity AS prc
+        cart = """SELECT `c`.`bookID`,`c`.`quantity`,`b`.`title`, b.author, b.cover , b.edition, cat.category, inv.buyingPrice , FORMAT(inv.buyingPrice * c.quantity,2) AS prc
         FROM `cart` `c`
         LEFT JOIN `books` `b` ON `c`.`bookID` = `b`.`ISBN`
         LEFT JOIN category cat ON b.category=cat.idCategory
         LEFT JOIN bookinventory inv ON inv.bookID = c.bookID
-        WHERE `c`.`userID`=%s""" % str(session.get('userID'))
+        WHERE `c`.`userID`=%s """ % str(session.get('userID'))
         result = get_query(cart)
         return render_template('cart.html', data = result)
     else:
@@ -320,7 +320,21 @@ def remove_from_cart():
 def apply_promo():
     # check for proper user permission
     # pass cart information to applypromo.html
-    return render_template('applypromo.html')
+
+    promo_query = "SELECT idPromotion FROM `promotion` where `promoCode`= %s" % request.form["code"]
+
+    promo_result = get_query(promo_query)
+
+    if len(promo_result) == 0:
+        flash('Invalid promo code!')
+        return redirect(url_for('cart'))
+
+    order_query = """ UPDATE orders o SET PromoID=%d WHERE o.orderstatus="pending" AND o.userID = %d""" % promo_result[0]['idPromotion'] % session.get("userID")
+
+        set_query(quantity_query)
+        flash('Promo has been applied!')
+    #return render_template('applypromo.html')
+    return redirect(url_for('checkout'))
 
 @app.route('/checkout')
 def checkout():
@@ -913,7 +927,53 @@ def add2cart():
     # get data from book.html hidden form
     # push data to cart table
     # return to the same page with a flash message
-    return 'Needs to be implemented by Sakher'
+    try:
+        quantity_query = """select  c.quantity, b.buyingPrice from `cart` c
+                              JOIN books b ON c.bookID=b.ISBN
+                              JOIN bookinventory inv c.bookID=b.bookID
+                              where c.userID = %d AND c.bookID=%d""" % session.get("userID")  % request.form['bookid']
+        quantity_result = get_query(quantity_query)
+
+        
+        order_query = """select o.orderID,o.total,p.discountAmount  from `order` o
+                              LEFT JOIN promotion p ON p.idPromotion = o.orderID
+                              where o.orderstatus="pending" AND o.userID = %d""" % session.get("userID")
+        order_result = get_query(quantity_query)
+
+        quantity = int(quantity_result[0]['quantity'])
+        price = int(quantity_result[0]['buyingPrice'])
+
+        if len(order_result) == 0
+            order_insert = """ INSERT INTO `order`
+(
+`userID`,
+`total`,
+`OrderDateTime`,
+`PromoID`,
+`orderstatus`)
+VALUES
+(
+%d,
+%d
+NOW(),
+NULL,
+"Pending");
+ """ % session.get("userID") % (quantity*price)
+
+ set_query(order_insert)
+        #print(infopass)
+        
+        if quantity>0:
+            quantity=quantity+1
+            last_query = "UPDATE VALUES SET quantity=%d where userID = %d AND bookID=%d" %quantity % session.get("userID")  % request.form['bookid']
+        else:
+            last_query = "INSERT INTO cart (userID,bookID,quantity) VALUES (%s,%s,%d)" % request.form['bookid'] % session.get("userID") % q
+
+        set_query(last_query)
+        set_query("UPDATE order o SET total=total + %d where o.orderstatus="pending" AND o.userID = %d  " %price %session.get("userID") )
+    except e:
+        return e
+    return redirect(url_for('cart'))
 
 @app.route('/add_book_action', methods=['GET','POST'])
 def add_book_action():

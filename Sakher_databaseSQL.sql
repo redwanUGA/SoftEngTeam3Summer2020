@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`Order` (
   `userID` INT NOT NULL,
   `total` INT NULL,
   `OrderDateTime` DATE NOT NULL,
-  `PromoID` INT NOT NULL,
+  `PromoID` INT NULL,
   `orderstatus` VARCHAR(15) NULL,
   PRIMARY KEY (`orderID`))
 ENGINE = InnoDB;

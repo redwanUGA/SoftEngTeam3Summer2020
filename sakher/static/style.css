@@ -470,16 +470,17 @@ h1 img {
 }
 
 .msg {
-    width:80%;
+    width:50%;
     margin:25px auto !important;
-    background:#fff098;
-    color:black;
-    font-size:medium;
+    background:#ff6a00;
+    color:white;
+    font-size:x-large;
     text-align:center;
     font-weight:bold;
     padding:10px;
     margin:10px;
     border-radius:10px;
+    min-height:200px;
 }
 
 /*////////////////////////Andres Pages////////////////////////////////////*/
@@ -530,7 +531,7 @@ h1 img {
     margin-top: .2em;
     margin-bottom: .5em;
 }
-.centerFormat input{
+.centerFormat input, select{
     width:70%;
     display: inline-block;
     text-align: left;
