@@ -305,7 +305,13 @@ def manage_user():
 
 @app.route('/manage_books')
 def manage_books():
-    return render_template('manage_books.html')
+    all_book_query = "select `books`.*, `bookinventory`.*, `category`.`category` as `cats` from `books` " \
+                     "inner join `bookinventory` " \
+                     "on `books`.`ISBN` = `bookinventory`.`bookID`" \
+                     "inner join `category`" \
+                     "on `books`.`category` = `category`.`idCategory`;"
+    all_book = get_query(all_book_query)
+    return render_template('manage_books.html', data = all_book)
 
 
 @app.route('/add_book')
@@ -580,9 +586,9 @@ def thank_you():
 @app.route('/order_history')
 def order_history():
     if session.get('logged_in') is True and session.get('userTypeID') == 2:
-        uid = session.get('userID')
+        uid = int(session.get('userID'))
         non_pending_orders = "select * from `bookstore`.`order`" \
-                             "where `userID` = \'%d\' and orderstatus != 'pending'" % uid
+                             "where `userID` = \'%d\' and `orderstatus` != 'pending'" % uid
         all_orders = get_query(non_pending_orders)
         order_prods = []
         if len(all_orders) == 0:
@@ -1195,7 +1201,7 @@ def add2cart():
                                     "where (`userID` = \'%d\') and (`orderstatus` = \'%s\')" \
                                     % (fintot, uid, 'pending')
             set_query(update_in_order_promo)
-
+        flash('Item successfully added to cart.')
         return redirect(url_for('bookshow', book_num=val_ISBN))
     else:
         flash('You are not allowed to add to the cart')
@@ -1355,7 +1361,7 @@ def checkout_action():
     cartItems = get_query(cart_query)
 
     # inventory relation
-    inventory_after = "SELECT `cart`.*, `bookinventory`.`quantity` as `totcount`," \
+    inventory_after = "SELECT `cart`.* , `bookinventory`.`quantity` as `totcount`," \
                       "`bookinventory`.`quantity`-`cart`.`quantity` as `rem` FROM `bookstore`.`cart`" \
                       "inner join `bookinventory`" \
                       "on `cart`.`bookID` = `bookinventory`.`bookID`" \
@@ -1433,4 +1439,4 @@ def cancel_order(id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
