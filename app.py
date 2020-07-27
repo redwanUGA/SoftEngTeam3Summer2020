@@ -370,7 +370,7 @@ def cart():
             return render_template('cart.html', cdata=full_cart, odata=pending_order_det)
         else:
             disc_search = "select `discountAmount` from `bookstore`.`promotion` " \
-                              "where `idPromotion` = \'%d\'" % int(pending_order_det[0]['PromoID'])
+                          "where `idPromotion` = \'%d\'" % int(pending_order_det[0]['PromoID'])
             disc_amount = int(get_query(disc_search)[0]['discountAmount'])
             fintot = temptot - temptot * disc_amount / 100
             update_in_order_promo = "update `bookstore`.`order` " \
@@ -496,7 +496,7 @@ def checkout():
                                         % (fintot, uid, 'pending')
                 set_query(update_in_order_promo)
                 pending_order_det = get_query(get_pending_order)
-                return render_template('checkout.html', cartinfo=full_cart, temptot = temptot,
+                return render_template('checkout.html', cartinfo=full_cart, temptot=temptot,
                                        orderinfo=pending_order_det, sadata=ship,
                                        badata=bill, paydata=pay)
 
@@ -579,10 +579,35 @@ def thank_you():
 
 @app.route('/order_history')
 def order_history():
-    # check proper user permission
-    # run query from database
-    # pass data to orderhistory.html
-    # make sure cancel order is properly linked
+    if session.get('logged_in') is True and session.get('userTypeID') == 2:
+        uid = session.get('userID')
+        non_pending_orders = "select * from `bookstore`.`order`" \
+                             "where `userID` = \'%d\' and orderstatus != 'pending'" % uid
+        all_orders = get_query(non_pending_orders)
+        order_prods = []
+        if len(all_orders) == 0:
+            flash('You have no previous orders')
+            return redirect(url_for('cart'))
+        else:
+            for jj in range(0, len(all_orders)):
+                order_prods_query = "SELECT `orderitems`.*, `bookinventory`.`sellingPrice`, `books`.`title` " \
+                                    "FROM `orderitems`" \
+                                    "inner join `bookinventory`" \
+                                    "on `orderitems`.`ProductID` = `bookinventory`.`bookID`" \
+                                    "inner join `books`" \
+                                    "on `orderitems`.`ProductID` = `books`.`ISBN`" \
+                                    "where orderID = \'%d\';" \
+                                    % int(all_orders[jj]['orderID'])
+                one_order_prods = get_query(order_prods_query)
+                order_prods.append(one_order_prods)
+
+            return render_template('orderhistory.html', ord=all_orders, ordlen=len(all_orders),
+                                   prod=order_prods)
+
+
+    else:
+        flash('you are not allowed to view this page')
+        return redirect(url_for('index'))
     return render_template('orderhistory.html')
 
 
@@ -1328,6 +1353,20 @@ def checkout_action():
     # get cart items
     cart_query = "SELECT * FROM `bookstore`.`cart` WHERE `userID`=\'%d\'" % uid
     cartItems = get_query(cart_query)
+
+    # inventory relation
+    inventory_after = "SELECT `cart`.*, `bookinventory`.`quantity` as `totcount`," \
+                      "`bookinventory`.`quantity`-`cart`.`quantity` as `rem` FROM `bookstore`.`cart`" \
+                      "inner join `bookinventory`" \
+                      "on `cart`.`bookID` = `bookinventory`.`bookID`" \
+                      "where `bookinventory`.`quantity`-`cart`.`quantity` > 0 and `userID` = \'%d\';" % uid
+
+    inventory_problem = "SELECT `cart`.*, `bookinventory`.`quantity` as `totcount`," \
+                        "`bookinventory`.`quantity`-`cart`.`quantity` as `rem` FROM `bookstore`.`cart`" \
+                        "inner join `bookinventory`" \
+                        "on `cart`.`bookID` = `bookinventory`.`bookID`" \
+                        "where `bookinventory`.`quantity`-`cart`.`quantity` < 0 and `userID` = \'%d\';" % uid
+
     # get payment info
     pay_query = "SELECT * FROM `bookstore`.`payment` WHERE `userID`=\'%d\'" % uid
     pay = get_query(pay_query)
@@ -1338,43 +1377,59 @@ def checkout_action():
     ship_query = "SELECT * FROM `bookstore`.`address` WHERE `userID`=\'%d\' AND `AddressType`=\'ship\'" % uid
     ship = get_query(ship_query)
 
-    if (len(cartItems) == 0):
+    # if cart is empty
+    if len(cartItems) == 0:
         flash('Your cart is empty.')
         return redirect(url_for('index'))
-    elif (len(pay) == 0 or len(bill) == 0 or len(ship) == 0):
+    # if shipping/billing info is missing
+    elif len(pay) == 0 or len(bill) == 0 or len(ship) == 0:
         flash('Please enter Shipping/Billing Address and/or payment.')
         return redirect(url_for('edit_profile'))
+    # if items greater than inventory
+    elif len(get_query(inventory_problem)) != 0:
+        flash('Desired Quantities not available. Go to cart to modify items')
+        return redirect(url_for('checkout'))
     else:
         print(request.form['orderid'])
         print(len(cartItems))
         orderid = int(request.form['orderid'])
-        for jj in range(0,len(cartItems)):
+        inventory_update = get_query(inventory_after)
+        print(inventory_update)
+        for jj in range(0, len(cartItems)):
             insert_order_item = "insert into `bookstore`.`orderitems`" \
                                 "(`orderID`, `ProductID`, `quantity`)" \
                                 "values (\'%d\', \'%s\', \'%d\') " \
                                 % (orderid, cartItems[jj]['bookID'], cartItems[jj]['quantity'])
             set_query(insert_order_item)
 
+        for jj in range(0,len(inventory_update)):
+            update_inventory = "update `bookstore`.`bookinventory`" \
+                               "set `quantity` = \'%d\'" \
+                               "where `bookID` = \'%s\'" \
+                                % (int(inventory_update[jj]['rem']),inventory_update[jj]['bookID'] )
+            set_query(update_inventory)
+
+        # clear cart
         del_query = "delete from `bookstore`.`cart` " \
                     "where userID = \'%d\' " \
                     % uid
         set_query(del_query)
 
+        #make orderstatus active
         update_order = "update `bookstore`.`order`" \
-                        "set `orderstatus` = 'active'" \
-                        "where `orderID` = \'%d\' " % orderid
+                       "set `orderstatus` = 'active'" \
+                       "where `orderID` = \'%d\' " % orderid
         set_query(update_order)
         return redirect(url_for('order_confirmation'))
 
 
-
-@app.route('/cancel_order', methods=['GET', 'POST'])
-def cancel_order():
-    # link button with the order id
-    # pass value if needed
-    # modify order status in database
-    # redirect to order history
-    return 'Needs to be implemented by Divya'
+@app.route('/cancel_order/<int:id>', methods=['GET', 'POST'])
+def cancel_order(id):
+    set_cancel = "update `order` " \
+                 "set `orderstatus` = 'cancelled'" \
+                 "where orderID = \'%d\'" % id
+    set_query(set_cancel)
+    return redirect(url_for('order_history'))
 
 
 if __name__ == '__main__':

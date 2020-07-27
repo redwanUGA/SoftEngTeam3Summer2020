@@ -27,81 +27,49 @@
     <div class="container">
         <h1 class="text-primary display-3">Order history</h1>
         <!-- for loop starts here -->
-        <h3> Ordered on 07/09/2020 </h3>
-        <h5> Order ID : XXXX </h5>
+        {% for jj in range(ordlen) %}
+        <h3> Ordered on {{ ord[jj].OrderDateTime }} </h3>
+        <h5> Order ID : {{ ord[jj].orderID }} </h5>
 
-        <table class="table">
+        {% if ord[jj].orderstatus == 'cancelled' %}
+        <h5 class="text-danger"> This order is cancelled </h5>
+        {% endif %}
+
+        <table class="table {% if ord[jj].orderstatus == 'cancelled' %} text-danger {% endif %} ">
             <tr class="row">
                 <th class="col-4"> Book Name</th>
                 <th class="col-4"> Quantity</th>
                 <th class="col-4"> Price</th>
             </tr>
             <!-- nested for for items-->
+            {% for kk in prod[jj] %}
             <tr class="row">
-                <td class="col-4"> Book Name from DB</td>
-                <td class="col-4"> Quantity from DB</td>
-                <td class="col-4"> Price from DB</td>
+                <td class="col-4"> {{ kk.title }} </td>
+                <td class="col-4"> {{ kk.quantity }}</td>
+                <td class="col-4"> {{ kk.quantity * kk.sellingPrice }}</td>
             </tr>
+            {% endfor %}
+            {% if ord[jj].PromoID != -1 %}
             <tr class="row">
-                <td class="col-4"> Book Name from DB</td>
-                <td class="col-4"> Quantity from DB</td>
-                <td class="col-4"> Price from DB</td>
-            </tr>
-            <tr class="row">
-                <td class="col-4"></td>
+                <td class="col-8"></td>
                 <td class="col-4"> Promotional Reduction</td>
-                <td class="col-4"> 20%</td>
             </tr>
+            {% endif %}
             <tr class="row">
                 <td class="col-4"></td>
                 <td class="col-4"> Order Total</td>
-                <td class="col-4"> Price from DB</td>
+                <td class="col-4"> {{ ord[jj].total }}</td>
             </tr>
+            {% if ord[jj].orderstatus == 'active' %}
             <tr class="row">
                 <td class="col-3"></td>
-                <td class="col-6"><a class="btn btn-primary btn-block" href="{{ url_for('cancel_order') }}" role="button">Cancel
+                <td class="col-6"><a class="btn btn-primary btn-block" href="{{ url_for('cancel_order', id = ord[jj].orderID) }}" role="button">Cancel
                     this order</a></td>
                 <td class="col-3"></td>
             </tr>
+            {% endif %}
         </table>
-
-        <h3> Ordered on 07/09/2020 </h3>
-        <h5> Order ID : XXXX </h5>
-
-        <table class="table">
-            <tr class="row">
-                <th class="col-4"> Book Name</th>
-                <th class="col-4"> Quantity</th>
-                <th class="col-4"> Price</th>
-            </tr>
-            <!-- nested for for items-->
-            <tr class="row">
-                <td class="col-4"> Book Name from DB</td>
-                <td class="col-4"> Quantity from DB</td>
-                <td class="col-4"> Price from DB</td>
-            </tr>
-            <tr class="row">
-                <td class="col-4"> Book Name from DB</td>
-                <td class="col-4"> Quantity from DB</td>
-                <td class="col-4"> Price from DB</td>
-            </tr>
-            <tr class="row">
-                <td class="col-4"></td>
-                <td class="col-4"> Promotional Reduction</td>
-                <td class="col-4"> 20%</td>
-            </tr>
-            <tr class="row">
-                <td class="col-4"></td>
-                <td class="col-4"> Order Total</td>
-                <td class="col-4"> Price from DB</td>
-            </tr>
-            <tr class="row">
-                <td class="col-3"></td>
-                <td class="col-6"><a class="btn btn-primary btn-block" href="{{ url_for('cancel_order') }}" role="button">Cancel
-                    this order</a></td>
-                <td class="col-3"></td>
-            </tr>
-        </table>
+        {% endfor %}
 
     </div>
     {% endblock %}<!-- main_content -->
