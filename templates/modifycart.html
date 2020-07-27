@@ -45,8 +45,8 @@
                         </div>
                     </td>
                     <td class="display-4 col-3"><input class="form-control input-lg" type="number" name="{{ jj.bookID }}" value="{{ jj.quantity }}"></td>
-                    <td class="display-4 col-3">4.00</td>
-                    <td class="display-4 col-3">4.00</td>
+                    <td class="display-4 col-3">{{ jj.sellingPrice }}</td>
+                    <td class="display-4 col-3">{{ jj.quantity * jj.sellingPrice }}</td>
                 </tr>
                 {% endfor %}
                 <tr>

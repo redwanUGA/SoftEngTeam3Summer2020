@@ -1,0 +1,65 @@
+﻿{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head_header %}
+    {{ super() }}
+    {% endblock %}
+    <title> Add Promo </title>
+</head>
+<body>
+<div id="div1">
+    {% block body_header %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
+
+    {% block menu_content %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
+
+    {% block flash %}
+    {{ super() }}
+    {% endblock %}
+
+    {% block main_content %}
+    <div id="main_content">
+        <form class="adpromoform">
+            <div class="form-group row">
+                <label for="promocode" class="col-sm-2 col-form-label">Promo Code</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control-plaintext" id="promocode" placeholder="Enter Promo Code">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="redrate" class="col-sm-2 col-form-label">Reduction Rate</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control-plaintext" id="redrate"
+                           placeholder="Enter Price Reduction Rate">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="startdate" class="col-sm-2 col-form-label">Start Date</label>
+                <div class="col-sm-6">
+                    <input type="date" class="form-control-plaintext" id="startdate">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="enddate" class="col-sm-2 col-form-label">End Date</label>
+                <div class="col-sm-6">
+                    <input type="date" class="form-control-plaintext" id="=" col-sm-6"/>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    {% endblock %}<!-- main_content -->
+    {% block footer %}
+    {{ super() }}
+    {% endblock %}
+</div><!-- div1 -->
+{% block scripts %}
+{{ super() }}
+{% endblock %}
+
+</body>
+</html>

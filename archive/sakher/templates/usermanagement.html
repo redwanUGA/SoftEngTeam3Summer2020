@@ -1,0 +1,75 @@
+﻿{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head_header %}
+    {{ super() }}
+    {% endblock %}
+    <title> Add Promo </title>
+</head>
+<body>
+<div id="div1">
+    {% block body_header %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
+
+    {% block menu_content %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
+
+    {% block flash %}
+    {{ super() }}
+    {% endblock %}
+
+    {% block main_content %}
+    <div id="main_content">
+        <div class="usermanagetable">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>UserName</th>
+                    <th>Full Name</th>
+                    <th>Status</th>
+                    <th>PhoneNumber</th>
+                    <th>Address</th>
+                    <th>Modify</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>User1001</td>
+                    <td>Md. Redwan Islam</td>
+                    <td>Activated</td>
+                    <td>+1 470 394 9951</td>
+                    <td>100 Rogers Road, Apt M208, Athens, GA, 30605</td>
+                    <td>
+                        <button type="button" class="btn btn-primary">Edit</button>
+                        <button type="button" class="btn btn-danger">Suspend</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>User1002</td>
+                    <td>Andres</td>
+                    <td>Unverified</td>
+                    <td>+1 470 394 9952</td>
+                    <td>101 Rogers Road, Apt M208, Athens. GA. 30605</td>
+                    <td>
+                        <button type="button" class="btn btn-primary">Edit</button>
+                        <button type="button" class="btn btn-danger">Suspend</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endblock %}<!-- main_content -->
+    {% block footer %}
+    {{ super() }}
+    {% endblock %}
+</div><!-- div1 -->
+{% block scripts %}
+{{ super() }}
+{% endblock %}
+
+</body>
+</html>
