@@ -32,36 +32,23 @@
                     <th>Item total (USD)</th>
                 </tr>
                 <!-- Your for loop starts here -->
+                {% for jj in cdata %}
                 <tr>
                     <td class="col-3">
                         <div class="card">
                             <div class="card-body">
-                                <h5 type="text" class="card-title" value="Book title1"></h5>
-                                <p class="card-text">Author : Author1</p>
-                                <input class="card-text" type="text" value="ISBN : ISBN1" name="item0" disabled>
-                                <p class="card-text">Category : Category1</p>
+                                <h5 type="text" class="card-title" value="{{ jj.title }}"></h5>
+                                <p class="card-text">Author : {{ jj.author }}</p>
+                                <p class="card-text">ISBN : {{ jj.bookID }}</p>
+                                <p class="card-text">Category : {{ jj.cats }}</p>
                             </div>
                         </div>
                     </td>
-                    <td class="display-4 col-3"><input class="form-control input-lg" type="number" name="quant0"></td>
+                    <td class="display-4 col-3"><input class="form-control input-lg" type="number" name="{{ jj.bookID }}" value="{{ jj.quantity }}"></td>
                     <td class="display-4 col-3">4.00</td>
                     <td class="display-4 col-3">4.00</td>
                 </tr>
-                <tr>
-                    <td class="col-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 type="text" class="card-title" value="Book title1"></h5>
-                                <p class="card-text">Author : Author1</p>
-                                <input class="card-text" type="text" value="ISBN : ISBN1" name="item1" disabled>
-                                <p class="card-text">Category : Category1</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="display-4 col-3"><input class="form-control input-lg" type="number" name="quant1"></td>
-                    <td class="display-4 col-3">4.00</td>
-                    <td class="display-4 col-3">4.00</td>
-                </tr>
+                {% endfor %}
                 <tr>
                     <td class="display-4 col-3"></td>
                     <td class="display-4 col-3"><input type="submit" class="btn btn-primary btn-block" role="button"

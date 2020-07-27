@@ -34,140 +34,152 @@
                 <th>Item total (USD)</th>
             </tr>
             <!-- Your for loop starts here -->
+            {% for jj in cartinfo %}
             <tr>
                 <td class="col-3">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Book title1</h5>
-                            <p class="card-text">Author : Author1</p>
-                            <p class="card-text">ISBN : ISBN1</p>
-                            <p class="card-text">Category : Category1</p>
+                            <h5 class="card-title">{{ jj.title }}</h5>
+                            <p class="card-text">Author : {{ jj.author }}</p>
+                            <p class="card-text">ISBN : {{ jj.bookID }}</p>
+                            <p class="card-text">Category : {{ jj.cats }}</p>
                         </div>
                     </div>
                 </td>
-                <td class="display-4 col-3">1</td>
-                <td class="display-4 col-3">4.00</td>
-                <td class="display-4 col-3">8.00</td>
+                <td class="display-4 col-3">{{ jj.quantity }}</td>
+                <td class="display-4 col-3">{{ jj.sellingPrice }}</td>
+                <td class="display-4 col-3">{{ jj.quantity * jj.sellingPrice }}</td>
             </tr>
-            <tr>
-                <td class="col-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">This is a larger book title</h5>
-                            <p class="card-text">Author : With larger author name</p>
-                            <p class="card-text">ISBN : ISBN-ISBN-ISBN</p>
-                            <p class="card-text">Category : Category2</p>
-                        </div>
-                    </div>
-                </td>
-                <td class="display-4 col-3">2</td>
-                <td class="display-4 col-3">4.00</td>
-                <td class="display-4 col-3">8.00</td>
-            </tr>
+            {% endfor %}
         </table>
     </div>
     <!-- For loop ends here -->
+    {% if orderinfo[0].PromoID == -1 %}
     <div class="container">
         <div class="row">
             <div class="col-3"></div>
             <div class="col-3"></div>
-            <div class="col-3 display-4">Total Price</div>
-            <div class="col-3 display-4">12.00</div>
+            <div class="col-3 display-4">Item Total</div>
+            <div class="col-3 display-4">{{ orderinfo[0]['total'] }}</div>
         </div>
     </div>
-    <!-- Should be another conditional
-  HTML for after promocode application-->
+    {% else %}
     <div class="container">
         <div class="row">
             <div class="col-3"></div>
-            <div class="col-6 display-4">
-                Promo Code Applied
-            </div>
-            <div class="col-3 display-4"> PROMO</div>
+            <div class="col-3"></div>
+            <div class="col-3 display-4">Item Total</div>
+            <div class="col-3 display-4">{{ temptot }}</div>
         </div>
     </div>
     <div class="container">
         <div class="row">
             <div class="col-3"></div>
-            <div class="col-6 display-4">
-                Final Total (USD)
-            </div>
-            <div class="col-3 display-4"> 10.45</div>
+            <div class="col-6 display-4">Total Price After Promo</div>
+            <div class="col-3 display-4">{{ orderinfo[0]['total'] }}</div>
         </div>
     </div>
+    {% endif %}
 
     <div class="container">
         <div class="row justify-content-center"><h1 class="display-3"> Shipping Address Information </h1></div>
     </div>
+    {% if sadata %}
     <div class="container">
         <table class="table">
             <tr class="row justify-content-center">
+                <td class="col-4"> Shippig Name</td>
+                <td class="col-4"> {{ sadata[0].name }}</td>
+            </tr>
+            <tr class="row justify-content-center">
                 <td class="col-4"> Street Address</td>
-                <td class="col-4"> Street Address from DB</td>
+                <td class="col-4"> {{ sadata[0].street }}</td>
             </tr>
             <tr class="row justify-content-center">
                 <td class="col-4"> Apartment No</td>
-                <td class="col-4"> Apartment No from DB</td>
+                <td class="col-4">{{ sadata[0].street2 }}</td>
             </tr>
             <tr class="row justify-content-center">
                 <td class="col-4"> City</td>
-                <td class="col-4"> City from DB</td>
+                <td class="col-4">{{ sadata[0].city }}</td>
             </tr>
             <tr class="row justify-content-center">
                 <td class="col-4"> State</td>
-                <td class="col-4"> State from DB</td>
+                <td class="col-4">{{ sadata[0].state }}</td>
             </tr>
             <tr class="row justify-content-center">
                 <td class="col-4"> Zip</td>
-                <td class="col-4"> Zip from DB</td>
+                <td class="col-4">{{ sadata[0].zipCode }}</td>
             </tr>
         </table>
     </div>
+    {% else %}
+    <div class="container">
+        <div class="row justify-content-center"><h1 class="display-4 text-danger"> Shipping Address Information Missing</h1></div>
+    </div>
+    {% endif %}
 
     <div class="container">
         <div class="row justify-content-center"><h1 class="display-3"> Billing Address Information </h1></div>
     </div>
+    {% if badata %}
     <div class="container">
         <table class="table">
             <tr class="row justify-content-center">
+                <td class="col-4"> Billing Name</td>
+                <td class="col-4"> {{ badata[0].name }}</td>
+            </tr>
+            <tr class="row justify-content-center">
                 <td class="col-4"> Street Address</td>
-                <td class="col-4"> Street Address from DB</td>
+                <td class="col-4"> {{ badata[0].street }}</td>
             </tr>
             <tr class="row justify-content-center">
                 <td class="col-4"> Apartment No</td>
-                <td class="col-4"> Apartment No from DB</td>
+                <td class="col-4">{{ badata[0].street2 }}</td>
             </tr>
             <tr class="row justify-content-center">
                 <td class="col-4"> City</td>
-                <td class="col-4"> City from DB</td>
+                <td class="col-4">{{ badata[0].city }}</td>
             </tr>
             <tr class="row justify-content-center">
                 <td class="col-4"> State</td>
-                <td class="col-4"> State from DB</td>
+                <td class="col-4">{{ badata[0].state }}</td>
             </tr>
             <tr class="row justify-content-center">
                 <td class="col-4"> Zip</td>
-                <td class="col-4"> Zip from DB</td>
+                <td class="col-4">{{ badata[0].zipCode }}</td>
             </tr>
         </table>
     </div>
+    {% else %}
+    <div class="container">
+        <div class="row justify-content-center"><h1 class="display-4 text-danger"> Billing Address Information Missing</h1></div>
+    </div>
+    {% endif %}
 
 
     <div class="container">
         <div class="row justify-content-center"><h1 class="display-3"> Payment Information </h1></div>
     </div>
+    {% if paydata %}
     <div class="container">
         <table class="table">
             <tr class="row justify-content-center">
                 <td class="col-4"> Name on Card</td>
-                <td class="col-4"> Name on Card from DB</td>
+                <td class="col-4"> {{ paydata[0]['nameoncard'] }}</td>
             </tr>
             <tr class="row justify-content-center">
                 <td class="col-4"> Card Info</td>
-                <td class="col-4"> CardType ending ****-****-****-1234</td>
+                <td class="col-4"> CardType ending ****-****-****-{{ paydata[0]['cardNumber'][-4:] }}</td>
             </tr>
         </table>
     </div>
+    {% else %}
+    <div class="container">
+        <div class="row justify-content-center"><h1 class="display-4 text-danger"> Payment Card Information Missing</h1></div>
+    </div>
+    {% endif %}
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-3">
@@ -181,8 +193,7 @@
             <div class="col-3">
                 <!--  create a hidden form with all the info !-->
                 <form action="{{ url_for(('checkout_action')) }}" method="post">
-                    <input type="hidden" name="name1" value="valuefromdb1"/>
-                    <input type="hidden" name="name2" value="valuefromdb2"/>
+                    <input type="hidden" name="orderid" value="{{orderinfo[0].orderID}}">
                     <input class="btn btn-primary btn-lg btn-block" type="submit" value="Confirm Checkout"/>
                 </form>
             </div>

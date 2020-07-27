@@ -34,42 +34,26 @@
                     <th>Item total (USD)</th>
                 </tr>
                 <!-- Your for loop starts here -->
+                {% for jj in data %}
                 <tr>
                     <td class="col-1">
-                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                        <input class="form-check-input" type="checkbox" name="{{ jj.bookID }}">
                     </td>
                     <td class="col-2">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Book title1</h5>
-                                <p class="card-text">Author : Author1</p>
-                                <p class="card-text">ISBN : ISBN1</p>
-                                <p class="card-text">Category : Category1</p>
+                                <h5 class="card-title">{{ jj.title }}</h5>
+                                <p class="card-text">Author : {{ jj.author }}</p>
+                                <p class="card-text">ISBN : {{ jj.bookID }}</p>
+                                <p class="card-text">Category : {{ jj.cats }}</p>
                             </div>
                         </div>
                     </td>
-                    <td class="display-4 col-3">1</td>
-                    <td class="display-4 col-3">4.00</td>
-                    <td class="display-4 col-3">8.00</td>
+                    <td class="display-4 col-3">{{ jj.quantity }}</td>
+                    <td class="display-4 col-3">{{ jj.sellingPrice }}</td>
+                    <td class="display-4 col-3">{{ jj.quantity * jj.sellingPrice }}</td>
                 </tr>
-                <tr>
-                    <td class="col-1">
-                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
-                    </td>
-                    <td class="col-2">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">This is a larger book title</h5>
-                                <p class="card-text">Author : With larger author name</p>
-                                <p class="card-text">ISBN : ISBN-ISBN-ISBN</p>
-                                <p class="card-text">Category : Category2</p>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="display-4 col-3">2</td>
-                    <td class="display-4 col-3">4.00</td>
-                    <td class="display-4 col-3">8.00</td>
-                </tr>
+                {% endfor %}
                 <!-- your for loop ends here -->
                 <tr>
                     <td class="display-4 col-3"></td>

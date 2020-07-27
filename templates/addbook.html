@@ -25,44 +25,64 @@
     <div class="container">
         <h1 class="display-4">Add Book</h1>
         <p class="lead">This panel lets you add a new book</p>
+        <p class="text-danger"> All fields are required </p>
     </div>
 
     <div class="container">
-        <form action="{{ url_for('add_book_action') }}" , method="post">
+        <form action="{{ url_for('add_book_action') }}" , method="post" enctype="multipart/form-data">
             <div class="form-group row">
-                <label class="col-3 col-form-label" for="title"> Book Title </label>
-                <input type="text" class="col-6 form-control" id="title" name="title">
+                <label class="col-3 col-form-label" for="title"> Book Title * </label>
+                <input type="text" class="col-6 form-control" id="title" name="title" required>
             </div>
             <div class="form-group row">
-                <label class="col-3 col-form-label" for="author"> Book Author </label>
-                <input type="text" class="col-6 form-control" id="author" name="author">
+                <label class="col-3 col-form-label" for="author"> Book Author * </label>
+                <input type="text" class="col-6 form-control" id="author" name="author" required>
             </div>
             <div class="form-group row">
-                <label class="col-3 col-form-label" for="ISBN"> ISBN </label>
-                <input type="text" class="col-6 form-control" id="ISBN" name="ISBN">
+                <label class="col-3 col-form-label" for="ISBN"> ISBN * </label>
+                <input type="text" class="col-6 form-control" id="ISBN" name="ISBN" required>
             </div>
             <div class="form-group row">
-                <label class="col-3 col-form-label" for="edition"> Book Edition </label>
-                <input type="text" class="col-6 form-control" id="edition" name="edition">
+                <label class="col-3 col-form-label" for="edition"> Book Edition * </label>
+                <input type="number" class="col-6 form-control" id="edition" name="edition" required>
             </div>
             <div class="form-group row">
-                <label class="col-3 col-form-label" for="publisher"> Book Publisher </label>
-                <input type="text" class="col-6 form-control" id="publisher" name="publisher">
+                <label class="col-3 col-form-label" for="publisher"> Book Publisher * </label>
+                <input type="text" class="col-6 form-control" id="publisher" name="publisher" required>
             </div>
             <div class="form-group row">
-                <label class="col-3 col-form-label" for="pubYear"> Publication Year </label>
-                <input type="text" class="col-6 form-control" id="pubYear" name="pubYear">
-            </div>
-            <div class="form-group row">
-                <label class="col-3 col-form-label" for="category"> Book Category </label>
-                <select class="form-control col-6" name="category" id="category">
-                    <option value="1"> opt1</option>
-                    <option value="2"> opt2</option>
+                <label class="col-3 col-form-label" for="pubYear"> Publication Year * </label>
+                <select class="form-control col-6" name="pubYear" id="pubYear">
+                    <option value="0"> Choose </option>
+                    {% for jj in range(1900,2020) %}
+                    <option value="{{ jj }}"> {{ jj }} </option>
+                    {% endfor %}
                 </select>
             </div>
             <div class="form-group row">
-                <label class="col-3 col-form-label" for="cover"> Book Cover </label>
-                <input type="file" class="col-6 form-control" id="cover" name="cover">
+                <label class="col-3 col-form-label" for="category"> Book Category * </label>
+                <select class="form-control col-6" name="category" id="category">
+                    <option value="0"> Choose </option>
+                    {% for jj in cats %}
+                    <option value="{{ jj.idCategory }}"> {{ jj.category }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group row">
+                <label class="col-3 col-form-label" for="cover"> Book Cover * </label>
+                <input type="file" class="col-6 form-control" id="cover" name="cover" required>
+            </div>
+            <div class="form-group row">
+                <label class="col-3 col-form-label" for="buyingPrice"> Book Buying Price * </label>
+                <input type="text" class="col-6 form-control" id="buyingPrice" name="buyingPrice" required>
+            </div>
+            <div class="form-group row">
+                <label class="col-3 col-form-label" for="sellingPrice"> Book Selling Price * </label>
+                <input type="text" class="col-6 form-control" id="sellingPrice" name="sellingPrice" required>
+            </div>
+            <div class="form-group row">
+                <label class="col-3 col-form-label" for="quantity"> Quantity * </label>
+                <input type="number" class="col-6 form-control" id="quantity" name="quantity" required>
             </div>
             <input type="submit" class="btn btn-primary btn-lg btn-block col-4 justify-content-center"
                    value="Submit Book">

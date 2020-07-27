@@ -30,13 +30,11 @@
                 <span>Publisher: {{ infopass.publisher }}</span>
                 <span> {{ infopass.pubYear }} </span>
                 <span>Category: {{ cat.category }}</span>
-                <span id="book_price">{{ infopass.sellingPrice }}</span>
-                <span id="book_price">{{ infopass.book_price }}</span>
+                <span id="book_price">{{ infopass.sellingPrice }} USD </span>
 				<form action="{{url_for('add2cart')}}" method="post">
 					<!-- Complete the hidden form -->
-					<input type="hidden" name="id" value="val"/>
-					<input type="hidden" name="book_author" value="val"/>
-                	<input type="hidden" name="publisher" value="valuefromdb"/>
+					<input type="hidden" name="book_price_h" value="{{ infopass.sellingPrice }}"/>
+                	<input type="hidden" name="book_ISBN_h" value="{{ infopass.ISBN }}">
 					<input type="submit" value="Add to cart">
 				</form>
             </div>

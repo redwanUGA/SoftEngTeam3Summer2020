@@ -1,13 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-from flask_sqlalchemy import SQLAlchemy
 from flask_mysqldb import MySQL
 from random import randint
+from datetime import datetime
 import functools
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_mail import Mail, Message
+from flask_uploads import UploadSet, configure_uploads, IMAGES
 # from simplecrypt import encrypt, decrypt
 from cryptography.fernet import Fernet
-import re
+import re, os
 
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
@@ -16,6 +17,7 @@ app.config['MYSQL_PASSWORD'] = '12341234'
 app.config['MYSQL_DB'] = 'bookstore'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 app.config['SECRET_KEY'] = 'abcdabcd'
+app.config['UPLOADED_PHOTOS_DEST'] = 'static/images/books'
 
 app.config.update(DEBUG=True, MAIL_SERVER='box5928.bluehost.com',
                   MAIL_PORT=465, MAIL_USE_SSL=True, MAIL_USERNAME='t3@myw.urq.mybluehost.me',
@@ -23,6 +25,8 @@ app.config.update(DEBUG=True, MAIL_SERVER='box5928.bluehost.com',
 
 mail = Mail(app)
 mysql = MySQL(app)
+photos = UploadSet('photos', IMAGES)
+configure_uploads(app, photos)
 
 key = b'fRmBje4ZejoeBPmxESfU2ElslhIcjiose6rHt4qaV4c='
 fenc = Fernet(key=key)
@@ -61,6 +65,23 @@ def conv_int(a):
         return int(a)
     except ValueError:
         return 0
+
+
+def conv_float(a):
+    try:
+        float(a)
+        return float(a)
+    except ValueError:
+        return None
+
+
+def get_cart_total(cart_dict):
+    total = 0
+    for jj in cart_dict:
+        item_total = conv_int(jj['quantity']) * conv_float(jj['sellingPrice'])
+        total += item_total
+
+    return total
 
 
 def check_goodness(value, fieldname):
@@ -117,6 +138,19 @@ def check_goodness(value, fieldname):
     if fieldname == 'cardNumber':
         regex_card = '(?:[0-9]{4}-){3}[0-9]{4}'
         if re.search(regex_card, value):
+            return True
+        else:
+            return False
+
+    if fieldname == 'title' or fieldname == 'author' or fieldname == 'publisher':
+        if len(value) < 50:
+            return True
+        else:
+            return False
+
+    if fieldname == 'ISBN':
+        regex_ISBN = '^[0-9]{13}$'
+        if re.search(regex_ISBN, value) is not None:
             return True
         else:
             return False
@@ -185,6 +219,15 @@ def error_message(value, fieldname):
         if re.search(regex_card, value) == None:
             message.append('Invalid Card Number. Maintain the format XXXX-XXXX-XXXX-XXXX')
 
+    if fieldname == 'title' or fieldname == 'author' or fieldname == 'publisher':
+        if len(value) > 50:
+            message.append('Too Long Input. Cannot exceed 50 characters.')
+
+    if fieldname == 'ISBN':
+        regex_ISBN = '^(\d{13})$'
+        if re.search(regex_ISBN, value) is None:
+            message.append('Invalid ISBN')
+
     return message
 
 
@@ -230,13 +273,14 @@ def base():
     return render_template('base.html')
 '''
 
+
 @app.route('/')
 def index():
     all_book_query = "select  `books`.*, `bookinventory`.`bookID` , `bookinventory`.`sellingPrice` from `books`" \
                      "inner join `bookinventory`" \
-                     "on `books`.`ISBN` = `bookinventory`.`idbookInventory`;"
+                     "on `books`.`ISBN` = `bookinventory`.`bookID`;"
     result = get_query(all_book_query)
-    return render_template('index.html', data = result)
+    return render_template('index.html', data=result)
 
 
 # Login Page
@@ -248,29 +292,38 @@ def login():
         flash('You are already logged in')
         return redirect(url_for('view_profile'))
 
+
 @app.route('/admin_panel')
 def show_admin_panel():
     return render_template('admin.html')
+
 
 @app.route('/manage_user')
 def manage_user():
     return render_template('usermanagement.html')
 
+
 @app.route('/manage_books')
 def manage_books():
     return render_template('manage_books.html')
 
+
 @app.route('/add_book')
 def add_book():
-    return render_template('addbook.html')
+    cat_query = "SELECT * FROM `bookstore`.`category`;"
+    cats = get_query(cat_query)
+    return render_template('addbook.html', cats=cats)
+
 
 @app.route('/search_book')
 def search_book():
     return render_template('searchbook.html')
 
+
 @app.route('/manage_promotions')
 def manage_promotions():
     return render_template('promomanagement.html')
+
 
 # Register Page
 @app.route('/register')
@@ -278,27 +331,78 @@ def register():
     if not session.get('uid'):
         return render_template('register.html')
     else:
-        flash('You are already logged as %s. Logout First to signup as a new user.' % session.get('email') )
+        flash('You are already logged as %s. Logout First to signup as a new user.' % session.get('email'))
         return redirect(url_for('view_profile'))
 
 
 # Cart Page
 @app.route('/cart')
 def cart():
-    if session['logged_in'] == True and session.get('userTypeID') == 2:
-        # query for users cart
-        # pass data to cart page from cart table
-        return render_template('cart.html')
+    if session.get('logged_in') is True and session.get('userTypeID') == 2:
+        uid = session.get('userID')
+        cart_detail_query = "select  `cart`.* , " \
+                            "`bookinventory`.`sellingPrice`, " \
+                            "`books`.`title`, `books`.`author`, `books`.`category`, " \
+                            "`category`.`category` as `cats`" \
+                            "from `cart`" \
+                            "inner join `bookinventory`" \
+                            "on `cart`.`bookID` = `bookinventory`.`bookID`" \
+                            "inner join `books`" \
+                            "on `books`.`ISBN` = `cart`.`bookID`" \
+                            "inner join `category`" \
+                            "on `books`.`category` = `category`.`idCategory`" \
+                            "where `cart`.`userID` = \'%d\';" % uid
+        full_cart = get_query(cart_detail_query)
+        temptot = get_cart_total(full_cart)
+        get_pending_order = "select * from `bookstore`.`order` " \
+                            "where (`userID` = \'%d\') and (`orderstatus` = 'pending');" % uid
+        pending_order_det = get_query(get_pending_order)
+        if len(pending_order_det) == 0:
+            flash('Your cart is empty. Add some items to cart')
+            return redirect(url_for('index'))
+        elif pending_order_det[0]['PromoID'] == -1:
+            update_in_order = "update `bookstore`.`order` " \
+                              "set `total` = \'%.2f\'" \
+                              "where (`userID` = \'%d\') and (`orderstatus` = \'%s\')" \
+                              % (temptot, uid, 'pending')
+            set_query(update_in_order)
+            pending_order_det = get_query(get_pending_order)
+            return render_template('cart.html', cdata=full_cart, odata=pending_order_det)
+        else:
+            disc_search = "select `discountAmount` from `bookstore`.`promotion` " \
+                              "where `idPromotion` = \'%d\'" % int(pending_order_det[0]['PromoID'])
+            disc_amount = int(get_query(disc_search)[0]['discountAmount'])
+            fintot = temptot - temptot * disc_amount / 100
+            update_in_order_promo = "update `bookstore`.`order` " \
+                                    "set `total` = \'%.2f\'" \
+                                    "where (`userID` = \'%d\') and (`orderstatus` = \'%s\')" \
+                                    % (fintot, uid, 'pending')
+            set_query(update_in_order_promo)
+            pending_order_det = get_query(get_pending_order)
+            return render_template('cart.html', cdata=full_cart, temptot=temptot, odata=pending_order_det)
     else:
         flash('You are not allowed to view this page')
         return redirect(url_for('index'))
 
+
 @app.route('/modify_cart')
 def modify_cart():
-    if session['logged_in'] == True and session.get('userTypeID') == 2:
-        # query for users cart
-        # pass data to modifycart.html from the current user's cart
-        return render_template('modifycart.html')
+    if session.get('logged_in') is True and session.get('userTypeID') == 2:
+        uid = session.get('userID')
+        cart_detail_query = "select  `cart`.* , " \
+                            "`bookinventory`.`sellingPrice`, " \
+                            "`books`.`title`, `books`.`author`, `books`.`category`, " \
+                            "`category`.`category` as `cats` " \
+                            "from `cart`" \
+                            "inner join `bookinventory`" \
+                            "on `cart`.`bookID` = `bookinventory`.`bookID`" \
+                            "inner join `books`" \
+                            "on `books`.`ISBN` = `cart`.`bookID`" \
+                            "inner join `category`" \
+                            "on `books`.`category` = `category`.`idCategory`" \
+                            "where `cart`.`userID` = \'%d\';" % uid
+        full_cart = get_query(cart_detail_query)
+        return render_template('modifycart.html', cdata=full_cart)
     else:
         flash('You are not allowed view this page')
         return redirect(url_for('index'))
@@ -306,45 +410,122 @@ def modify_cart():
 
 @app.route('/remove_from_cart')
 def remove_from_cart():
-    return render_template('removefromcart.html')
+    if session.get('logged_in') is True and session.get('userTypeID') == 2:
+        uid = int(session.get('userID'))
+        cart_detail_query = "select  `cart`.* , " \
+                            "`bookinventory`.`sellingPrice`, " \
+                            "`books`.`title`, `books`.`author`, `books`.`category`, " \
+                            "`category`.`category` as `cats` " \
+                            "from `cart`" \
+                            "inner join `bookinventory`" \
+                            "on `cart`.`bookID` = `bookinventory`.`bookID`" \
+                            "inner join `books`" \
+                            "on `books`.`ISBN` = `cart`.`bookID`" \
+                            "inner join `category`" \
+                            "on `books`.`category` = `category`.`idCategory`" \
+                            "where `cart`.`userID` = \'%d\';" % uid
+        full_cart = get_query(cart_detail_query)
+        return render_template('removefromcart.html', data=full_cart)
+    else:
+        flash('You are not allowed view this page')
+        return redirect(url_for('index'))
 
-@app.route('/apply_promo')
-def apply_promo():
-    # check for proper user permission
-    # pass cart information to applypromo.html
-    return render_template('applypromo.html')
 
 @app.route('/checkout')
 def checkout():
-    # check for proper  user permission
-    # query user's cart items from database
-    # pass data to checkout.html
-    return render_template('checkout.html')
+    if session.get('logged_in') is True and session.get('userTypeID') == 2:
+        uid = int(session.get('userID'))
+        pending_order_search = "select * from `bookstore`.`order` " \
+                               "where (`userID` = \'%d\') and (`orderstatus` = 'pending');" % uid
+        res = get_query(pending_order_search)
+        if len(res) == 0:
+            flash('Add something to cart first')
+            redirect(url_for('index'))
+        elif int(res[0]['total']) == 0:
+            flash('Add something to cart first')
+            redirect(url_for('index'))
+        else:
+            cart_detail_query = "select  `cart`.* , " \
+                                "`bookinventory`.`sellingPrice`, " \
+                                "`books`.`title`, `books`.`author`, `books`.`category`, " \
+                                "`category`.`category` as `cats`" \
+                                "from `cart`" \
+                                "inner join `bookinventory`" \
+                                "on `cart`.`bookID` = `bookinventory`.`bookID`" \
+                                "inner join `books`" \
+                                "on `books`.`ISBN` = `cart`.`bookID`" \
+                                "inner join `category`" \
+                                "on `books`.`category` = `category`.`idCategory`" \
+                                "where `cart`.`userID` = \'%d\';" % uid
+            full_cart = get_query(cart_detail_query)
+            temptot = get_cart_total(full_cart)
+            get_pending_order = "select * from `bookstore`.`order` " \
+                                "where (`userID` = \'%d\') and (`orderstatus` = 'pending');" % uid
+            pending_order_det = get_query(get_pending_order)
+
+            # get payment info
+            pay_query = "SELECT * FROM `bookstore`.`payment` WHERE `userID`=\'%d\'" % uid
+            pay = get_query(pay_query)
+            print(pay)
+            # get billShipping info
+            bill_query = "SELECT * FROM `bookstore`.`address` WHERE `userID`=\'%d\' AND `AddressType`=\'bill\'" % uid
+            bill = get_query(bill_query)
+            # get shippingAddy
+            ship_query = "SELECT * FROM `bookstore`.`address` WHERE `userID`=\'%d\' AND `AddressType`=\'ship\'" % uid
+            ship = get_query(ship_query)
+
+            if pending_order_det[0]['PromoID'] == -1:
+                update_in_order = "update `bookstore`.`order` " \
+                                  "set `total` = \'%.2f\'" \
+                                  "where (`userID` = \'%d\') and (`orderstatus` = \'%s\')" \
+                                  % (temptot, uid, 'pending')
+                set_query(update_in_order)
+                pending_order_det = get_query(get_pending_order)
+                return render_template('checkout.html', cartinfo=full_cart,
+                                       orderinfo=pending_order_det, sadata=ship,
+                                       badata=bill, paydata=pay)
+
+            else:
+                disc_search = "select `discountAmount` from `bookstore`.`promotion` " \
+                              "where `idPromotion` = \'%d\'" % int(pending_order_det[0]['PromoID'])
+                disc_amount = int(get_query(disc_search)[0]['discountAmount'])
+                fintot = temptot - temptot * disc_amount / 100
+                update_in_order_promo = "update `bookstore`.`order` " \
+                                        "set `total` = \'%.2f\'" \
+                                        "where (`userID` = \'%d\') and (`orderstatus` = \'%s\')" \
+                                        % (fintot, uid, 'pending')
+                set_query(update_in_order_promo)
+                pending_order_det = get_query(get_pending_order)
+                return render_template('checkout.html', cartinfo=full_cart, temptot = temptot,
+                                       orderinfo=pending_order_det, sadata=ship,
+                                       badata=bill, paydata=pay)
+
 
 # View Profile Page
 @app.route('/view_profile')
 def view_profile():
-        if session.get('uid') != None:
-            uid = session.get('uid')
-            pdata_query = "SELECT * FROM `bookstore`.`users` where `userID`= %d ;" % uid
-            sadata_query = "SELECT * FROM `bookstore`.`address` where `userID`=%d and `AddressType`='ship' " % uid
-            badata_query = "SELECT * FROM `bookstore`.`address` where `userID`=%d and `AddressType`='bill' " % uid
-            paydata_query = "SELECT * FROM `bookstore`.`payment` where `UserID`= %d ;" % uid
+    if session.get('userID') != None:
+        uid = session.get('userID')
+        pdata_query = "SELECT * FROM `bookstore`.`users` where `userID`= %d ;" % uid
+        sadata_query = "SELECT * FROM `bookstore`.`address` where `userID`=%d and `AddressType`='ship' " % uid
+        badata_query = "SELECT * FROM `bookstore`.`address` where `userID`=%d and `AddressType`='bill' " % uid
+        paydata_query = "SELECT * FROM `bookstore`.`payment` where `UserID`= %d ;" % uid
 
-            pdata = get_query(pdata_query)
-            sadata = get_query(sadata_query)
-            badata = get_query(badata_query)
-            paydata = get_query(paydata_query)
-            print(pdata, sadata, badata, paydata)
-            return render_template('viewprofile.html', pdata=pdata, sadata= sadata, badata = badata, paydata = paydata)
-        else:
-            return redirect(url_for('index'))
+        pdata = get_query(pdata_query)
+        sadata = get_query(sadata_query)
+        badata = get_query(badata_query)
+        paydata = get_query(paydata_query)
+        print(pdata, sadata, badata, paydata)
+        return render_template('viewprofile.html', pdata=pdata, sadata=sadata, badata=badata, paydata=paydata)
+    else:
+        return redirect(url_for('index'))
+
 
 # edit profile page
 @app.route('/edit_profile')
 def edit_profile():
-    if session.get('uid') != None:
-        uid = session.get('uid')
+    if session.get('userID') != None:
+        uid = session.get('userID')
         pdata_query = "SELECT * FROM `bookstore`.`users` where `userID`= %d ;" % uid
         sadata_query = "SELECT * FROM `bookstore`.`address` where `userID`=%d and `AddressType`='ship' " % uid
         badata_query = "SELECT * FROM `bookstore`.`address` where `userID`=%d and `AddressType`='bill' " % uid
@@ -359,16 +540,42 @@ def edit_profile():
     else:
         return redirect(url_for('index'))
 
-@app.route('/add_promo_page')
-def add_promo():
-    # check proper user permission
-    # get data from the users cart
-    # pass cart information to addpromo.html
-    return render_template('addpromo.html')
+
+@app.route('/apply_promo_page')
+def apply_promo():
+    if session.get('logged_in') is True and session.get('userTypeID') == 2:
+        uid = session.get('userID')
+        cart_detail_query = "select  `cart`.* , " \
+                            "`bookinventory`.`sellingPrice`, " \
+                            "`books`.`title`, `books`.`author`, `books`.`category`, " \
+                            "`category`.`category` as `cats`" \
+                            "from `cart`" \
+                            "inner join `bookinventory`" \
+                            "on `cart`.`bookID` = `bookinventory`.`bookID`" \
+                            "inner join `books`" \
+                            "on `books`.`ISBN` = `cart`.`bookID`" \
+                            "inner join `category`" \
+                            "on `books`.`category` = `category`.`idCategory`" \
+                            "where `cart`.`userID` = \'%d\';" % uid
+        full_cart = get_query(cart_detail_query)
+        tot = get_cart_total(full_cart)
+        get_pending_order = "select * from `bookstore`.`order` " \
+                            "where (`userID` = \'%d\') and (`orderstatus` = 'pending');" % uid
+        res = get_query(get_pending_order)
+        if len(res) == 0:
+            flash('Add items to cart first')
+            return redirect(url_for('index'))
+        elif int(res[0]['PromoID']) != -1:
+            flash('Promo Code Already Applied')
+            return redirect(url_for('cart'))
+        else:
+            return render_template('applypromo.html', data=full_cart, total=tot)
+
 
 @app.route('/thank_you')
 def thank_you():
     return render_template('thank_you.html')
+
 
 @app.route('/order_history')
 def order_history():
@@ -378,25 +585,23 @@ def order_history():
     # make sure cancel order is properly linked
     return render_template('orderhistory.html')
 
+
 @app.route('/order_confirmation')
 def order_confirmation():
     return render_template('orderconfirmation.html')
 
 
-@app.route('/book/<int:book_num>')
+@app.route('/book/<string:book_num>')
 def bookshow(book_num):
     specific_book_query = "select  `books`.*, `bookinventory`.`bookID`, `bookinventory`.`sellingPrice` from `books`" \
                           "inner join `bookinventory`" \
-                          "on `books`.`ISBN` = `bookinventory`.`idbookInventory` " \
-                          "where `bookinventory`.`bookID` = %d;" % book_num
+                          "on `books`.`ISBN` = `bookinventory`.`bookID` " \
+                          "where `bookinventory`.`bookID` = %s;" % book_num
     infopass = get_query(specific_book_query)
-    print(infopass)
     catID = int(infopass[0]['category'])
     find_cat = "select * from `bookstore`.`category` where `category`.`idCategory` = %d " % catID
     cat_res = get_query(find_cat)
-    print(cat_res)
-    return render_template('book.html', infopass=infopass[0], cat = cat_res[0])
-
+    return render_template('book.html', infopass=infopass[0], cat=cat_res[0])
 
 
 ##### Actions #####
@@ -450,7 +655,8 @@ def register_data():
         return redirect(url_for('register'))
 
     # check if any entry for shipping address is there
-    if len(val_shipname) != 0 or len(val_streetaddress) != 0 or len(val_aptno) != 0 or len(val_inputCity) != 0 or val_inputZip != 0:
+    if len(val_shipname) != 0 or len(val_streetaddress) != 0 or len(val_aptno) != 0 or len(
+            val_inputCity) != 0 or val_inputZip != 0:
 
         # validate shipping address inputs
         inputlist2 = [val_shipname, val_streetaddress, val_aptno, val_inputCity, val_inputZip]
@@ -488,7 +694,8 @@ def register_data():
             return redirect(url_for('register'))
 
     # check if billing address is there
-    if len(val_billname) != 0 or len(val_billstreetaddress) != 0 or len(val_billaptno) != 0 or len(val_billinputCity) != 0 or val_billinputZip != 0:
+    if len(val_billname) != 0 or len(val_billstreetaddress) != 0 or len(val_billaptno) != 0 or len(
+            val_billinputCity) != 0 or val_billinputZip != 0:
         # validate billing address info
         inputlist4 = [val_billname, val_billstreetaddress, val_billaptno, val_billinputCity, val_billinputZip]
         typelist4 = ['name', 'street', 'street2', 'city', 'zipCode']
@@ -499,7 +706,8 @@ def register_data():
             flash(flash_messages4)
             return redirect(url_for('register'))
 
-        if len(val_billname) != 0 and len(val_billstreetaddress) != 0 and len(val_billaptno) != 0 and len(val_billinputCity) != 0 and val_billinputZip != 0:
+        if len(val_billname) != 0 and len(val_billstreetaddress) != 0 and len(val_billaptno) != 0 and len(
+                val_billinputCity) != 0 and val_billinputZip != 0:
             bill_address_insert = 1
         else:
             flash('Enter All fields in the Billing Address')
@@ -526,27 +734,29 @@ def register_data():
             insert_address = "INSERT INTO `bookstore`.`address`" \
                              "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
                              "VALUES( \'%s\', \'%s\', \'%s\', \'%d\', \'%s\', \'%s\', 'ship', \'%d\');" \
-                             % (val_shipname, val_streetaddress, val_aptno, val_inputZip, val_inputCity, val_inputState, userid)
+                             % (val_shipname, val_streetaddress, val_aptno, val_inputZip, val_inputCity, val_inputState,
+                                userid)
             set_query(insert_address)
 
         if card_info_insert == 1:
             insert_cardinfo = "INSERT INTO `bookstore`.`payment`" \
                               "(`cardNumber`, `expiryYear`, `expiryMonth`, `securityCode`, `paymentType`, `UserID`, `nameoncard`)" \
                               "VALUES( \'%s\' , \'%d\', \'%d\', \'%d\' , \'%s\', \'%d\', \'%s\' );" \
-                              % (val_cardno, val_expyear, val_expmonth, val_CVV, val_cardtype, userid, val_nameoncard.upper())
+                              % (val_cardno, val_expyear, val_expmonth, val_CVV, val_cardtype, userid,
+                                 val_nameoncard.upper())
             set_query(insert_cardinfo)
 
         if bill_address_insert == 1:
             insert_billaddress = "INSERT INTO `bookstore`.`address`" \
                                  "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
                                  "VALUES( \'%s\', \'%s\', \'%s\', \'%d\', \'%s\', \'%s\', 'bill', \'%d\');" \
-                                 % (val_billname, val_billstreetaddress, val_billaptno, val_billinputZip, val_billinputCity, val_billinputState, userid)
+                                 % (val_billname, val_billstreetaddress, val_billaptno, val_billinputZip,
+                                    val_billinputCity, val_billinputState, userid)
             set_query(insert_billaddress)
 
     except:
         flash('Duplicate Email Address')
         return redirect(url_for('register'))
-
 
     body_text = '''Thank you for registering, ... 
                     to activate your account ... 
@@ -675,7 +885,7 @@ def password_recovery_finished():
                 set_query(password_change)
                 flash('Password Successfully Changed')
 
-            #see if activated
+            # see if activated
 
             active_check = "SELECT active FROM `bookstore`.`users` WHERE ( `email` = \'%s\' )" % val_email
             res = get_query(active_check)
@@ -683,11 +893,11 @@ def password_recovery_finished():
 
             # update OTP and notify user
             if active_stat == 0:
-                new_otp = randint(0,999999)
+                new_otp = randint(0, 999999)
                 otp_update = "UPDATE `bookstore`.`users` " \
-                              "SET `activationKey` = \'%d\' " \
-                              "WHERE (`email` = \'%s\')" \
-                              % (new_otp, val_email)
+                             "SET `activationKey` = \'%d\' " \
+                             "WHERE (`email` = \'%s\')" \
+                             % (new_otp, val_email)
                 set_query(otp_update)
                 body_text = ''' You have successfully changed your password. Please use the new activation key %d to activate yourself''' % new_otp
             else:
@@ -710,7 +920,6 @@ def activate_user_start():
 
 @app.route('/activate_user_action', methods=['GET', 'POST'])
 def activate_user_action():
-
     val_email = request.form['email']
     val_otp = request.form['otp']
 
@@ -738,9 +947,10 @@ def activate_user_action():
         flash('User Successfully activated')
         return redirect(url_for('login'))
 
+
 @app.route('/editProfileData', methods=['GET', 'POST'])
 def editProfileData():
-    userid = session.get('uid')
+    userid = int(session.get('userID'))
 
     val_firstName = str(request.form['fname']).strip()
     val_lastName = str(request.form['lname']).strip()
@@ -778,10 +988,10 @@ def editProfileData():
                  val_nameoncard, val_cardno, val_CVV,
                  val_billname, val_billstreetaddress, val_billaptno, val_billinputCity, val_billinputZip]
 
-    typelist = [ 'firstName', 'lastName', 'phone',
-                 'name', 'street', 'street2', 'city', 'zipCode',
-                 'nameoncard', 'cardNumber', 'securityCode',
-                 'name', 'street', 'street2', 'city', 'zipCode']
+    typelist = ['firstName', 'lastName', 'phone',
+                'name', 'street', 'street2', 'city', 'zipCode',
+                'nameoncard', 'cardNumber', 'securityCode',
+                'name', 'street', 'street2', 'city', 'zipCode']
     val_ind = True
     error_show = []
     [val_ind, error_show] = validate_all_nonempty_input(inputlist, typelist)
@@ -795,27 +1005,25 @@ def editProfileData():
         badata_query = "SELECT * FROM `bookstore`.`address` where `userID`=%d and `AddressType`='bill' " % userid
         paydata_query = "SELECT * FROM `bookstore`.`payment` where `UserID`= %d ;" % userid
 
-        cur.execute(sadata_query)
-        sadataex = cur.fetchall()
-        cur.execute(badata_query)
-        badataex = cur.fetchall()
-        cur.execute(paydata_query)
-        paydataex = cur.fetchall()
-
-
+        sadataex = get_query(sadata_query)
+        badataex = get_query(badata_query)
+        paydataex = get_query(paydata_query)
 
         pdataupdate = "UPDATE `bookstore`.`users`" \
                       "SET `firstName` = \'%s\', `lastName` = \'%s\', `phone` = \'%s\' " \
                       "WHERE `userID` = %d; " \
-                       % (val_firstName, val_lastName, val_phone, userid)
+                      % (val_firstName, val_lastName, val_phone, userid)
         sadataupdate = "UPDATE `bookstore`.`address`" \
-                      "SET `name` = \'%s\', `street` = \'%s\', `street2` = \'%s\', `city` = \'%s\', `state` = \'%s\', `zipCode` = %d   "  \
-                      "WHERE `userID` = %d and `AddressType` = 'ship' ;" \
-                       % (val_shipname, val_streetaddress, val_aptno, val_inputCity, val_inputState, val_inputZip, userid)
+                       "SET `name` = \'%s\', `street` = \'%s\', `street2` = \'%s\', `city` = \'%s\', `state` = \'%s\', `zipCode` = %d   " \
+                       "WHERE `userID` = %d and `AddressType` = 'ship' ;" \
+                       % (
+                           val_shipname, val_streetaddress, val_aptno, val_inputCity, val_inputState, val_inputZip,
+                           userid)
         badataupdate = "UPDATE `bookstore`.`address`" \
                        "SET `name` = \'%s\', `street` = \'%s\', `street2` = \'%s\', `city` = \'%s\', `state` = \'%s\', `zipCode` = %d   " \
                        "WHERE `userID` = %d and `AddressType` = 'bill' ;" \
-                       % (val_billname, val_billstreetaddress, val_billaptno, val_billinputCity, val_billinputState, val_billinputZip, userid)
+                       % (val_billname, val_billstreetaddress, val_billaptno, val_billinputCity, val_billinputState,
+                          val_billinputZip, userid)
 
         paydataupdate = "UPDATE `bookstore`.`payment`" \
                         "SET `cardNumber` = \'%s\', `expiryYear` = %d, `expiryMonth` = %d, `securityCode` = %d, `nameoncard` = \'%s\', `paymentType` = \'%s\' " \
@@ -823,19 +1031,22 @@ def editProfileData():
                         % (val_cardno, val_expyear, val_expmonth, val_CVV, val_nameoncard.upper(), val_cardtype, userid)
 
         sadatainsert = "INSERT INTO `bookstore`.`address`" \
-                         "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
-                         "VALUES( \'%s\', \'%s\', \'%s\', \'%d\', \'%s\', \'%s\', 'ship', \'%d\');" \
-                         % (val_shipname, val_streetaddress, val_aptno, val_inputZip, val_inputCity, val_inputState, userid)
+                       "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
+                       "VALUES( \'%s\', \'%s\', \'%s\', \'%d\', \'%s\', \'%s\', 'ship', \'%d\');" \
+                       % (
+                           val_shipname, val_streetaddress, val_aptno, val_inputZip, val_inputCity, val_inputState,
+                           userid)
 
         badatainsert = "INSERT INTO `bookstore`.`address`" \
-                        "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
-                        "VALUES( \'%s\', \'%s\', \'%s\', \'%d\', \'%s\', \'%s\', 'bill', \'%d\');" \
-                        % (val_billname, val_billstreetaddress, val_billaptno, val_billinputZip, val_billinputCity, val_billinputState, userid)
+                       "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
+                       "VALUES( \'%s\', \'%s\', \'%s\', \'%d\', \'%s\', \'%s\', 'bill', \'%d\');" \
+                       % (val_billname, val_billstreetaddress, val_billaptno, val_billinputZip, val_billinputCity,
+                          val_billinputState, userid)
 
         paydatainsert = "INSERT INTO `bookstore`.`payment`" \
-                          "(`cardNumber`, `expiryYear`, `expiryMonth`, `securityCode`, `paymentType`, `UserID`, `nameoncard`)" \
-                          "VALUES( \'%s\' , \'%d\', \'%d\', \'%d\' , \'%s\', \'%d\', \'%s\' );" \
-                          % (val_cardno, val_expyear, val_expmonth, val_CVV, val_cardtype, userid, val_nameoncard.upper())
+                        "(`cardNumber`, `expiryYear`, `expiryMonth`, `securityCode`, `paymentType`, `UserID`, `nameoncard`)" \
+                        "VALUES( \'%s\' , \'%d\', \'%d\', \'%d\' , \'%s\', \'%d\', \'%s\' );" \
+                        % (val_cardno, val_expyear, val_expmonth, val_CVV, val_cardtype, userid, val_nameoncard.upper())
 
         set_query(pdataupdate)
 
@@ -865,7 +1076,8 @@ def editProfileData():
 def change_password_start():
     return render_template('change_password.html')
 
-@app.route('/password_changed' , methods = ['GET', 'POST'] )
+
+@app.route('/password_changed', methods=['GET', 'POST'])
 def password_change_finished():
     cur = mysql.connection.cursor()
     val_email = session.get('email')
@@ -890,7 +1102,7 @@ def password_change_finished():
         password_change = "UPDATE `bookstore`.`users` " \
                           "SET `password` = \'%s\' " \
                           "WHERE (`email` = \'%s\')" \
-                           % (generate_password_hash(val_newpass), val_email)
+                          % (generate_password_hash(val_newpass), val_email)
         set_query(password_change)
 
         body_text = ''' You have successfully changed your password.'''
@@ -899,58 +1111,262 @@ def password_change_finished():
         flash('Password Successfully Changed')
         return redirect(url_for('edit_profile'))
 
-@app.route('/add2cart', methods=['GET','POST'])
+
+@app.route('/add2cart', methods=['GET', 'POST'])
 def add2cart():
-    # check if proper user (customer and not admin) is logged in
-    # get data from book.html hidden form
-    # push data to cart table
-    # return to the same page with a flash message
-    return 'Needs to be implemented by Sakher'
+    if session.get('logged_in') == True and session.get('userTypeID') == 2:
+        uid = int(session.get('userID'))
+        val_ISBN = request.form['book_ISBN_h']
+        val_price = request.form['book_price_h']
 
-@app.route('/add_book_action', methods=['GET','POST'])
+        isbn_search = "SELECT * FROM `bookstore`.`cart` WHERE `userID` = \'%d\' AND `bookID` = \'%s\';" % (
+            uid, val_ISBN)
+        isbn_search_res = get_query(isbn_search)
+        # if isbn is not in the cart
+        # insert
+        if len(isbn_search_res) == 0:
+            insert_in_cart = "insert ignore into `bookstore`.`cart` (`userID`, `bookID`, `quantity`) " \
+                             "values (\'%d\', \'%s\', \'%d\');" % (uid, val_ISBN, 1)
+            set_query(insert_in_cart)
+        else:
+            # else update
+            get_quantity = int(isbn_search_res[0]['quantity'])
+            update_quantity = "update `bookstore`.`cart` " \
+                              "set `quantity` = \'%d\' " \
+                              "where (`userID` = \'%d\') and (`bookID` = \'%s\');" \
+                              % (get_quantity + 1, uid, val_ISBN)
+            set_query(update_quantity)
+
+        # get cart total
+        get_cart_items = "select  `cart`.* , `bookinventory`.`sellingPrice` from `cart` " \
+                         "inner join `bookinventory`" \
+                         "on `cart`.`bookID` = `bookinventory`.`bookID`" \
+                         "where `cart`.`userID` = \'%d\';" % uid
+        get_cart_items = get_query(get_cart_items)
+        tot = get_cart_total(get_cart_items)
+
+        pending_order_search = "select * from `bookstore`.`order` " \
+                               "where (`userID` = \'%d\') and (`orderstatus` = 'pending');" % uid
+        pending_order_res = get_query(pending_order_search)
+        if len(pending_order_res) == 0:
+            # insert into order
+            insert_in_order = "insert into `bookstore`.`order` (`userID`, `total`, `orderDateTime`, `orderstatus`) " \
+                              "values (\'%d\', \'%.2f\', \'%s\', \'%s\');" \
+                              % (uid, tot, datetime.today().strftime('%Y-%m-%d'), 'pending')
+            set_query(insert_in_order)
+        elif pending_order_res[0]['PromoID'] == -1:
+            update_in_order_wo_promo = "update `bookstore`.`order` " \
+                                       "set `total` = \'%.2f\'" \
+                                       "where (`userID` = \'%d\') and (`orderstatus` = \'%s\')" \
+                                       % (tot, uid, 'pending')
+            set_query(update_in_order_wo_promo)
+        else:
+            disc_search = "select `discountAmount` from `bookstore`.`promotion` " \
+                          "where `idPromotion` = \'%d\'" % int(pending_order_res[0]['PromoID'])
+            disc_amount = int(get_query(disc_search)[0]['discountAmount'])
+            fintot = tot - tot * disc_amount / 100
+            update_in_order_promo = "update `bookstore`.`order` " \
+                                    "set `total` = \'%.2f\'" \
+                                    "where (`userID` = \'%d\') and (`orderstatus` = \'%s\')" \
+                                    % (fintot, uid, 'pending')
+            set_query(update_in_order_promo)
+
+        return redirect(url_for('bookshow', book_num=val_ISBN))
+    else:
+        flash('You are not allowed to add to the cart')
+        return redirect(url_for('index'))
+
+
+@app.route('/add_book_action', methods=['GET', 'POST'])
 def add_book_action():
-    return 'Needs to be implemented by Sakher/Divya/Andres/Redwan'
+    val_title = request.form['title']
+    val_author = request.form['author']
+    val_ISBN = request.form['ISBN']
+    val_edition = conv_int(request.form['edition'])
+    val_publisher = request.form['publisher']
+    val_pubYear = conv_int(request.form.get('pubYear'))
+    val_category = conv_int(request.form.get('category'))
+    val_cover = request.files['cover']
+    val_buyingPrice = conv_float(request.form['buyingPrice'])
+    val_sellingPrice = conv_float(request.form['sellingPrice'])
+    val_quantity = conv_int(request.form['quantity'])
+    print(val_title, val_author, val_ISBN, val_edition, val_pubYear, val_publisher, val_category, val_sellingPrice,
+          val_sellingPrice)
+    inputlist = [val_title, val_author, val_ISBN, val_publisher]
+    typelist = ['title', 'author', 'ISBN', 'publisher']
 
-@app.route('/search_book_action', methods=['GET','POST'])
+    [validate, flash_messages] = validate_all_input(inputlist, typelist)
+
+    if (validate is True) and (val_edition != 0) and (val_pubYear != 0) and \
+            (val_category != 0) and val_buyingPrice is not None \
+            and val_sellingPrice is not None and val_cover is not '':
+
+        filename = photos.save(request.files['cover'], name=val_ISBN + '_cover.jpg')
+        filepath = 'images/books/' + filename
+
+        book_insert = "INSERT INTO `bookstore`.`books`" \
+                      "(`ISBN`, `author`, `title`, `cover`, `edition`, `publisher`, `pubYear`, `category`)" \
+                      " VALUES( \'%s\', \'%s\', \'%s\', \'%s\', \'%d\', \'%s\', \'%d\', \'%d\' ); " \
+                      % (
+                          val_ISBN, val_author, val_title, filepath, val_edition, val_publisher, val_pubYear,
+                          val_category)
+
+        inventory_insert = "INSERT INTO `bookstore`.`bookinventory`" \
+                           "(`bookID`, `bookStatus`, `buyingPrice`, `sellingPrice`, `quantity`)" \
+                           "VALUES (\'%s\', 'Available', \'%.2f\', \'%.2f\', \'%d\'); " \
+                           % (val_ISBN, val_buyingPrice, val_sellingPrice, val_quantity)
+
+        if set_query(book_insert) and set_query(inventory_insert):
+            flash('Book Successfully Added')
+            return redirect(url_for('index'))
+        else:
+            flash('Duplicate Book')
+            return redirect(url_for('add_book'))
+
+    elif validate is False:
+        flash(flash_messages)
+        return redirect(url_for('add_book'))
+    elif val_edition == 0:
+        flash('Enter a valid Edition Number')
+        return redirect(url_for('add_book'))
+    elif val_pubYear == 0:
+        flash('Choose Publication Year')
+        return redirect(url_for('add_book'))
+    elif val_category == '0':
+        flash('Choose category')
+        return redirect(url_for('add_book'))
+    elif val_buyingPrice is None:
+        flash('Invalid Buying Price')
+        return redirect(url_for('add_book'))
+    elif val_sellingPrice is None:
+        flash('Invalid Selling Price')
+        return redirect(url_for('add_book'))
+    elif val_cover is '':
+        flash('Choose a cover for the book')
+        return redirect(url_for('add_book'))
+
+
+@app.route('/search_book_action', methods=['GET', 'POST'])
 def search_book_action():
     return 'Needs to be implemented by Sakher/Divya/Andres/Redwan'
+
 
 @app.route('/get_EOD')
 def get_EOD():
     return 'Needs to be implemented by Sakher/Divya/Andres/Redwan'
 
+
 @app.route('/get_Inventory')
 def get_Inventory():
     return 'Needs to be implemented by Sakher/Divya/Andres/Redwan'
 
+
 @app.route('/modify_cart_action', methods=['GET', 'POST'])
 def modify_cart_action():
-    # complete the modifycart.html and make sure the form is properly build with proper name and value
-    # get data from modifycart.html
-    # push data to database
-    # redirect to cart()
-    return 'Needs to be implemented by Sakher'
+    uid = int(session.get('userID'))
+    keylist = []
+    vallist = []
+    f = request.form
+    for key in f.keys():
+        for value in f.getlist(key):
+            keylist.append(key)
+            vallist.append(conv_int(value))
+
+    for k in range(0, len(keylist)):
+        updatequery = "UPDATE `bookstore`.`cart` " \
+                      "SET `quantity` = \'%d\' " \
+                      "WHERE (`userID` = \'%d\') and (`bookID` = \'%s\');" \
+                      % (vallist[k], uid, keylist[k])
+        set_query(updatequery)
+
+    return redirect(url_for('cart'))
+
 
 @app.route('/remove_from_cart_action', methods=['GET', 'POST'])
 def remove_from_cart_action():
-    # complete the removefromcart.html and make sure the form is properly build proper name and value
-    # get data from removefromcart.html
-    # delete data from database
-    # redirect to cart()
-    return 'Needs to be implemented by Sakher'
+    uid = int(session.get('userID'))
+    keylist = []
+    f = request.form
+    for key in f.keys():
+        del_query = "delete from `bookstore`.`cart` " \
+                    "where `bookID` = \'%s\' and userID = \'%d\' " \
+                    % (key, uid)
+        set_query(del_query)
+    return redirect(url_for('cart'))
+
 
 @app.route('/apply_promo_action', methods=['GET', 'POST'])
 def apply_promo_action():
-    # get the total
-    # check if promo applied is correct
-    # show redirect to cart with promo information
-    return 'Needs to be implemented by Sakher'
+    uid = int(session.get('userID'))
+    inputpromo = str(request.form['promocode']).strip()
+    dt = datetime.today().date()
+    dtstr = dt.strftime('%Y-%m-%d')
+    search_validity = "select * from `bookstore`.`promotion`" \
+                      "where `startDate` < \'%s\' and `promoCode` = \'%s\'" \
+                      % (dtstr, inputpromo)
+    init_search = get_query(search_validity)
+    if len(init_search) == 0:
+        flash('Invalid Promo')
+        return redirect(url_for('apply_promo'))
+    elif datetime.strptime(str(init_search[0]['expirationDate']), '%Y-%m-%d').date() < dt:
+        flash('Expired Promo')
+        return redirect(url_for('apply_promo'))
+    else:
+        update_promo = "update `bookstore`.`order` " \
+                       "set `PromoID` = \'%d\'" \
+                       "where `userID` = \'%d\' and `orderstatus` = 'pending'" \
+                       % (init_search[0]['idPromotion'], uid)
+        set_query(update_promo)
+        return redirect(url_for('cart'))
+
 
 @app.route('/checkout_action', methods=['GET', 'POST'])
 def checkout_action():
-    # push data to database order
-    # redirect to confirmation page with proper information
-    return 'Needs to be implemented by Andres'
+    uid = int(session.get('userID'))
+    # transfer cart items to order items
+
+    # get cart items
+    cart_query = "SELECT * FROM `bookstore`.`cart` WHERE `userID`=\'%d\'" % uid
+    cartItems = get_query(cart_query)
+    # get payment info
+    pay_query = "SELECT * FROM `bookstore`.`payment` WHERE `userID`=\'%d\'" % uid
+    pay = get_query(pay_query)
+    # get billShipping info
+    bill_query = "SELECT * FROM `bookstore`.`address` WHERE `userID`=\'%d\' AND `AddressType`=\'bill\'" % uid
+    bill = get_query(bill_query)
+    # get shippingAddy
+    ship_query = "SELECT * FROM `bookstore`.`address` WHERE `userID`=\'%d\' AND `AddressType`=\'ship\'" % uid
+    ship = get_query(ship_query)
+
+    if (len(cartItems) == 0):
+        flash('Your cart is empty.')
+        return redirect(url_for('index'))
+    elif (len(pay) == 0 or len(bill) == 0 or len(ship) == 0):
+        flash('Please enter Shipping/Billing Address and/or payment.')
+        return redirect(url_for('edit_profile'))
+    else:
+        print(request.form['orderid'])
+        print(len(cartItems))
+        orderid = int(request.form['orderid'])
+        for jj in range(0,len(cartItems)):
+            insert_order_item = "insert into `bookstore`.`orderitems`" \
+                                "(`orderID`, `ProductID`, `quantity`)" \
+                                "values (\'%d\', \'%s\', \'%d\') " \
+                                % (orderid, cartItems[jj]['bookID'], cartItems[jj]['quantity'])
+            set_query(insert_order_item)
+
+        del_query = "delete from `bookstore`.`cart` " \
+                    "where userID = \'%d\' " \
+                    % uid
+        set_query(del_query)
+
+        update_order = "update `bookstore`.`order`" \
+                        "set `orderstatus` = 'active'" \
+                        "where `orderID` = \'%d\' " % orderid
+        set_query(update_order)
+        return redirect(url_for('order_confirmation'))
+
+
 
 @app.route('/cancel_order', methods=['GET', 'POST'])
 def cancel_order():
