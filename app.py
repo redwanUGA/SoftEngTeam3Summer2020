@@ -35,6 +35,30 @@ fenc = Fernet(key=key)
 ##### Custom functions go here ####
 
 
+def custom_enc(valstr):
+    plain = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+    cyph = ['1', '3', '2', '5', '4', '8', '6', '7', '0', '9']
+    newstr = ''
+    for j in range(0, len(valstr)):
+        if valstr[j] in plain:
+            newstr += cyph[plain.index(valstr[j])]
+        else:
+            newstr += valstr[j]
+    return newstr
+
+
+def custom_dec(valstr):
+    plain = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+    cyph = ['1', '3', '2', '5', '4', '8', '6', '7', '0', '9']
+    newstr = ''
+    for j in range(0, len(valstr)):
+        if valstr[j] in cyph:
+            newstr += plain[cyph.index(valstr[j])]
+        else:
+            newstr += valstr[j]
+    return newstr
+
+
 def set_query(query):
     try:
         with app.app_context():
@@ -105,7 +129,7 @@ def check_goodness(value, fieldname):
             return True
 
     if fieldname == 'phone':
-        regex_phone = '^\([0-9]{3}\)-[0-9]{3}-[0-9]{4}$'
+        regex_phone = '^\+[0-9]{1}\([0-9]{3}\)-[0-9]{3}-[0-9]{4}$'
         if re.search(regex_phone, value):
             return True
         else:
@@ -123,11 +147,19 @@ def check_goodness(value, fieldname):
         else:
             return False
 
-    if fieldname == 'zipCode' or fieldname == 'securityCode':
-        if value == 0:
-            return False
-        else:
+    if fieldname == 'zipCode':
+        regex_zip = '^[0-9]{5}$'
+        if re.search(regex_zip, value):
             return True
+        else:
+            return False
+
+    if fieldname == 'securityCode':
+        regex_cvv = '^[0-9]{3,4}$'
+        if re.search(regex_cvv, value):
+            return True
+        else:
+            return False
 
     if fieldname == 'city':
         if len(value) < 15:
@@ -165,7 +197,7 @@ def error_message(value, fieldname):
 
     if fieldname == 'email':
         regex_email = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
-        if re.search(regex_email, value) == None:
+        if re.search(regex_email, value) is None:
             message.append('Invalid Email.')
 
         if len(value) > 45:
@@ -178,9 +210,9 @@ def error_message(value, fieldname):
             message.append('Too Long Password.')
 
     if fieldname == 'phone':
-        regex_phone = '^\([0-9]{3}\)[0-9]{3}-[0-9]{4}$'
-        if re.search(regex_phone, value) == None:
-            message.append('Invalid Phone Number. Maintain the format (XXX)-XXX-XXXX.')
+        regex_phone = '^\+[0-9]{1}\([0-9]{3}\)-[0-9]{3}-[0-9]{4}$'
+        if re.search(regex_phone, value) is None:
+            message.append('Invalid Phone Number. Choose both country code and maintain (XXX)-XXX-XXXX format')
 
     if fieldname == 'name':
         if len(value) > 90:
@@ -203,12 +235,14 @@ def error_message(value, fieldname):
             message.append('Too Long City Name')
 
     if fieldname == 'zipCode':
-        if value == 0:
-            message.append('Invalid ZIP Code.')
+        regex_zip = '^[0-9]{5}$'
+        if re.search(regex_zip, value) is None:
+            message.append('Invalid Zip Code')
 
     if fieldname == 'securityCode':
-        if value == 0:
-            message.append('Invalid Security Code.')
+        regex_cvv = '^[0-9]{3,4}$'
+        if re.search(regex_cvv, value) is None:
+            message.append('Invalid CVV Number')
 
     if fieldname == 'city':
         if len(value) > 15:
@@ -249,7 +283,6 @@ def validate_all_nonempty_input(inputlist, valuelist):
     message = []
 
     for jj in range(0, len(inputlist)):
-        print(inputlist[jj])
         if inputlist[jj] == [] or inputlist[jj] is None or inputlist[jj] == '' or inputlist[jj] == 0:
             pass
         else:
@@ -258,6 +291,7 @@ def validate_all_nonempty_input(inputlist, valuelist):
             if boolval == False:
                 message.append(error_message(inputlist[jj], valuelist[jj]))
 
+    message.append('Some of the things went wrong')
     return [valid, message]
 
 
@@ -276,10 +310,57 @@ def base():
 
 @app.route('/')
 def index():
-    all_book_query = "select  `books`.*, `bookinventory`.`bookID` , `bookinventory`.`sellingPrice` from `books`" \
-                     "inner join `bookinventory`" \
-                     "on `books`.`ISBN` = `bookinventory`.`bookID`;"
+    all_book_query = "select `books`.*, `bookinventory`.*, `category`.`category` as `cats` from `books` " \
+                     "inner join `bookinventory` " \
+                     "on `books`.`ISBN` = `bookinventory`.`bookID`" \
+                     "inner join `category`" \
+                     "on `books`.`category` = `category`.`idCategory`" \
+                     "order by `books`.`title` asc;"
     result = get_query(all_book_query)
+    for jj in result:
+        print(jj)
+    return render_template('index.html', data=result)
+
+
+@app.route('/browse_by_category')
+def cat_index():
+    all_book_query = "select `books`.*, `bookinventory`.*, `category`.`category` as `cats` from `books` " \
+                     "inner join `bookinventory` " \
+                     "on `books`.`ISBN` = `bookinventory`.`bookID`" \
+                     "inner join `category`" \
+                     "on `books`.`category` = `category`.`idCategory`" \
+                     "order by `cats` asc;"
+    result = get_query(all_book_query)
+    for jj in result:
+        print(jj)
+    return render_template('index.html', data=result)
+
+
+@app.route('/browse_by_author')
+def auth_index():
+    all_book_query = "select `books`.*, `bookinventory`.*, `category`.`category` as `cats` from `books` " \
+                     "inner join `bookinventory` " \
+                     "on `books`.`ISBN` = `bookinventory`.`bookID`" \
+                     "inner join `category`" \
+                     "on `books`.`category` = `category`.`idCategory`" \
+                     "order by `books`.`author` asc;"
+    result = get_query(all_book_query)
+    for jj in result:
+        print(jj)
+    return render_template('index.html', data=result)
+
+
+@app.route('/browse_by_ISBN')
+def isbn_index():
+    all_book_query = "select `books`.*, `bookinventory`.*, `category`.`category` as `cats` from `books` " \
+                     "inner join `bookinventory` " \
+                     "on `books`.`ISBN` = `bookinventory`.`bookID`" \
+                     "inner join `category`" \
+                     "on `books`.`category` = `category`.`idCategory`" \
+                     "order by `books`.`ISBN` asc;"
+    result = get_query(all_book_query)
+    for jj in result:
+        print(jj)
     return render_template('index.html', data=result)
 
 
@@ -311,7 +392,7 @@ def manage_books():
                      "inner join `category`" \
                      "on `books`.`category` = `category`.`idCategory`;"
     all_book = get_query(all_book_query)
-    return render_template('manage_books.html', data = all_book)
+    return render_template('manage_books.html', data=all_book)
 
 
 @app.route('/add_book')
@@ -323,7 +404,9 @@ def add_book():
 
 @app.route('/search_book')
 def search_book():
-    return render_template('searchbook.html')
+    cat_query = "SELECT * FROM `bookstore`.`category`;"
+    cats = get_query(cat_query)
+    return render_template('searchbook.html', cats=cats)
 
 
 @app.route('/manage_promotions')
@@ -334,7 +417,7 @@ def manage_promotions():
 # Register Page
 @app.route('/register')
 def register():
-    if not session.get('uid'):
+    if not session.get('userID'):
         return render_template('register.html')
     else:
         flash('You are already logged as %s. Logout First to signup as a new user.' % session.get('email'))
@@ -521,7 +604,8 @@ def view_profile():
         sadata = get_query(sadata_query)
         badata = get_query(badata_query)
         paydata = get_query(paydata_query)
-        print(pdata, sadata, badata, paydata)
+        if len(paydata) != 0:
+            paydata[0]['cardNumber'] = custom_dec(paydata[0]['cardNumber'])
         return render_template('viewprofile.html', pdata=pdata, sadata=sadata, badata=badata, paydata=paydata)
     else:
         return redirect(url_for('index'))
@@ -541,6 +625,9 @@ def edit_profile():
         sadata = get_query(sadata_query)
         badata = get_query(badata_query)
         paydata = get_query(paydata_query)
+        if len(paydata) != 0:
+            paydata[0]['cardNumber'] = custom_dec(paydata[0]['cardNumber'])
+
 
         return render_template('editprofile.html', pdata=pdata, sadata=sadata, badata=badata, paydata=paydata)
     else:
@@ -639,18 +726,16 @@ def bookshow(book_num):
 
 @app.route('/register_data', methods=['GET', 'POST'])
 def register_data():
-    cur = mysql.connection.cursor()
     ship_address_insert = 0
     card_info_insert = 0
     bill_address_insert = 0
 
-    val_firstName = str(request.form['fname']).strip()
-    val_lastName = str(request.form['lname']).strip()
-    val_gender = str(request.form.get('gender')).strip()
-    val_email = str(request.form['email']).strip().lower()
-    val_password = str(request.form['password']).strip()
+    val_firstName = str(request.form.get('fname')).strip()
+    val_lastName = str(request.form.get('lname')).strip()
+    val_email = str(request.form.get('email')).strip().lower()
+    val_password = str(request.form.get('password')).strip()
     val_phone_1 = str(request.form.get('phonenumbercountry'))
-    val_phone_2 = str(request.form['mainphonenumber']).strip()
+    val_phone_2 = str(request.form.get('mainphonenumber')).strip()
     val_phone = val_phone_1 + val_phone_2
     val_activationKey = randint(0, 999999)
 
@@ -659,11 +744,11 @@ def register_data():
     val_aptno = str(request.form['aptno']).strip()
     val_inputCity = str(request.form['inputCity']).strip()
     val_inputState = str(request.form.get('inputState')).strip()
-    val_inputZip = conv_int(request.form['inputZip'])
+    val_inputZip = str(request.form['inputZip']).strip()
 
     val_nameoncard = str(request.form['nameoncard']).strip()
     val_cardno = str(request.form['cardno']).strip()
-    val_CVV = conv_int(request.form['CVV'])
+    val_CVV = str(request.form['CVV']).strip()
     val_cardtype = request.form.get('cardtype')
     val_expmonth = int(request.form.get('expmonth'))
     val_expyear = int(request.form.get('expyear'))
@@ -673,33 +758,53 @@ def register_data():
     val_billaptno = str(request.form['billaptno']).strip()
     val_billinputCity = str(request.form['billinputCity']).strip()
     val_billinputState = str(request.form.get('billinputState')).strip()
-    val_billinputZip = conv_int(request.form['billinputZip'])
+    val_billinputZip = str(request.form['billinputZip']).strip()
 
     # validate mandatory inputs
-    inputlist = [val_firstName, val_lastName, val_email, val_password, val_phone_2]
+    inputlist = [val_firstName, val_lastName, val_email, val_password, val_phone]
     typelist = ['firstName', 'lastName', 'email', 'password', 'phone']
 
-    [validate, flash_messages] = validate_all_input(inputlist, typelist)
+    [validate, flash_messages] = validate_all_nonempty_input(inputlist, typelist)
 
     if not validate:
         flash(flash_messages)
         return redirect(url_for('register'))
 
+    # validate all non-empty optionals
+    '''
+    inputlist0 = [val_phone,
+                  val_shipname, val_streetaddress, val_aptno, val_inputCity, val_inputState, val_inputZip,
+                  val_billname, val_billstreetaddress, val_billaptno, val_billinputCity,
+                  val_billinputState, val_billinputZip, val_nameoncard, val_cardno, val_CVV, val_cardtype,
+                  val_expmonth, val_expyear]
+    valuelist0 = ['phone', 'name', 'street', 'street2', 'city', 'state', 'zipCode',
+                  'name', 'street', 'street2', 'city', 'state', 'zipCode', 'nameoncard', 'cardNumber',
+                  'securityCode', 'paymentType', 'expiryMonth', 'expiryYear']
+
+    [validate0, flash_messages0] = validate_all_nonempty_input(inputlist0, valuelist0)
+    
+    
+    if not validate0:
+        flash(flash_messages0)
+        return redirect(url_for('register'))
+    '''
+
     # check if any entry for shipping address is there
     if len(val_shipname) != 0 or len(val_streetaddress) != 0 or len(val_aptno) != 0 or len(
-            val_inputCity) != 0 or val_inputZip != 0:
+            val_inputCity) != 0 or len(val_inputZip) != 0:
 
         # validate shipping address inputs
         inputlist2 = [val_shipname, val_streetaddress, val_aptno, val_inputCity, val_inputZip]
         typelist2 = ['name', 'street', 'street2', 'city', 'zipCode']
 
-        [validate2, flash_messages2] = validate_all_input(inputlist2, typelist2)
+        [validate2, flash_messages2] = validate_all_nonempty_input(inputlist2, typelist2)
 
         if not validate2:
             flash(flash_messages2)
             return redirect(url_for('register'))
 
-        if len(val_streetaddress) != 0 and len(val_aptno) != 0 and len(val_inputCity) != 0 and val_inputZip != 0:
+        if len(val_streetaddress) != 0 and len(val_aptno) != 0 and len(val_inputCity) != 0 and len(
+                val_inputZip) != 0 and len(val_inputState):
             # confirm if shipping address is needed to be inserted
             ship_address_insert = 1
         else:
@@ -707,12 +812,12 @@ def register_data():
             return redirect(url_for('register'))
 
     # check if card inputs are there
-    if len(val_nameoncard) != 0 or len(val_cardno) != 0 or val_CVV != 0:
+    if len(val_nameoncard) != 0 or len(val_cardno) != 0 or len(val_CVV) != 0:
         # validate card inputs
         inputlist3 = [val_nameoncard, val_cardno, val_CVV]
         typelist3 = ['nameoncard', 'cardNumber', 'securityCode']
 
-        [validate3, flash_messages3] = validate_all_input(inputlist3, typelist3)
+        [validate3, flash_messages3] = validate_all_nonempty_input(inputlist3, typelist3)
 
         if not validate3:
             flash(flash_messages3)
@@ -726,76 +831,75 @@ def register_data():
 
     # check if billing address is there
     if len(val_billname) != 0 or len(val_billstreetaddress) != 0 or len(val_billaptno) != 0 or len(
-            val_billinputCity) != 0 or val_billinputZip != 0:
+            val_billinputCity) != 0 or len(val_billinputZip) != 0 or len(val_billinputState) != 0:
         # validate billing address info
         inputlist4 = [val_billname, val_billstreetaddress, val_billaptno, val_billinputCity, val_billinputZip]
         typelist4 = ['name', 'street', 'street2', 'city', 'zipCode']
 
-        [validate4, flash_messages4] = validate_all_input(inputlist4, typelist4)
+        [validate4, flash_messages4] = validate_all_nonempty_input(inputlist4, typelist4)
 
         if not validate4:
             flash(flash_messages4)
             return redirect(url_for('register'))
 
         if len(val_billname) != 0 and len(val_billstreetaddress) != 0 and len(val_billaptno) != 0 and len(
-                val_billinputCity) != 0 and val_billinputZip != 0:
+                val_billinputCity) != 0 and val_billinputZip != 0 and len(val_billinputState) != 0:
             bill_address_insert = 1
         else:
             flash('Enter All fields in the Billing Address')
             return redirect(url_for('register'))
 
-    try:
-        sqlstatementman = "INSERT INTO `bookstore`.`users`" \
-                          "(`firstName`, `lastName`, `password`, " \
-                          "`email`, `phone`, `userTypeID`, " \
-                          "`Subscription`, `active`, `activationKey`, " \
-                          "`suspended`, `gender`)" \
-                          "VALUES (\'%s\', \'%s\', \'%s\', " \
-                          "\'%s\', \'%s\', 2, " \
-                          "1, 0, \'%d\', " \
-                          "0, \'%s\' );" \
-                          % (val_firstName, val_lastName, generate_password_hash(val_password), \
-                             val_email, val_phone, \
-                             val_activationKey, \
-                             val_gender)
-        set_query(sqlstatementman)
-        userid = cur.lastrowid
+    sqlstatementman = "INSERT INTO `bookstore`.`users`" \
+                      "(`firstName`, `lastName`, `password`, " \
+                      "`email`, `phone`, `userTypeID`, " \
+                      "`Subscription`, `active`, `activationKey`, " \
+                      "`suspended`)" \
+                      "VALUES (\'%s\', \'%s\', \'%s\', " \
+                      "\'%s\', \'%s\', 2, " \
+                      "1, 0, \'%d\', " \
+                      "0);" \
+                      % (val_firstName, val_lastName, generate_password_hash(val_password),
+                         val_email, val_phone,
+                         val_activationKey)
 
-        if ship_address_insert == 1:
-            insert_address = "INSERT INTO `bookstore`.`address`" \
-                             "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
-                             "VALUES( \'%s\', \'%s\', \'%s\', \'%d\', \'%s\', \'%s\', 'ship', \'%d\');" \
-                             % (val_shipname, val_streetaddress, val_aptno, val_inputZip, val_inputCity, val_inputState,
-                                userid)
-            set_query(insert_address)
-
-        if card_info_insert == 1:
-            insert_cardinfo = "INSERT INTO `bookstore`.`payment`" \
-                              "(`cardNumber`, `expiryYear`, `expiryMonth`, `securityCode`, `paymentType`, `UserID`, `nameoncard`)" \
-                              "VALUES( \'%s\' , \'%d\', \'%d\', \'%d\' , \'%s\', \'%d\', \'%s\' );" \
-                              % (val_cardno, val_expyear, val_expmonth, val_CVV, val_cardtype, userid,
-                                 val_nameoncard.upper())
-            set_query(insert_cardinfo)
-
-        if bill_address_insert == 1:
-            insert_billaddress = "INSERT INTO `bookstore`.`address`" \
-                                 "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
-                                 "VALUES( \'%s\', \'%s\', \'%s\', \'%d\', \'%s\', \'%s\', 'bill', \'%d\');" \
-                                 % (val_billname, val_billstreetaddress, val_billaptno, val_billinputZip,
-                                    val_billinputCity, val_billinputState, userid)
-            set_query(insert_billaddress)
-
-    except:
-        flash('Duplicate Email Address')
+    if set_query(sqlstatementman) is True:
+        uidget = "select `userID` from `bookstore`.`users` where `email` = \'%s\';" % val_email
+        userid = int(get_query(uidget)[0]['userID'])
+        print(userid)
+    else:
+        flash('Duplicate Email Exists')
         return redirect(url_for('register'))
 
-    body_text = '''Thank you for registering, ... 
-                    to activate your account ... 
-                    sign in with your password and ...
-                    you have to enter the following code when logging in : %s ''' % str(val_activationKey)
+    if ship_address_insert == 1:
+        insert_address = "INSERT INTO `bookstore`.`address`" \
+                         "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
+                         "VALUES( \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', 'ship', \'%d\');" \
+                         % (val_shipname, val_streetaddress, val_aptno, val_inputZip, val_inputCity, val_inputState,
+                            userid)
+        set_query(insert_address)
+
+    if card_info_insert == 1:
+        insert_cardinfo = "INSERT INTO `bookstore`.`payment`" \
+                          "(`cardNumber`, `expiryYear`, `expiryMonth`, `securityCode`, `paymentType`, `UserID`, `nameoncard`)" \
+                          "VALUES( \'%s\' , \'%d\', \'%d\', \'%s\' , \'%s\', \'%d\', \'%s\' );" \
+                          % (custom_enc(val_cardno), val_expyear, val_expmonth, val_CVV, val_cardtype, userid,
+                             val_nameoncard.upper())
+        set_query(insert_cardinfo)
+
+    if bill_address_insert == 1:
+        insert_billaddress = "INSERT INTO `bookstore`.`address`" \
+                             "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
+                             "VALUES( \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', 'bill', \'%d\');" \
+                             % (val_billname, val_billstreetaddress, val_billaptno, val_billinputZip,
+                                val_billinputCity, val_billinputState, userid)
+        set_query(insert_billaddress)
+
+    body_text = "Thank you for registering," \
+                "to activate your account" \
+                "sign in with your password and " \
+                "you have to enter the following code when logging in : %s" % str(val_activationKey)
 
     send_message(body_text, val_email)
-
     flash('You have successfully completed your registration. Please check your email for further procedures.')
     return redirect(url_for('index'))
 
@@ -982,39 +1086,41 @@ def activate_user_action():
 @app.route('/editProfileData', methods=['GET', 'POST'])
 def editProfileData():
     userid = int(session.get('userID'))
+    try:
+        val_firstName = str(request.form.get('fname')).strip()
+        val_lastName = str(request.form.get('lname')).strip()
+        val_email = str(request.form.get('email')).strip()
+        val_phone_1 = str(request.form.get('phonenumbercountry'))
+        val_phone_2 = str(request.form.get('mainphonenumber')).strip()
+        val_phone = val_phone_1 + val_phone_2
 
-    val_firstName = str(request.form['fname']).strip()
-    val_lastName = str(request.form['lname']).strip()
-    val_gender = str(request.form.get('gender')).strip()
-    val_email = str(request.form.get('email')).strip()
-    val_phone_1 = str(request.form.get('phonenumbercountry'))
-    val_phone_2 = str(request.form['mainphonenumber']).strip()
-    val_phone = val_phone_1 + val_phone_2
+        val_shipname = str(request.form['shipname']).strip()
+        val_streetaddress = str(request.form['streetaddress']).strip()
+        val_aptno = str(request.form['aptno']).strip()
+        val_inputCity = str(request.form['inputCity']).strip()
+        val_inputState = str(request.form.get('inputState')).strip()
+        val_inputZip = str(request.form['inputZip']).strip()
 
-    val_shipname = str(request.form['shipname']).strip()
-    val_streetaddress = str(request.form['streetaddress']).strip()
-    val_aptno = str(request.form['aptno']).strip()
-    val_inputCity = str(request.form['inputCity']).strip()
-    val_inputState = str(request.form.get('inputState')).strip()
-    val_inputZip = conv_int(request.form['inputZip'])
+        val_nameoncard = str(request.form['nameoncard']).strip()
+        val_cardno = str(request.form['cardno']).strip()
+        val_CVV = str(request.form['CVV']).strip()
+        val_cardtype = request.form.get('cardtype')
+        val_expmonth = int(request.form.get('expmonth'))
+        val_expyear = int(request.form.get('expyear'))
 
-    val_nameoncard = str(request.form['nameoncard']).strip()
-    val_cardno = str(request.form['cardno']).strip()
-    val_CVV = conv_int(request.form['CVV'])
-    val_cardtype = request.form.get('cardtype')
-    val_expmonth = int(request.form.get('expmonth'))
-    val_expyear = int(request.form.get('expyear'))
-
-    val_billname = str(request.form['billname']).strip()
-    val_billstreetaddress = str(request.form['billstreetaddress']).strip()
-    val_billaptno = str(request.form['billaptno']).strip()
-    val_billinputCity = str(request.form['billinputCity']).strip()
-    val_billinputState = str(request.form.get('billinputState')).strip()
-    val_billinputZip = conv_int(request.form['billinputZip'])
+        val_billname = str(request.form['billname']).strip()
+        val_billstreetaddress = str(request.form['billstreetaddress']).strip()
+        val_billaptno = str(request.form['billaptno']).strip()
+        val_billinputCity = str(request.form['billinputCity']).strip()
+        val_billinputState = str(request.form.get('billinputState')).strip()
+        val_billinputZip = str(request.form['billinputZip']).strip()
+    except:
+        flash('Something Wrong with the inputs. Fill up all the inputs.')
+        return redirect(url_for('edit_profile'))
 
     # validate individual
 
-    inputlist = [val_firstName, val_lastName, val_phone_2,
+    inputlist = [val_firstName, val_lastName, val_phone,
                  val_shipname, val_streetaddress, val_aptno, val_inputCity, val_inputZip,
                  val_nameoncard, val_cardno, val_CVV,
                  val_billname, val_billstreetaddress, val_billaptno, val_billinputCity, val_billinputZip]
@@ -1031,7 +1137,6 @@ def editProfileData():
         flash(error_show)
         return redirect(url_for('edit_profile'))
     else:
-
         sadata_query = "SELECT * FROM `bookstore`.`address` where `userID`=%d and `AddressType`='ship' " % userid
         badata_query = "SELECT * FROM `bookstore`.`address` where `userID`=%d and `AddressType`='bill' " % userid
         paydata_query = "SELECT * FROM `bookstore`.`payment` where `UserID`= %d ;" % userid
@@ -1045,39 +1150,36 @@ def editProfileData():
                       "WHERE `userID` = %d; " \
                       % (val_firstName, val_lastName, val_phone, userid)
         sadataupdate = "UPDATE `bookstore`.`address`" \
-                       "SET `name` = \'%s\', `street` = \'%s\', `street2` = \'%s\', `city` = \'%s\', `state` = \'%s\', `zipCode` = %d   " \
+                       "SET `name` = \'%s\', `street` = \'%s\', `street2` = \'%s\', `city` = \'%s\', `state` = \'%s\', `zipCode` = \'%s\'   " \
                        "WHERE `userID` = %d and `AddressType` = 'ship' ;" \
-                       % (
-                           val_shipname, val_streetaddress, val_aptno, val_inputCity, val_inputState, val_inputZip,
+                       % ( val_shipname, val_streetaddress, val_aptno, val_inputCity, val_inputState, val_inputZip,
                            userid)
         badataupdate = "UPDATE `bookstore`.`address`" \
-                       "SET `name` = \'%s\', `street` = \'%s\', `street2` = \'%s\', `city` = \'%s\', `state` = \'%s\', `zipCode` = %d   " \
+                       "SET `name` = \'%s\', `street` = \'%s\', `street2` = \'%s\', `city` = \'%s\', `state` = \'%s\', `zipCode` = \'%s\'   " \
                        "WHERE `userID` = %d and `AddressType` = 'bill' ;" \
                        % (val_billname, val_billstreetaddress, val_billaptno, val_billinputCity, val_billinputState,
                           val_billinputZip, userid)
 
         paydataupdate = "UPDATE `bookstore`.`payment`" \
-                        "SET `cardNumber` = \'%s\', `expiryYear` = %d, `expiryMonth` = %d, `securityCode` = %d, `nameoncard` = \'%s\', `paymentType` = \'%s\' " \
+                        "SET `cardNumber` = \'%s\', `expiryYear` = \'%s\', `expiryMonth` = \'%s\', `securityCode` = \'%s\', `nameoncard` = \'%s\', `paymentType` = \'%s\' " \
                         "WHERE `UserID` = %d ;" \
                         % (val_cardno, val_expyear, val_expmonth, val_CVV, val_nameoncard.upper(), val_cardtype, userid)
 
         sadatainsert = "INSERT INTO `bookstore`.`address`" \
                        "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
-                       "VALUES( \'%s\', \'%s\', \'%s\', \'%d\', \'%s\', \'%s\', 'ship', \'%d\');" \
-                       % (
-                           val_shipname, val_streetaddress, val_aptno, val_inputZip, val_inputCity, val_inputState,
-                           userid)
+                       "VALUES( \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', 'ship', \'%d\');" \
+                       % (val_shipname, val_streetaddress, val_aptno, val_inputZip, val_inputCity, val_inputState,userid)
 
         badatainsert = "INSERT INTO `bookstore`.`address`" \
                        "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
-                       "VALUES( \'%s\', \'%s\', \'%s\', \'%d\', \'%s\', \'%s\', 'bill', \'%d\');" \
+                       "VALUES( \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', 'bill', \'%d\');" \
                        % (val_billname, val_billstreetaddress, val_billaptno, val_billinputZip, val_billinputCity,
                           val_billinputState, userid)
 
         paydatainsert = "INSERT INTO `bookstore`.`payment`" \
                         "(`cardNumber`, `expiryYear`, `expiryMonth`, `securityCode`, `paymentType`, `UserID`, `nameoncard`)" \
                         "VALUES( \'%s\' , \'%d\', \'%d\', \'%d\' , \'%s\', \'%d\', \'%s\' );" \
-                        % (val_cardno, val_expyear, val_expmonth, val_CVV, val_cardtype, userid, val_nameoncard.upper())
+                        % (val_cardno, val_expyear, val_expmonth, int(val_CVV), val_cardtype, userid, val_nameoncard.upper())
 
         set_query(pdataupdate)
 
@@ -1249,7 +1351,7 @@ def add_book_action():
 
         if set_query(book_insert) and set_query(inventory_insert):
             flash('Book Successfully Added')
-            return redirect(url_for('index'))
+            return redirect(url_for('manage_books'))
         else:
             flash('Duplicate Book')
             return redirect(url_for('add_book'))
@@ -1279,7 +1381,38 @@ def add_book_action():
 
 @app.route('/search_book_action', methods=['GET', 'POST'])
 def search_book_action():
-    return 'Needs to be implemented by Sakher/Divya/Andres/Redwan'
+    val_title = request.form['title']
+    val_author = request.form['author']
+    val_ISBN = request.form['ISBN']
+    val_cat = conv_int(request.form['category'])
+
+    if val_cat == 0:
+        all_book_query_wo_cat = "select `books`.*, `bookinventory`.*, `category`.`category` as `cats` from `books` " \
+                                "inner join `bookinventory` " \
+                                "on `books`.`ISBN` = `bookinventory`.`bookID`" \
+                                "inner join `category`" \
+                                "on `books`.`category` = `category`.`idCategory`" \
+                                "where `books`.`title` like \'%%%s%%\'" \
+                                "and `books`.`author` like \'%%%s%%\'" \
+                                "and `books`.`ISBN` like \'%%%s%%\';" \
+                                % (val_title, val_author, val_ISBN)
+        print(all_book_query_wo_cat)
+        all_book = get_query(all_book_query_wo_cat)
+    else:
+        all_book_query = "select `books`.*, `bookinventory`.*, `category`.`category` as `cats` from `books` " \
+                         "inner join `bookinventory` " \
+                         "on `books`.`ISBN` = `bookinventory`.`bookID`" \
+                         "inner join `category`" \
+                         "on `books`.`category` = `category`.`idCategory`" \
+                         "where `books`.`title` like \'%%%s%%\'" \
+                         "and `books`.`author` like \'%%%s%%\'" \
+                         "and `books`.`ISBN` like \'%%%s%%\'" \
+                         "and `books`.`category` = \'%d\'" \
+                         % (val_title, val_author, val_ISBN, val_cat)
+        print(all_book_query)
+        all_book = get_query(all_book_query)
+
+    return render_template('searchres.html', data=all_book)
 
 
 @app.route('/get_EOD')
@@ -1408,11 +1541,11 @@ def checkout_action():
                                 % (orderid, cartItems[jj]['bookID'], cartItems[jj]['quantity'])
             set_query(insert_order_item)
 
-        for jj in range(0,len(inventory_update)):
+        for jj in range(0, len(inventory_update)):
             update_inventory = "update `bookstore`.`bookinventory`" \
                                "set `quantity` = \'%d\'" \
                                "where `bookID` = \'%s\'" \
-                                % (int(inventory_update[jj]['rem']),inventory_update[jj]['bookID'] )
+                               % (int(inventory_update[jj]['rem']), inventory_update[jj]['bookID'])
             set_query(update_inventory)
 
         # clear cart
@@ -1421,11 +1554,15 @@ def checkout_action():
                     % uid
         set_query(del_query)
 
-        #make orderstatus active
+        # make orderstatus active
         update_order = "update `bookstore`.`order`" \
                        "set `orderstatus` = 'active'" \
                        "where `orderID` = \'%d\' " % orderid
         set_query(update_order)
+
+        body_text = "you have successfully placed your order with the order ID \'%d\'." % orderid
+        val_email = session.get('email')
+        send_message(body_text, val_email)
         return redirect(url_for('order_confirmation'))
 
 
@@ -1435,8 +1572,11 @@ def cancel_order(id):
                  "set `orderstatus` = 'cancelled'" \
                  "where orderID = \'%d\'" % id
     set_query(set_cancel)
+    body_text = "you have successfully cancelled your order with the order ID \'%d\'." % id
+    val_email = session.get('email')
+    send_message(body_text, val_email)
     return redirect(url_for('order_history'))
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True)

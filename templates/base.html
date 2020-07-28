@@ -27,6 +27,7 @@
         };
         };
 
+
     </script>
     {% endblock %}
 </head>
@@ -44,6 +45,15 @@
         <ul id="menu_content">
             <li><a href="/">Home</a></li>
             <li><a href="{{ url_for('search_book') }}">Search Book</a></li>
+            <li>
+                <a href="{{ url_for('index') }}">Browse Books</a>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Browse by Title</a></li>
+                    <li><a href="{{ url_for('auth_index') }}">Browse by Author</a></li>
+                    <li><a href="{{ url_for('isbn_index') }}">Browse by ISBN</a></li>
+                    <li><a href="{{ url_for('cat_index') }}">Browse by Category</a></li>
+                </ul>
+            </li>
         </ul>
 
         <div id="mobile_button">

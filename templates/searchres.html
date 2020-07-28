@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head_header %}
+    {{ super() }}
+    {% endblock %}
+    <title> Add Promo </title>
+</head>
+<body>
+<div id="div1">
+    {% block body_header %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
+
+    {% block menu_content %}
+    {{ super() }}
+    {% endblock %}<!-- container -->
+
+    {% block main_content %}
+
+    <!-- Your for loop goes here. Should be under a condition if searched books are found-->
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-8">
+                <h4> These are the books found from your search result</h4>
+            </div>
+        </div>
+        {% for jj in data %}
+        <div class="row justify-content-center">
+            <div class="card col-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{ jj.title }}</h5>
+                    <p class="card-text">Author : {{ jj.author }}</p>
+                    <p class="card-text">ISBN : {{ jj.bookID }}</p>
+                    <p class="card-text">Category : {{ jj.cats }}</p>
+                    <a href="{{ url_for('bookshow', book_num = jj.bookID) }}" class="btn btn-primary btn-lg">See
+                        Details</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% endblock %}<!-- main_content -->
+    {% block footer %}
+    {{ super() }}
+    {% endblock %}
+</div><!-- div1 -->
+{% block scripts %}
+{{ super() }}
+{% endblock %}
+
+</body>
+</html>

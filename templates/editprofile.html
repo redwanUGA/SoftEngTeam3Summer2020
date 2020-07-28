@@ -17,6 +17,10 @@
 			{{ super() }}
 			{% endblock %}<!-- container -->
 
+            {% block flash %}
+			{{ super() }}
+			{% endblock %}
+
 			{% block main_content %}
 			<div id="main_content">
 				<div class="viewProf">
@@ -27,19 +31,6 @@
 						</div>
 					</div -->
 
-					{% with messages = get_flashed_messages() %}
-					{% if messages %}
-					<ul>
-						{% for message in messages %}
-						{% if "Success" in message %}
-						<li class='text-success'>{{ message }}</li>
-						{% else %}
-						<li class='text-danger'>{{ message }}</li>
-						{% endif %}
-						{% endfor %}
-					</ul>
-					{% endif %}
-					{% endwith %}
 
 					<form action=" {{ url_for('editProfileData') }} ", method="post">
 					<!-- Personal Data Begins  -->
@@ -64,6 +55,7 @@
 							<td> <label for="phonenumbercountry"> Country Code </label> </td>
 							<td>
 								<select class="form-control" name="phonenumbercountry" >
+									<option value="" {% if pdata[0]['phone'] is none %} selected {% endif %}>Choose..</option>
 									<option value="+1" {% if pdata[0]['phone'][0:2] == '+1' %} selected {% endif %} >+1 (US and Canada)</option>
 									<option value="+9" {% if pdata[0]['phone'][0:2] == '+7' %} selected {% endif %} >+7 (Russia) </option>
 								</select>
@@ -112,7 +104,7 @@
 							<td> <label for="inputState"> State </label> </td>
 							<td>
 								<select class="form-control" name="inputState" >
-									<option value=".." {% if sadata[0]['state'] == '..' %} selected {% endif %} >Choose...</option>
+									<option value="" {% if sadata[0]['state'] == '' %} selected {% endif %} >Choose...</option>
 									<option value="AL" {% if sadata[0]['state'] == 'AL' %} selected {% endif %}  >Alabama</option>
                                 <option value="AK" {% if sadata[0]['state'] == 'AK' %} selected {% endif %}  >Alaska</option>
                                 <option value="AZ" {% if sadata[0]['state'] == 'AZ' %} selected {% endif %}  >Arizona</option>
@@ -198,7 +190,7 @@
 							<td> <label for="inputState"> State </label> </td>
 							<td>
 								<select class="form-control" name="inputState" id="inputState">
-									<option value="..">Choose...</option>
+									<option value="">Choose...</option>
 									<option value="AL">Alabama</option>
                                 <option value="AK">Alaska</option>
                                 <option value="AZ">Arizona</option>
@@ -288,7 +280,7 @@
 							<td> <label for="billinputState"> State </label> </td>
 							<td>
 								<select class="form-control" name="billinputState" id="billinputState">
-									<option value=".." {% if badata[0]['state'] == '..' %} selected {% endif %} >Choose...</option>
+									<option value="" {% if badata[0]['state'] == '' %} selected {% endif %} >Choose...</option>
 									<option value="AL" {% if badata[0]['state'] == 'AL' %} selected {% endif %}  >Alabama</option>
                                 <option value="AK" {% if badata[0]['state'] == 'AK' %} selected {% endif %}  >Alaska</option>
                                 <option value="AZ" {% if badata[0]['state'] == 'AZ' %} selected {% endif %}  >Arizona</option>
@@ -374,7 +366,7 @@
 							<td> <label for="billinputState"> State </label> </td>
 							<td>
 								<select class="form-control" name="billinputState" id="billinputState">
-									<option value="..">Choose...</option>
+									<option value="">Choose...</option>
 									<option value="AL">Alabama</option>
                                 <option value="AK">Alaska</option>
                                 <option value="AZ">Arizona</option>
@@ -451,13 +443,13 @@
 						</tr>
 						<tr>
 							<td> <label for="CVV"> CVV </label> </td>
-							<td> <input class="form-control" type="number" name="CVV" id="CVV" value="{{ paydata[0]['securityCode'] }}"> </td>
+							<td> <input class="form-control" type="text" name="CVV" id="CVV" value="{{ paydata[0]['securityCode'] }}"> </td>
 						</tr>
 						<tr>
 							<td> <label for="cardtype"> Card Type </label> </td>
 							<td>
 								<select class="form-control" name="cardtype" id="cardtype">
-									<option value="...." {% if paydata[0]['paymentType'] == '....' %} selected {% endif %} >Choose...</option>
+									<option value="" {% if paydata[0]['paymentType'] == '' %} selected {% endif %} >Choose...</option>
 									<option value="VISA" {% if paydata[0]['paymentType'] == 'VISA' %} selected {% endif %} >VISA</option>
 									<option value="MasterCard" {% if paydata[0]['paymentType'] == 'MasterCard' %} selected {% endif %} >MasterCard</option>
 									<option value="AmEx" {% if paydata[0]['paymentType'] == 'Amex' %} selected {% endif %} >AmericanExpress</option>
@@ -470,7 +462,7 @@
 							<td> <label for="expmonth"> Expiry Month </label> </td>
 							<td>
 								<select class="form-control" name="expmonth" id="expmonth">
-									<option value="0" {% if paydata[0]['expiryMonth'] == 0 %} selected {% endif %} >Choose...</option>
+									<option value="" {% if paydata[0]['expiryMonth'] is none %} selected {% endif %} >Choose...</option>
 									<option value="1" {% if paydata[0]['expiryMonth'] == 1 %} selected {% endif %} >Jan</option>
 								<option value="2" {% if paydata[0]['expiryMonth'] == 2 %} selected {% endif %} >Feb</option>
 								<option value="3" {% if paydata[0]['expiryMonth'] == 3 %} selected {% endif %} >Mar</option>
@@ -491,7 +483,7 @@
 							<td> <label for="expyear"> Expiry Year </label> </td>
 							<td>
 								<select class="form-control" name="expyear" id="expyear">
-									<option value="0" {% if paydata[0]['expiryYear'] == 0 %} selected {% endif %} >Choose</option>
+									<option value="" {% if paydata[0]['expiryYear'] is none %} selected {% endif %} >Choose</option>
 								<option value="2019" {% if paydata[0]['expiryYear'] == 2019 %} selected {% endif %} >2019</option>
 								<option value="2020" {% if paydata[0]['expiryYear'] == 2020 %} selected {% endif %} >2020</option>
 								<option value="2021" {% if paydata[0]['expiryYear'] == 2021 %} selected {% endif %} >2021</option>
@@ -524,7 +516,7 @@
 							<td> <label for="cardtype"> Card Tyoe </label> </td>
 							<td>
 								<select class="form-control" name="cardtype" id="cardtype">
-									<option value="....">Choose...</option>
+									<option value="">Choose...</option>
 									<option value="VISA" >VISA</option>
 									<option value="MasterCard" >MasterCard</option>
 									<option value="AmEx" >AmericanExpress</option>
@@ -537,7 +529,7 @@
 							<td> <label for="expmonth"> Expiry Month </label> </td>
 							<td>
 								<select class="form-control" name="expmonth" id="expmonth">
-									<option value="0" >Choose...</option>
+									<option value="" >Choose...</option>
 									<option value="1" >Jan</option>
 								<option value="2" >Feb</option>
 								<option value="3" >Mar</option>
@@ -558,7 +550,7 @@
 							<td> <label for="expyear"> Expiry Year </label> </td>
 							<td>
 								<select class="form-control" name="expyear" id="expyear">
-									<option value="0" >Choose...</option>
+									<option value="" >Choose...</option>
 								<option value="2019" >2019</option>
 								<option value="2020" >2020</option>
 								<option value="2021" >2021</option>
