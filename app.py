@@ -555,7 +555,8 @@ def checkout():
             # get payment info
             pay_query = "SELECT * FROM `bookstore`.`payment` WHERE `userID`=\'%d\'" % uid
             pay = get_query(pay_query)
-            print(pay)
+            if len(pay) != 0:
+                pay[0]['cardNumber'] = custom_dec(pay[0]['cardNumber'])
             # get billShipping info
             bill_query = "SELECT * FROM `bookstore`.`address` WHERE `userID`=\'%d\' AND `AddressType`=\'bill\'" % uid
             bill = get_query(bill_query)
@@ -627,7 +628,6 @@ def edit_profile():
         paydata = get_query(paydata_query)
         if len(paydata) != 0:
             paydata[0]['cardNumber'] = custom_dec(paydata[0]['cardNumber'])
-
 
         return render_template('editprofile.html', pdata=pdata, sadata=sadata, badata=badata, paydata=paydata)
     else:
@@ -782,8 +782,8 @@ def register_data():
                   'securityCode', 'paymentType', 'expiryMonth', 'expiryYear']
 
     [validate0, flash_messages0] = validate_all_nonempty_input(inputlist0, valuelist0)
-    
-    
+
+
     if not validate0:
         flash(flash_messages0)
         return redirect(url_for('register'))
@@ -1152,8 +1152,8 @@ def editProfileData():
         sadataupdate = "UPDATE `bookstore`.`address`" \
                        "SET `name` = \'%s\', `street` = \'%s\', `street2` = \'%s\', `city` = \'%s\', `state` = \'%s\', `zipCode` = \'%s\'   " \
                        "WHERE `userID` = %d and `AddressType` = 'ship' ;" \
-                       % ( val_shipname, val_streetaddress, val_aptno, val_inputCity, val_inputState, val_inputZip,
-                           userid)
+                       % (val_shipname, val_streetaddress, val_aptno, val_inputCity, val_inputState, val_inputZip,
+                          userid)
         badataupdate = "UPDATE `bookstore`.`address`" \
                        "SET `name` = \'%s\', `street` = \'%s\', `street2` = \'%s\', `city` = \'%s\', `state` = \'%s\', `zipCode` = \'%s\'   " \
                        "WHERE `userID` = %d and `AddressType` = 'bill' ;" \
@@ -1168,7 +1168,8 @@ def editProfileData():
         sadatainsert = "INSERT INTO `bookstore`.`address`" \
                        "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
                        "VALUES( \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', 'ship', \'%d\');" \
-                       % (val_shipname, val_streetaddress, val_aptno, val_inputZip, val_inputCity, val_inputState,userid)
+                       % (
+                       val_shipname, val_streetaddress, val_aptno, val_inputZip, val_inputCity, val_inputState, userid)
 
         badatainsert = "INSERT INTO `bookstore`.`address`" \
                        "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
@@ -1179,7 +1180,8 @@ def editProfileData():
         paydatainsert = "INSERT INTO `bookstore`.`payment`" \
                         "(`cardNumber`, `expiryYear`, `expiryMonth`, `securityCode`, `paymentType`, `UserID`, `nameoncard`)" \
                         "VALUES( \'%s\' , \'%d\', \'%d\', \'%d\' , \'%s\', \'%d\', \'%s\' );" \
-                        % (val_cardno, val_expyear, val_expmonth, int(val_CVV), val_cardtype, userid, val_nameoncard.upper())
+                        % (val_cardno, val_expyear, val_expmonth, int(val_CVV), val_cardtype, userid,
+                           val_nameoncard.upper())
 
         set_query(pdataupdate)
 
