@@ -170,7 +170,7 @@
             </tr>
             <tr class="row justify-content-center">
                 <td class="col-4"> Card Info</td>
-                <td class="col-4"> CardType ending ****-****-****-{{ paydata[0]['cardNumber'][-4:] }}</td>
+                <td class="col-4"> {{ paydata[0]['paymentType'] }} ending ****-****-****-{{ paydata[0]['cardNumber'][-4:] }}</td>
             </tr>
         </table>
     </div>

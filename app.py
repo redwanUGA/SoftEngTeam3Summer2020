@@ -317,8 +317,6 @@ def index():
                      "on `books`.`category` = `category`.`idCategory`" \
                      "order by `books`.`title` asc;"
     result = get_query(all_book_query)
-    for jj in result:
-        print(jj)
     return render_template('index.html', data=result)
 
 
@@ -331,8 +329,6 @@ def cat_index():
                      "on `books`.`category` = `category`.`idCategory`" \
                      "order by `cats` asc;"
     result = get_query(all_book_query)
-    for jj in result:
-        print(jj)
     return render_template('index.html', data=result)
 
 
@@ -345,8 +341,6 @@ def auth_index():
                      "on `books`.`category` = `category`.`idCategory`" \
                      "order by `books`.`author` asc;"
     result = get_query(all_book_query)
-    for jj in result:
-        print(jj)
     return render_template('index.html', data=result)
 
 
@@ -359,8 +353,6 @@ def isbn_index():
                      "on `books`.`category` = `category`.`idCategory`" \
                      "order by `books`.`ISBN` asc;"
     result = get_query(all_book_query)
-    for jj in result:
-        print(jj)
     return render_template('index.html', data=result)
 
 
@@ -376,23 +368,25 @@ def login():
 
 @app.route('/admin_panel')
 def show_admin_panel():
-    return render_template('admin.html')
+        return render_template('admin.html')
 
 
 @app.route('/manage_user')
 def manage_user():
-    return render_template('usermanagement.html')
+        return render_template('usermanagement.html')
 
 
 @app.route('/manage_books')
 def manage_books():
     all_book_query = "select `books`.*, `bookinventory`.*, `category`.`category` as `cats` from `books` " \
-                     "inner join `bookinventory` " \
-                     "on `books`.`ISBN` = `bookinventory`.`bookID`" \
-                     "inner join `category`" \
-                     "on `books`.`category` = `category`.`idCategory`;"
+                         "inner join `bookinventory` " \
+                         "on `books`.`ISBN` = `bookinventory`.`bookID`" \
+                         "inner join `category`" \
+                         "on `books`.`category` = `category`.`idCategory`;"
     all_book = get_query(all_book_query)
     return render_template('manage_books.html', data=all_book)
+
+
 
 
 @app.route('/add_book')
@@ -400,6 +394,7 @@ def add_book():
     cat_query = "SELECT * FROM `bookstore`.`category`;"
     cats = get_query(cat_query)
     return render_template('addbook.html', cats=cats)
+
 
 
 @app.route('/search_book')
@@ -865,7 +860,6 @@ def register_data():
     if set_query(sqlstatementman) is True:
         uidget = "select `userID` from `bookstore`.`users` where `email` = \'%s\';" % val_email
         userid = int(get_query(uidget)[0]['userID'])
-        print(userid)
     else:
         flash('Duplicate Email Exists')
         return redirect(url_for('register'))
@@ -978,7 +972,6 @@ def send_otp():
     search_email_query = "SELECT * FROM `bookstore`.`users`" \
                          "where email=\'%s\' " % (val_email)
     results = get_query(search_email_query)
-    print(results)
     if results:
         update_id = results[0]['userID']
         new_activation_key = randint(0, 99999)
@@ -1163,7 +1156,7 @@ def editProfileData():
         paydataupdate = "UPDATE `bookstore`.`payment`" \
                         "SET `cardNumber` = \'%s\', `expiryYear` = \'%s\', `expiryMonth` = \'%s\', `securityCode` = \'%s\', `nameoncard` = \'%s\', `paymentType` = \'%s\' " \
                         "WHERE `UserID` = %d ;" \
-                        % (val_cardno, val_expyear, val_expmonth, val_CVV, val_nameoncard.upper(), val_cardtype, userid)
+                        % ( custom_enc(val_cardno) , val_expyear, val_expmonth, val_CVV, val_nameoncard.upper(), val_cardtype, userid)
 
         sadatainsert = "INSERT INTO `bookstore`.`address`" \
                        "(`name`, `street`, `street2`, `zipCode`, `city`, `state`, `AddressType`, `userID`)" \
@@ -1180,7 +1173,7 @@ def editProfileData():
         paydatainsert = "INSERT INTO `bookstore`.`payment`" \
                         "(`cardNumber`, `expiryYear`, `expiryMonth`, `securityCode`, `paymentType`, `UserID`, `nameoncard`)" \
                         "VALUES( \'%s\' , \'%d\', \'%d\', \'%d\' , \'%s\', \'%d\', \'%s\' );" \
-                        % (val_cardno, val_expyear, val_expmonth, int(val_CVV), val_cardtype, userid,
+                        % ( custom_enc(val_cardno) , val_expyear, val_expmonth, int(val_CVV), val_cardtype, userid,
                            val_nameoncard.upper())
 
         set_query(pdataupdate)
@@ -1325,8 +1318,6 @@ def add_book_action():
     val_buyingPrice = conv_float(request.form['buyingPrice'])
     val_sellingPrice = conv_float(request.form['sellingPrice'])
     val_quantity = conv_int(request.form['quantity'])
-    print(val_title, val_author, val_ISBN, val_edition, val_pubYear, val_publisher, val_category, val_sellingPrice,
-          val_sellingPrice)
     inputlist = [val_title, val_author, val_ISBN, val_publisher]
     typelist = ['title', 'author', 'ISBN', 'publisher']
 
@@ -1398,7 +1389,6 @@ def search_book_action():
                                 "and `books`.`author` like \'%%%s%%\'" \
                                 "and `books`.`ISBN` like \'%%%s%%\';" \
                                 % (val_title, val_author, val_ISBN)
-        print(all_book_query_wo_cat)
         all_book = get_query(all_book_query_wo_cat)
     else:
         all_book_query = "select `books`.*, `bookinventory`.*, `category`.`category` as `cats` from `books` " \
@@ -1411,7 +1401,6 @@ def search_book_action():
                          "and `books`.`ISBN` like \'%%%s%%\'" \
                          "and `books`.`category` = \'%d\'" \
                          % (val_title, val_author, val_ISBN, val_cat)
-        print(all_book_query)
         all_book = get_query(all_book_query)
 
     return render_template('searchres.html', data=all_book)
@@ -1531,11 +1520,8 @@ def checkout_action():
         flash('Desired Quantities not available. Go to cart to modify items')
         return redirect(url_for('checkout'))
     else:
-        print(request.form['orderid'])
-        print(len(cartItems))
         orderid = int(request.form['orderid'])
         inventory_update = get_query(inventory_after)
-        print(inventory_update)
         for jj in range(0, len(cartItems)):
             insert_order_item = "insert into `bookstore`.`orderitems`" \
                                 "(`orderID`, `ProductID`, `quantity`)" \
@@ -1581,4 +1567,4 @@ def cancel_order(id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
