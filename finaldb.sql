@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `Bookstore`.`Address` (
   `name` VARCHAR(100) NOT NULL,
   `street` VARCHAR(100) NOT NULL,
   `street2` VARCHAR(100) NULL,
-  `zipCode` INT(10) NULL,
+  `zipCode` VARCHAR(5) NULL,
   `city` VARCHAR(50) NULL,
   `state` VARCHAR(30) NULL,
   `AddressType` VARCHAR(10) NULL,
